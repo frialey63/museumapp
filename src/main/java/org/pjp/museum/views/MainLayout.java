@@ -1,6 +1,12 @@
 package org.pjp.museum.views;
 
 
+import org.pjp.museum.components.appnav.AppNav;
+import org.pjp.museum.components.appnav.AppNavItem;
+import org.pjp.museum.views.about.AboutView;
+import org.pjp.museum.views.exhibit.ExhibitView;
+import org.pjp.museum.views.helloworld.HelloWorldView;
+
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.applayout.AppLayout;
 import com.vaadin.flow.component.applayout.DrawerToggle;
@@ -10,10 +16,6 @@ import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.html.H2;
 import com.vaadin.flow.component.html.Header;
 import com.vaadin.flow.router.PageTitle;
-import org.pjp.museum.components.appnav.AppNav;
-import org.pjp.museum.components.appnav.AppNavItem;
-import org.pjp.museum.views.about.AboutView;
-import org.pjp.museum.views.helloworld.HelloWorldView;
 
 /**
  * The main view is a top-level placeholder for other views.
@@ -56,7 +58,9 @@ public class MainLayout extends AppLayout {
         AppNav nav = new AppNav();
         nav.addClassNames("app-nav");
 
+        nav.addItem(new AppNavItem("Exhibit", ExhibitView.class, "la la-globe"));
         nav.addItem(new AppNavItem("Hello World", HelloWorldView.class, "la la-globe"));
+        nav.addItem(new AppNavItem("With Sub-Menu", "la la-globe").addItem(new AppNavItem("Hello World", HelloWorldView.class, "la la-globe")));
         nav.addItem(new AppNavItem("About", AboutView.class, "la la-file"));
 
         return nav;

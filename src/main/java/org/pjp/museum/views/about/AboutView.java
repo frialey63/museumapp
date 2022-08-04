@@ -12,7 +12,11 @@ import org.pjp.museum.views.MainLayout;
 @Route(value = "about", layout = MainLayout.class)
 public class AboutView extends VerticalLayout {
 
+    private static final long serialVersionUID = -8229793812252460151L;
+
     public AboutView() {
+        super();
+
         setSpacing(false);
 
         Image img = new Image("images/empty-plant.png", "placeholder plant");
@@ -25,6 +29,7 @@ public class AboutView extends VerticalLayout {
         setSizeFull();
         setJustifyContentMode(JustifyContentMode.CENTER);
         setDefaultHorizontalComponentAlignment(Alignment.CENTER);
+
         getStyle().set("text-align", "center");
     }
 

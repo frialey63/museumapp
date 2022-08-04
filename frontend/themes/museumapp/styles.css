@@ -1,2 +1,15 @@
 @import url('./main-layout.css');
 @import url('line-awesome/dist/line-awesome/css/line-awesome.min.css');
+
+:root {
+    /* --museum-background-colour: rgb(255, 255, 255); */
+    --museum-background-colour: rgb(173, 204, 233);
+
+    /* --lumo-base-color: var(--museum-background-colour); */
+}
+
+/*
+.hello-world {
+    background-color: var(--museum-background-colour);
+}
+*/
