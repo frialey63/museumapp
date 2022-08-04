@@ -22,6 +22,8 @@ import org.springframework.boot.web.servlet.support.SpringBootServletInitializer
 @NpmPackage(value = "@vaadin-component-factory/vcf-nav", version = "1.0.6")
 public class MuseumApp extends SpringBootServletInitializer implements AppShellConfigurator {
 
+    private static final long serialVersionUID = -6201010168785334238L;
+
     public static void main(String[] args) {
         SpringApplication.run(MuseumApp.class, args);
     }

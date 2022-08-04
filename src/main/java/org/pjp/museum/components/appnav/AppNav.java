@@ -19,6 +19,8 @@ import java.util.Optional;
 @Tag("vcf-nav")
 public class AppNav extends Component implements HasSize, HasStyle {
 
+    private static final long serialVersionUID = -2743206991683640584L;
+
     /**
      * Creates a new menu without any label.
      */

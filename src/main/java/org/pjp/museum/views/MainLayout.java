@@ -22,6 +22,8 @@ import com.vaadin.flow.router.PageTitle;
  */
 public class MainLayout extends AppLayout {
 
+    private static final long serialVersionUID = 6777899833487418585L;
+
     private H1 viewTitle;
 
     public MainLayout() {
