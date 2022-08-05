@@ -6,7 +6,7 @@ import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.nio.ByteBuffer;
 
-import org.pjp.museum.ui.component.util.AudioUtils;
+import org.pjp.museum.ui.util.AudioUtils;
 import org.pjp.museum.ui.view.MainLayout;
 import org.vaadin.addon.audio.server.AudioPlayer;
 import org.vaadin.addon.audio.server.Stream;

@@ -1,4 +1,4 @@
-package org.pjp.museum.ui.component.util;
+package org.pjp.museum.ui.util;
 
 import java.io.ByteArrayInputStream;
 import java.nio.ByteBuffer;
