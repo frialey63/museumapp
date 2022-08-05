@@ -1,4 +1,4 @@
-package org.pjp.museum.components;
+package org.pjp.museum.ui.component;
 
 import com.vaadin.flow.component.Tag;
 import com.vaadin.flow.component.dependency.JsModule;

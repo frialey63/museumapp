@@ -1,4 +1,4 @@
-package org.pjp.museum.components.appnav;
+package org.pjp.museum.ui.component.appnav;
 
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.HasSize;

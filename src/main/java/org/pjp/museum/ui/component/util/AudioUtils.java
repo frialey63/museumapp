@@ -1,10 +1,6 @@
-package org.pjp.museum.views.exhibit;
+package org.pjp.museum.ui.component.util;
 
 import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.InputStream;
 import java.nio.ByteBuffer;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -15,47 +11,19 @@ import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.UnsupportedAudioFileException;
 
-import org.pjp.museum.views.MainLayout;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.vaadin.addon.audio.server.AudioPlayer;
 import org.vaadin.addon.audio.server.Encoder;
 import org.vaadin.addon.audio.server.Stream;
-import org.vaadin.addon.audio.server.encoders.WaveEncoder;
 import org.vaadin.addon.audio.server.util.ULawUtil;
 import org.vaadin.addon.audio.server.util.WaveUtil;
 import org.vaadin.addon.audio.shared.PCMFormat;
 
-import com.vaadin.flow.component.html.Image;
 import com.vaadin.flow.component.notification.Notification;
-import com.vaadin.flow.component.orderedlayout.VerticalLayout;
-import com.vaadin.flow.router.AfterNavigationEvent;
-import com.vaadin.flow.router.AfterNavigationObserver;
-import com.vaadin.flow.router.PageTitle;
-import com.vaadin.flow.router.Route;
-import com.vaadin.flow.server.StreamResource;
 
-@PageTitle("Exhibit")
-@Route(value = "exhibit", layout = MainLayout.class)
-public class ExhibitView extends VerticalLayout implements AfterNavigationObserver {
+public final class AudioUtils {
 
-    private static final long serialVersionUID = -3241685802423500738L;
-
-    private static final String DATA_DIR = "data";
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(ExhibitView.class);
-
-    private static InputStream getInputStreamFromFile(String filename) throws RuntimeException {
-        InputStream is = null;
-
-        try {
-            is = new FileInputStream(DATA_DIR + File.separator + filename);
-        } catch (FileNotFoundException e) {
-            throw new RuntimeException(e);
-        }
-
-        return is;
-    }
+    private static final Logger LOGGER = LoggerFactory.getLogger(AudioUtils.class);
 
     /**
      * Returns a ByteBuffer filled with PCM data. If the original audio file is using
@@ -67,7 +35,7 @@ public class ExhibitView extends VerticalLayout implements AfterNavigationObserv
      *            directory in which the file exists
      * @return ByteBuffer containing byte[] of PCM data
      */
-    private static ByteBuffer decodeToPcm(String fname, String dir) {
+    public static ByteBuffer decodeToPcm(String fname, String dir) {
         // TODO: add other supported encodings for decoding to PCM
         ByteBuffer buffer = null;
         try {
@@ -97,7 +65,7 @@ public class ExhibitView extends VerticalLayout implements AfterNavigationObserv
         return buffer;
     }
 
-    private static Stream createWaveStream(ByteBuffer waveFile, Encoder outputEncoder) {
+    public static Stream createWaveStream(ByteBuffer waveFile, Encoder outputEncoder) {
         int startOffset = WaveUtil.getDataStartOffset(waveFile);
         int dataLength = WaveUtil.getDataLength(waveFile);
         int chunkLength = 5000;
@@ -114,45 +82,7 @@ public class ExhibitView extends VerticalLayout implements AfterNavigationObserv
         return stream;
     }
 
-    private final Image image = new Image();
-
-    private final PlayerControls playerControls = new PlayerControls();
-
-    public ExhibitView() {
-        super();
-
-        // TODO header and title
-
-        // TODO paragraph and description
-
-        setHorizontalComponentAlignment(Alignment.CENTER, image);
-
-        add(image, playerControls);
+    private AudioUtils() {
+        // prevent instantiation
     }
-
-    @Override
-    public void afterNavigation(AfterNavigationEvent event) {
-        // TODO get Exhibit ID from the query parameters
-
-        String imageFile = "IMG_20220622_151008797.jpg";
-
-        StreamResource imageResource = new StreamResource(imageFile, () -> getInputStreamFromFile(imageFile));
-
-        image.setSrc(imageResource);
-        image.setWidth("600px");
-
-        String audioFile = "ABCSample.wav";
-
-        // decodeToPcm method found in demo
-        ByteBuffer fileBytes = decodeToPcm(audioFile, DATA_DIR);
-
-        // createWaveStream method found in demo
-        Stream stream = createWaveStream(fileBytes, new WaveEncoder());
-
-        AudioPlayer player = new AudioPlayer(stream);
-
-        playerControls.setPlayer(player, audioFile);
-        playerControls.initPositionSlider();
-    }
-
 }

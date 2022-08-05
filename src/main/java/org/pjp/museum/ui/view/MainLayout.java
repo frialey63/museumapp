@@ -1,11 +1,11 @@
-package org.pjp.museum.views;
+package org.pjp.museum.ui.view;
 
 
-import org.pjp.museum.components.appnav.AppNav;
-import org.pjp.museum.components.appnav.AppNavItem;
-import org.pjp.museum.views.about.AboutView;
-import org.pjp.museum.views.exhibit.ExhibitView;
-import org.pjp.museum.views.helloworld.HelloWorldView;
+import org.pjp.museum.ui.component.appnav.AppNav;
+import org.pjp.museum.ui.component.appnav.AppNavItem;
+import org.pjp.museum.ui.view.about.AboutView;
+import org.pjp.museum.ui.view.exhibit.ExhibitView;
+import org.pjp.museum.ui.view.hello.HelloWorldView;
 
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.applayout.AppLayout;

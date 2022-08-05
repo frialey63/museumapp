@@ -1,6 +1,6 @@
-package org.pjp.museum.views.helloworld;
+package org.pjp.museum.ui.view.hello;
 
-import org.pjp.museum.views.MainLayout;
+import org.pjp.museum.ui.view.MainLayout;
 
 import com.vaadin.flow.component.Key;
 import com.vaadin.flow.component.button.Button;

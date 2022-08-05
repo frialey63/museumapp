@@ -1,4 +1,4 @@
-package org.pjp.museum.components;
+package org.pjp.museum.ui.component;
 
 import com.vaadin.flow.component.AbstractSinglePropertyField;
 import com.vaadin.flow.component.HasStyle;

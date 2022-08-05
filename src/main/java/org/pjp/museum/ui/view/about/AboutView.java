@@ -1,4 +1,6 @@
-package org.pjp.museum.views.about;
+package org.pjp.museum.ui.view.about;
+
+import org.pjp.museum.ui.view.MainLayout;
 
 import com.vaadin.flow.component.html.H2;
 import com.vaadin.flow.component.html.Image;
@@ -6,7 +8,6 @@ import com.vaadin.flow.component.html.Paragraph;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
-import org.pjp.museum.views.MainLayout;
 
 @PageTitle("About")
 @Route(value = "about", layout = MainLayout.class)
