@@ -5,7 +5,7 @@ import org.pjp.museum.ui.component.appnav.AppNav;
 import org.pjp.museum.ui.component.appnav.AppNavItem;
 import org.pjp.museum.ui.view.about.AboutView;
 import org.pjp.museum.ui.view.exhibit.ExhibitView;
-import org.pjp.museum.ui.view.hello.HelloWorldView;
+import org.pjp.museum.ui.view.scan.ScannerView;
 
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.applayout.AppLayout;
@@ -60,10 +60,9 @@ public class MainLayout extends AppLayout {
         AppNav nav = new AppNav();
         nav.addClassNames("app-nav");
 
-        nav.addItem(new AppNavItem("Exhibit", ExhibitView.class, "la la-globe"));
-        nav.addItem(new AppNavItem("Hello World", HelloWorldView.class, "la la-globe"));
-        nav.addItem(new AppNavItem("With Sub-Menu", "la la-globe").addItem(new AppNavItem("Hello World", HelloWorldView.class, "la la-globe")));
-        nav.addItem(new AppNavItem("About", AboutView.class, "la la-file"));
+        nav.addItem(new AppNavItem("Scan QR Code", ScannerView.class, "la la-qrcode"));
+        nav.addItem(new AppNavItem("Exhibit", ExhibitView.class, "la la-headset"));
+        nav.addItem(new AppNavItem("About", AboutView.class, "la la-info"));
 
         return nav;
     }

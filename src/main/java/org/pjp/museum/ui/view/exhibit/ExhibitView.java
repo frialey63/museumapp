@@ -6,6 +6,7 @@ import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.nio.ByteBuffer;
 
+import org.pjp.museum.service.ExhibitService;
 import org.pjp.museum.ui.util.AudioUtils;
 import org.pjp.museum.ui.view.MainLayout;
 import org.vaadin.addon.audio.server.AudioPlayer;
@@ -18,23 +19,28 @@ import com.vaadin.flow.component.html.Paragraph;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.AfterNavigationEvent;
 import com.vaadin.flow.router.AfterNavigationObserver;
+import com.vaadin.flow.router.BeforeEvent;
+import com.vaadin.flow.router.HasUrlParameter;
+import com.vaadin.flow.router.OptionalParameter;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.server.StreamResource;
 
 @PageTitle("Exhibit")
 @Route(value = "exhibit", layout = MainLayout.class)
-public class ExhibitView extends VerticalLayout implements AfterNavigationObserver {
+public class ExhibitView extends VerticalLayout implements AfterNavigationObserver, HasUrlParameter<String> {
 
     private static final long serialVersionUID = -3241685802423500738L;
 
-    private static final String DATA_DIR = "data";
+    private static final String AUDIO_DIR = "data/audio";
 
-    private static InputStream getInputStreamFromFile(String filename) throws RuntimeException {
+    private static final String IMAGE_DIR = "data/image";
+
+    private static InputStream getInputStreamFromFile(String filename, String dir) throws RuntimeException {
         InputStream is = null;
 
         try {
-            is = new FileInputStream(DATA_DIR + File.separator + filename);
+            is = new FileInputStream(dir + File.separator + filename);
         } catch (FileNotFoundException e) {
             throw new RuntimeException(e);
         }
@@ -50,8 +56,13 @@ public class ExhibitView extends VerticalLayout implements AfterNavigationObserv
 
     private final PlayerControls playerControls = new PlayerControls();
 
-    public ExhibitView() {
+    private final ExhibitService service;
+
+    private String uuid;
+
+    public ExhibitView(ExhibitService service) {
         super();
+        this.service = service;
 
         setHorizontalComponentAlignment(Alignment.CENTER, title, image, playerControls);
 
@@ -60,35 +71,37 @@ public class ExhibitView extends VerticalLayout implements AfterNavigationObserv
         add(title, image, description, playerControls);
     }
 
-    // TODO get Exhibit ID from the query parameters
-
     @Override
     public void afterNavigation(AfterNavigationEvent event) {
-        title.getElement().setProperty("innerHTML", "Blackburn Buccaneer S2<br>XV352");
-        title.getStyle().set("text-align", "center");
+        service.getExhibit(uuid).ifPresent(exhibit -> {
+            title.getElement().setProperty("innerHTML", String.format("%s<br>%s", exhibit.getName(), exhibit.getTailNumber()));
+            title.getStyle().set("text-align", "center");
 
-        description.getElement().setProperty("innerHTML", "The Buccaneer was originally designed as a Maritime Strike aircraft for the Royal Navy, under the requirement designation NA.39.<br>" +
-                "Later adopted by the Royal Air Force, the Buccaneer had a successful career, culminating with participation in the Gulf War.");
+            description.getElement().setProperty("innerHTML", exhibit.getDescription());
 
-        String imageFile = "IMG_20220622_151008797.jpg";
+            String imageFile = exhibit.getImageFile();
+            StreamResource imageResource = new StreamResource(imageFile, () -> getInputStreamFromFile(imageFile, IMAGE_DIR));
 
-        StreamResource imageResource = new StreamResource(imageFile, () -> getInputStreamFromFile(imageFile));
+            image.setSrc(imageResource);
+            image.setWidth("80%");
 
-        image.setSrc(imageResource);
-        image.setWidth("80%");
+            String audioFile = exhibit.getAudioFile();
 
-        String audioFile = "ABCSample.wav";
+            // decodeToPcm method found in demo
+            ByteBuffer fileBytes = AudioUtils.decodeToPcm(audioFile, AUDIO_DIR);
+            // createWaveStream method found in demo
+            Stream stream = AudioUtils.createWaveStream(fileBytes, new WaveEncoder());
 
-        // decodeToPcm method found in demo
-        ByteBuffer fileBytes = AudioUtils.decodeToPcm(audioFile, DATA_DIR);
+            AudioPlayer player = new AudioPlayer(stream);
 
-        // createWaveStream method found in demo
-        Stream stream = AudioUtils.createWaveStream(fileBytes, new WaveEncoder());
+            playerControls.setPlayer(player, audioFile);
+            playerControls.initPositionSlider();
+        });
+    }
 
-        AudioPlayer player = new AudioPlayer(stream);
-
-        playerControls.setPlayer(player, audioFile);
-        playerControls.initPositionSlider();
+    @Override
+    public void setParameter(BeforeEvent event, @OptionalParameter String parameter) {
+        uuid = parameter;
     }
 
 }
