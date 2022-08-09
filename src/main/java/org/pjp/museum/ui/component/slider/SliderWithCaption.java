@@ -18,6 +18,8 @@ import com.vaadin.flow.templatemodel.TemplateModel;
 @Uses(PaperSlider.class)
 public class SliderWithCaption extends PolymerTemplate<SliderWithCaption.SliderWithCaptionModel> {
 
+    private static final long serialVersionUID = -9151911404529156684L;
+
     @Id("slider")
     private PaperSlider slider;
 

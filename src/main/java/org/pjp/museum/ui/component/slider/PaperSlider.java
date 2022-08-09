@@ -11,7 +11,10 @@ import com.vaadin.flow.component.dependency.NpmPackage;
 @JsModule("@polymer/paper-slider/paper-slider.js")
 public class PaperSlider extends AbstractSinglePropertyField<PaperSlider, Double> implements HasStyle {
 
+    private static final long serialVersionUID = 1062220563933557147L;
+
     private static final double SCALE_MULTIPLIER = 1.0;
+
     private double scale = SCALE_MULTIPLIER;
 
     public PaperSlider() {
