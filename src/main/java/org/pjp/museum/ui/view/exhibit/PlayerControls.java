@@ -2,7 +2,7 @@ package org.pjp.museum.ui.view.exhibit;
 
 import java.nio.ByteBuffer;
 
-import org.pjp.museum.ui.component.SliderWithCaption;
+import org.pjp.museum.ui.component.slider.SliderWithCaption;
 import org.vaadin.addon.audio.server.AudioPlayer;
 import org.vaadin.addon.audio.server.Stream;
 import org.vaadin.addon.audio.server.encoders.WaveEncoder;

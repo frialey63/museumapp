@@ -1,13 +1,10 @@
 package org.pjp.museum.ui.view.exhibit;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.InputStream;
 import java.nio.ByteBuffer;
 
 import org.pjp.museum.service.ExhibitService;
 import org.pjp.museum.ui.util.AudioUtils;
+import org.pjp.museum.ui.util.ImageUtils;
 import org.pjp.museum.ui.view.MainLayout;
 import org.vaadin.addon.audio.server.AudioPlayer;
 import org.vaadin.addon.audio.server.Stream;
@@ -32,22 +29,6 @@ public class ExhibitView extends VerticalLayout implements AfterNavigationObserv
 
     private static final long serialVersionUID = -3241685802423500738L;
 
-    private static final String AUDIO_DIR = "data/audio";
-
-    private static final String IMAGE_DIR = "data/image";
-
-    private static InputStream getInputStreamFromFile(String filename, String dir) throws RuntimeException {
-        InputStream is = null;
-
-        try {
-            is = new FileInputStream(dir + File.separator + filename);
-        } catch (FileNotFoundException e) {
-            throw new RuntimeException(e);
-        }
-
-        return is;
-    }
-
     private final H2 title = new H2();
 
     private final Image image = new Image();
@@ -69,6 +50,8 @@ public class ExhibitView extends VerticalLayout implements AfterNavigationObserv
         setHorizontalComponentAlignment(Alignment.START, description);
 
         add(title, image, description, playerControls);
+
+        setHeightFull();
     }
 
     @Override
@@ -80,7 +63,7 @@ public class ExhibitView extends VerticalLayout implements AfterNavigationObserv
             description.getElement().setProperty("innerHTML", exhibit.getDescription());
 
             String imageFile = exhibit.getImageFile();
-            StreamResource imageResource = new StreamResource(imageFile, () -> getInputStreamFromFile(imageFile, IMAGE_DIR));
+            StreamResource imageResource = new StreamResource(imageFile, () -> ImageUtils.getInputStreamFromFile(imageFile));
 
             image.setSrc(imageResource);
             image.setWidth("80%");
@@ -88,7 +71,7 @@ public class ExhibitView extends VerticalLayout implements AfterNavigationObserv
             String audioFile = exhibit.getAudioFile();
 
             // decodeToPcm method found in demo
-            ByteBuffer fileBytes = AudioUtils.decodeToPcm(audioFile, AUDIO_DIR);
+            ByteBuffer fileBytes = AudioUtils.decodeToPcm(audioFile);
             // createWaveStream method found in demo
             Stream stream = AudioUtils.createWaveStream(fileBytes, new WaveEncoder());
 

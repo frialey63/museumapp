@@ -1,6 +1,7 @@
 package org.pjp.museum.ui.util;
 
 import java.io.ByteArrayInputStream;
+import java.io.File;
 import java.nio.ByteBuffer;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -25,22 +26,22 @@ public final class AudioUtils {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(AudioUtils.class);
 
+    private static final String AUDIO_DIR = "data/audio";
+
     /**
      * Returns a ByteBuffer filled with PCM data. If the original audio file is using
      * a different encoding, this method attempts to decode it into PCM signed data.
      *
      * @param fname
      *            filename
-     * @param dir
-     *            directory in which the file exists
      * @return ByteBuffer containing byte[] of PCM data
      */
-    public static ByteBuffer decodeToPcm(String fname, String dir) {
+    public static ByteBuffer decodeToPcm(String fname) {
         // TODO: add other supported encodings for decoding to PCM
         ByteBuffer buffer = null;
         try {
             // load audio file
-            Path path = Paths.get(dir + "/" + fname);
+            Path path = Paths.get(AUDIO_DIR + File.separator + fname);
             byte[] bytes = Files.readAllBytes(path);
 
             // create input stream with audio file bytes
