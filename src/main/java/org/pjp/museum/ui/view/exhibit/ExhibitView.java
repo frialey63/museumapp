@@ -3,16 +3,22 @@ package org.pjp.museum.ui.view.exhibit;
 import java.nio.ByteBuffer;
 
 import org.pjp.museum.service.ExhibitService;
+import org.pjp.museum.ui.component.CompactVerticalLayout;
 import org.pjp.museum.ui.util.AudioUtils;
 import org.pjp.museum.ui.util.ImageUtils;
 import org.pjp.museum.ui.view.MainLayout;
+import org.pjp.museum.ui.view.scan.ScannerView;
 import org.vaadin.addon.audio.server.AudioPlayer;
 import org.vaadin.addon.audio.server.Stream;
 import org.vaadin.addon.audio.server.encoders.WaveEncoder;
 
+import com.vaadin.flow.component.UI;
+import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.html.H2;
 import com.vaadin.flow.component.html.Image;
 import com.vaadin.flow.component.html.Paragraph;
+import com.vaadin.flow.component.orderedlayout.Scroller;
+import com.vaadin.flow.component.orderedlayout.Scroller.ScrollDirection;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.AfterNavigationEvent;
 import com.vaadin.flow.router.AfterNavigationObserver;
@@ -45,11 +51,20 @@ public class ExhibitView extends VerticalLayout implements AfterNavigationObserv
         super();
         this.service = service;
 
-        setHorizontalComponentAlignment(Alignment.CENTER, title, image, playerControls);
+        Button next = new Button("Scan Next Exhibit", e -> {
+            UI.getCurrent().navigate(ScannerView.class);
+        });
 
-        setHorizontalComponentAlignment(Alignment.START, description);
+        VerticalLayout vl = new CompactVerticalLayout(title, image, description, playerControls, next);
 
-        add(title, image, description, playerControls);
+        vl.setHorizontalComponentAlignment(Alignment.CENTER, title, image, playerControls, next);
+        vl.setHorizontalComponentAlignment(Alignment.START, description);
+
+        Scroller scroller = new Scroller();
+        scroller.setScrollDirection(ScrollDirection.VERTICAL);
+        scroller.setContent(vl);
+
+        add(scroller);
 
         setHeightFull();
     }
