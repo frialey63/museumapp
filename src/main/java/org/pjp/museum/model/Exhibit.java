@@ -12,6 +12,8 @@ public class Exhibit {
     @Id
     private String uuid;
 
+    private int displayOrder;
+
     @NotBlank
     private String name;
 
@@ -31,9 +33,10 @@ public class Exhibit {
         super();
     }
 
-    public Exhibit(String uuid, @NotBlank String name, @NotBlank String tailNumber, @NotBlank String description, @NotBlank String imageFile, @NotBlank String audioFile) {
+    public Exhibit(String uuid, int displayOrder, @NotBlank String name, @NotBlank String tailNumber, @NotBlank String description, @NotBlank String imageFile, @NotBlank String audioFile) {
         super();
         this.uuid = uuid;
+        this.displayOrder = displayOrder;
         this.name = name;
         this.tailNumber = tailNumber;
         this.description = description;
@@ -47,6 +50,14 @@ public class Exhibit {
 
     public void setUuid(String uuid) {
         this.uuid = uuid;
+    }
+
+    public int getDisplayOrder() {
+        return displayOrder;
+    }
+
+    public void setDisplayOrder(int displayOrder) {
+        this.displayOrder = displayOrder;
     }
 
     public String getName() {
@@ -98,6 +109,8 @@ public class Exhibit {
         StringBuilder builder = new StringBuilder();
         builder.append("Exhibit [uuid=");
         builder.append(uuid);
+        builder.append(", displayOrder=");
+        builder.append(displayOrder);
         builder.append(", name=");
         builder.append(name);
         builder.append(", tailNumber=");
