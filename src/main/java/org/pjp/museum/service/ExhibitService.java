@@ -11,6 +11,8 @@ import org.springframework.stereotype.Service;
 @Service
 public class ExhibitService {
 
+    public static final String MUSEUM_UUID = UUID.randomUUID().toString();
+
     public static final String TEST_BUCCANEER_UUID = UUID.randomUUID().toString();
 
     public static final String TEST_CANBERRA_UUID = UUID.randomUUID().toString();
@@ -31,8 +33,14 @@ public class ExhibitService {
     public void testData() {
         repository.deleteAll();
 
+        {
+            String description = "The RAF Manston History Museum started life as the RAF Manston History Club in 1986 with the intention of presenting exhibits and artefacts connected with this famous airfield from its beginning on 29th May 1916 as Royal Naval Air Service Manston. Housed in a large wooden hut that had been used by the Intelligence Section during World War 2, the museum has had a couple of moves to other buildings before settling in its present location, the former Mechanical Transport Section hangars, in the mid 1990's.";
+            Exhibit exhibit = new Exhibit(MUSEUM_UUID, "The RAF Manston History Museum", "", description, "museum.jpg", "museum.wav");
+            repository.save(exhibit);
+        }
+
         if (QrCodeUtils.createAndWriteQR(TEST_BUCCANEER_UUID, "buccaneer.png")) {
-            String description = "The Buccaneer was originally designed as a Maritime Strike aircraft for the Royal Navy, under the requirement designation NA.39.<br/>" +
+            String description = "The Buccaneer was originally designed as a Maritime Strike aircraft for the Royal Navy, under the requirement designation NA.39. " +
                     "Later adopted by the Royal Air Force, the Buccaneer had a successful career, culminating with participation in the Gulf War.";
             Exhibit exhibit = new Exhibit(TEST_BUCCANEER_UUID, "Blackburn Buccaneer S.2B", "XV352", description, "buccaneer.jpg", "buccaneer.wav");
             repository.save(exhibit);
