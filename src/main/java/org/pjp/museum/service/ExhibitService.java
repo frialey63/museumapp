@@ -1,10 +1,13 @@
 package org.pjp.museum.service;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import org.pjp.museum.model.Exhibit;
 import org.pjp.museum.repository.ExhibitRepository;
+import org.pjp.museum.service.bean.TailNumber;
 import org.pjp.museum.ui.util.QrCodeUtils;
 import org.springframework.stereotype.Service;
 
@@ -28,6 +31,10 @@ public class ExhibitService {
 
     public Optional<Exhibit> getExhibit(String id) {
         return repository.findById(id);
+    }
+
+    public List<TailNumber> getTailNumbers() {
+        return repository.findAll().stream().filter(Exhibit::hasTailNumber).map(e -> new TailNumber(e.getTailNumber(), e.getUuid())).collect(Collectors.toList());
     }
 
     public void testData() {

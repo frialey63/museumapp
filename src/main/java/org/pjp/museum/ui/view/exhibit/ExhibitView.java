@@ -6,7 +6,9 @@ import org.pjp.museum.service.ExhibitService;
 import org.pjp.museum.ui.component.CompactVerticalLayout;
 import org.pjp.museum.ui.util.AudioUtils;
 import org.pjp.museum.ui.util.ImageUtils;
+import org.pjp.museum.ui.util.SettingsUtil;
 import org.pjp.museum.ui.view.MainLayout;
+import org.pjp.museum.ui.view.number.TailNumberView;
 import org.pjp.museum.ui.view.scan.ScannerView;
 import org.vaadin.addon.audio.server.AudioPlayer;
 import org.vaadin.addon.audio.server.Stream;
@@ -51,8 +53,12 @@ public class ExhibitView extends VerticalLayout implements AfterNavigationObserv
         super();
         this.service = service;
 
-        Button nextButton = new Button("Scan Next Exhibit", e -> {
-            UI.getCurrent().navigate(ScannerView.class);
+        Button nextButton = new Button("Goto Next Exhibit", e -> {
+            if (SettingsUtil.isScanning()) {
+                UI.getCurrent().navigate(ScannerView.class);
+            } else {
+                UI.getCurrent().navigate(TailNumberView.class);
+            }
         });
 
         VerticalLayout vl = new CompactVerticalLayout(title, image, description, playerControls, nextButton);

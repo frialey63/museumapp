@@ -5,7 +5,9 @@ import org.pjp.museum.ui.component.appnav.AppNav;
 import org.pjp.museum.ui.component.appnav.AppNavItem;
 import org.pjp.museum.ui.view.about.AboutView;
 import org.pjp.museum.ui.view.intro.IntroductionView;
+import org.pjp.museum.ui.view.number.TailNumberView;
 import org.pjp.museum.ui.view.scan.ScannerView;
+import org.pjp.museum.ui.view.settings.SettingsView;
 
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.applayout.AppLayout;
@@ -62,6 +64,8 @@ public class MainLayout extends AppLayout {
 
         nav.addItem(new AppNavItem("Introduction", IntroductionView.class, "la la-home"));
         nav.addItem(new AppNavItem("Scan QR Code", ScannerView.class, "la la-qrcode"));
+        nav.addItem(new AppNavItem("Enter Tail Number", TailNumberView.class, "la la-keyboard-o"));
+        nav.addItem(new AppNavItem("Settings", SettingsView.class, "la la-cog"));
         nav.addItem(new AppNavItem("About", AboutView.class, "la la-info"));
 
         return nav;

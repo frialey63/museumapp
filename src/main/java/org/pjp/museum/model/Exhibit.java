@@ -1,6 +1,7 @@
 package org.pjp.museum.model;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -14,7 +15,7 @@ public class Exhibit {
     @NotBlank
     private String name;
 
-    @NotBlank
+    @NotNull
     private String tailNumber;
 
     @NotBlank
@@ -62,6 +63,10 @@ public class Exhibit {
 
     public void setTailNumber(String tailNumber) {
         this.tailNumber = tailNumber;
+    }
+
+    public boolean hasTailNumber() {
+        return !tailNumber.isBlank();
     }
 
     public String getDescription() {
