@@ -32,7 +32,7 @@ public class ExhibitService {
         repository.deleteAll();
 
         if (QrCodeUtils.createAndWriteQR(TEST_BUCCANEER_UUID, "buccaneer.png")) {
-            String description = "The Buccaneer was originally designed as a Maritime Strike aircraft for the Royal Navy, under the requirement designation NA.39.<br>" +
+            String description = "The Buccaneer was originally designed as a Maritime Strike aircraft for the Royal Navy, under the requirement designation NA.39.<br/>" +
                     "Later adopted by the Royal Air Force, the Buccaneer had a successful career, culminating with participation in the Gulf War.";
             Exhibit exhibit = new Exhibit(TEST_BUCCANEER_UUID, "Blackburn Buccaneer S.2B", "XV352", description, "buccaneer.jpg", "buccaneer.wav");
             repository.save(exhibit);

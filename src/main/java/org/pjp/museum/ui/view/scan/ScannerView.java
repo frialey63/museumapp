@@ -23,7 +23,11 @@ public class ScannerView extends VerticalLayout {
 
     private static final boolean TEST_MODE = true;
 
+    // TODO reversionary mode if no access to the local camera...
+
     public ScannerView() {
+        super();
+
         if (TEST_MODE) {
             configureTestMode();
         } else {

@@ -8,6 +8,7 @@ import org.slf4j.LoggerFactory;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.html.H2;
+import com.vaadin.flow.component.html.Paragraph;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.AfterNavigationEvent;
 import com.vaadin.flow.router.AfterNavigationObserver;
@@ -26,22 +27,33 @@ public class IntroductionView extends VerticalLayout implements AfterNavigationO
 
     private static final Logger LOGGER = LoggerFactory.getLogger(IntroductionView.class);
 
+    private final String descriptionStr = """
+                Many of the exhibits have a QR Code. Scan the code using this app to access an audio description of the exhibit. If the scanner does not work then the exhibit can be identified by using a manually entered code number.
+                <br><br/>
+                For the best experience we recommend using headphones otherwise we respectfully request that the volume on your phone handset is minimised to avoid disturbance to other visitors.
+            """;
+
     public IntroductionView() {
         super();
 
         setSpacing(false);
 
-        Button start = new Button("Start Tour", e -> {
+        H2 title = new H2("Welcome to the Museum App");
+
+        Paragraph description = new Paragraph();
+        description.getElement().setProperty("innerHTML", descriptionStr);
+
+
+        Button startButton = new Button("Start Tour", e -> {
             UI.getCurrent().navigate(ScannerView.class);
         });
 
-        add(new H2("TODO"), start);
+        setHorizontalComponentAlignment(Alignment.CENTER, title, startButton);
+        setHorizontalComponentAlignment(Alignment.START, description);
+
+        add(title, description, startButton);
 
         setSizeFull();
-        setJustifyContentMode(JustifyContentMode.CENTER);
-        setDefaultHorizontalComponentAlignment(Alignment.CENTER);
-
-        getStyle().set("text-align", "center");
     }
 
     @Override

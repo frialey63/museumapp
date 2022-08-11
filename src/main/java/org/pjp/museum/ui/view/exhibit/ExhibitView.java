@@ -51,13 +51,13 @@ public class ExhibitView extends VerticalLayout implements AfterNavigationObserv
         super();
         this.service = service;
 
-        Button next = new Button("Scan Next Exhibit", e -> {
+        Button nextButton = new Button("Scan Next Exhibit", e -> {
             UI.getCurrent().navigate(ScannerView.class);
         });
 
-        VerticalLayout vl = new CompactVerticalLayout(title, image, description, playerControls, next);
+        VerticalLayout vl = new CompactVerticalLayout(title, image, description, playerControls, nextButton);
 
-        vl.setHorizontalComponentAlignment(Alignment.CENTER, title, image, playerControls, next);
+        vl.setHorizontalComponentAlignment(Alignment.CENTER, title, image, playerControls, nextButton);
         vl.setHorizontalComponentAlignment(Alignment.START, description);
 
         Scroller scroller = new Scroller();
@@ -72,7 +72,7 @@ public class ExhibitView extends VerticalLayout implements AfterNavigationObserv
     @Override
     public void afterNavigation(AfterNavigationEvent event) {
         service.getExhibit(uuid).ifPresent(exhibit -> {
-            title.getElement().setProperty("innerHTML", String.format("%s<br>%s", exhibit.getName(), exhibit.getTailNumber()));
+            title.getElement().setProperty("innerHTML", String.format("%s<br/>%s", exhibit.getName(), exhibit.getTailNumber()));
             title.getStyle().set("text-align", "center");
 
             description.getElement().setProperty("innerHTML", exhibit.getDescription());
