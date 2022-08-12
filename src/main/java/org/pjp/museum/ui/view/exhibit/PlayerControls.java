@@ -90,7 +90,7 @@ public class PlayerControls extends PolymerTemplate<PlayerControls.PlayerControl
             //player.skip(-5000);
             int pos = Math.max(0, player.getPosition() - 5000);
             player.setPosition(pos);
-            updateSlider(player, pos);
+            updateSlider(pos);
         });
         back5Button.setIcon(VaadinIcon.FAST_BACKWARD.create());
 
@@ -122,7 +122,7 @@ public class PlayerControls extends PolymerTemplate<PlayerControls.PlayerControl
             //player.skip(5000);
             int pos = Math.min(player.getDuration(), player.getPosition() + 5000);
             player.setPosition(pos);
-            updateSlider(player, pos);
+            updateSlider(pos);
         });
         forward5Button.setIcon(VaadinIcon.FAST_FORWARD.create());
     }
@@ -185,10 +185,10 @@ public class PlayerControls extends PolymerTemplate<PlayerControls.PlayerControl
             }
 
             @Override
-            public void playbackPositionChanged(final int new_position_millis) {
+            public void playbackPositionChanged(final int newPositionMillis) {
                 ui.access(() -> {
                     // TODO for proper slider setting, we need to know the position in millis and total duration of audio
-                    updateSlider(player, new_position_millis);
+                    updateSlider(newPositionMillis);
                 });
             }
         });
@@ -204,14 +204,14 @@ public class PlayerControls extends PolymerTemplate<PlayerControls.PlayerControl
         positionSlider.getSlider().setValue(0.0);
     }
 
-    private void updateSlider(AudioPlayer player, final int new_position_millis) {
+    private void updateSlider(int newPositionMillis) {
         int duration = player.getDuration();
         int pos = player.getPosition();
 
         positionSlider.getSlider().setMaxValue(duration);
         positionSlider.getSlider().setMinValue(0.0);
         // set value without trigger value change event
-        positionSlider.getSlider().setValue((double) new_position_millis);
+        positionSlider.getSlider().setValue((double) newPositionMillis);
 
         getModel().setTime(player.getPositionString() + " / " + player.getDurationString());
     }
