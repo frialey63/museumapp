@@ -21,11 +21,11 @@ import com.vaadin.flow.theme.Theme;
  * and some desktop browsers.
  *
  */
-@SpringBootApplication
 @Theme(value = "museumapp")
 @PWA(name = "Museum App", shortName = "Museum App", offlineResources = {})
 @NpmPackage(value = "line-awesome", version = "1.3.0")
 @NpmPackage(value = "@vaadin-component-factory/vcf-nav", version = "1.0.6")
+@SpringBootApplication
 public class MuseumApp extends SpringBootServletInitializer implements AppShellConfigurator, ApplicationRunner {
 
     private static final long serialVersionUID = -6201010168785334238L;

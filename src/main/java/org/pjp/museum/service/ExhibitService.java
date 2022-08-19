@@ -37,6 +37,19 @@ public class ExhibitService {
         return repository.findAll().stream().filter(Exhibit::hasTailNumber).map(e -> new TailNumber(e.getTailNumber(), e.getUuid())).sorted().collect(Collectors.toList());
     }
 
+    public String saveExhibit(String qrCode, Exhibit exhibit) {
+        String uuid = UUID.randomUUID().toString();
+
+        if (QrCodeUtils.createAndWriteQR(uuid, qrCode)) {
+            exhibit.setUuid(uuid);
+            repository.save(exhibit);
+        } else {
+            uuid = null;
+        }
+
+        return uuid;
+    }
+
     public void testData() {
         repository.deleteAll();
 

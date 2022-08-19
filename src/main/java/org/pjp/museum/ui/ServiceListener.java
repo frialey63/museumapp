@@ -21,7 +21,7 @@ public class ServiceListener implements VaadinServiceInitListener {
 
         event.getSource().addSessionInitListener(initEvent -> {
             LOGGER.debug("A new Session has been initialized!");
-            SettingsUtil.setMode(SettingsUtil.QR_CODE);
+            SettingsUtil.setMode(initEvent.getSession(), SettingsUtil.QR_CODE);
         });
 
     }

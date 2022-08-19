@@ -3,6 +3,7 @@ package org.pjp.museum.ui.view.settings;
 import org.pjp.museum.ui.util.SettingsUtil;
 import org.pjp.museum.ui.view.MainLayout;
 
+import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.radiobutton.RadioButtonGroup;
 import com.vaadin.flow.router.PageTitle;
@@ -30,7 +31,7 @@ public class SettingsView extends VerticalLayout {
         add(radioGroup);
 
         radioGroup.addValueChangeListener(l -> {
-            SettingsUtil.setMode(l.getValue());
+            SettingsUtil.setMode(UI.getCurrent().getSession(), l.getValue());
         });
 
         setSizeFull();

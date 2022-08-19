@@ -1,6 +1,7 @@
 package org.pjp.museum.ui.util;
 
 import com.vaadin.flow.component.UI;
+import com.vaadin.flow.server.VaadinSession;
 
 public final class SettingsUtil {
 
@@ -18,8 +19,8 @@ public final class SettingsUtil {
         return QR_CODE.equals(value);
     }
 
-    public static void setMode(String mode) {
-        UI.getCurrent().getSession().setAttribute(EXHIBIT_IDENTIFICATION, mode);
+    public static void setMode(VaadinSession session, String mode) {
+        session.setAttribute(EXHIBIT_IDENTIFICATION, mode);
     }
 
     private SettingsUtil() {
