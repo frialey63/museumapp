@@ -9,7 +9,6 @@ import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVRecord;
 import org.pjp.museum.model.Exhibit;
 import org.pjp.museum.service.ExhibitService;
-import org.pjp.museum.ui.view.MainLayout;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -18,10 +17,8 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.upload.Upload;
 import com.vaadin.flow.component.upload.receivers.MultiFileMemoryBuffer;
 import com.vaadin.flow.router.PageTitle;
-import com.vaadin.flow.router.Route;
 
 @PageTitle("Import CSV")
-@Route(value = "importcsv", layout = MainLayout.class)
 public class ImportCsvView extends VerticalLayout {
 
     private static final long serialVersionUID = 3386437553156944523L;
