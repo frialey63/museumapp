@@ -2,25 +2,25 @@ package org.pjp.museum.service;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 import java.util.stream.Collectors;
 
 import org.pjp.museum.model.Exhibit;
 import org.pjp.museum.repository.ExhibitRepository;
 import org.pjp.museum.service.bean.TailNumber;
 import org.pjp.museum.ui.util.QrCodeUtils;
+import org.pjp.museum.util.UuidStr;
 import org.springframework.stereotype.Service;
 
 @Service
 public class ExhibitService {
 
-    public static final String MUSEUM_UUID = UUID.randomUUID().toString();
+    public static final String MUSEUM_UUID = UuidStr.random();
 
-    public static final String TEST_BUCCANEER_UUID = UUID.randomUUID().toString();
+    public static final String TEST_BUCCANEER_UUID = UuidStr.random();
 
-    public static final String TEST_CANBERRA_UUID = UUID.randomUUID().toString();
+    public static final String TEST_CANBERRA_UUID = UuidStr.random();
 
-    public static final String TEST_HUNTER_UUID = UUID.randomUUID().toString();
+    public static final String TEST_HUNTER_UUID = UuidStr.random();
 
     private final ExhibitRepository repository;
 
@@ -38,7 +38,7 @@ public class ExhibitService {
     }
 
     public String saveExhibit(String qrCode, Exhibit exhibit) {
-        String uuid = UUID.randomUUID().toString();
+        String uuid = UuidStr.random();
 
         if (QrCodeUtils.createAndWriteQR(uuid, qrCode)) {
             exhibit.setUuid(uuid);
