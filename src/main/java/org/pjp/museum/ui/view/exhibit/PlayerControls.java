@@ -1,14 +1,9 @@
 package org.pjp.museum.ui.view.exhibit;
 
-import java.nio.ByteBuffer;
-
 import org.pjp.museum.ui.component.slider.SliderWithCaption;
 import org.vaadin.addon.audio.server.AudioPlayer;
-import org.vaadin.addon.audio.server.Stream;
-import org.vaadin.addon.audio.server.encoders.WaveEncoder;
 import org.vaadin.addon.audio.server.state.PlaybackState;
 import org.vaadin.addon.audio.server.state.StateChangeCallback;
-import org.vaadin.addon.audio.shared.PCMFormat;
 
 import com.vaadin.flow.component.HasComponents;
 import com.vaadin.flow.component.HasSize;
