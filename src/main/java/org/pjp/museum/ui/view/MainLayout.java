@@ -1,6 +1,7 @@
 package org.pjp.museum.ui.view;
 
 
+import org.pjp.museum.ui.collab.Broadcaster;
 import org.pjp.museum.ui.component.appnav.AppNav;
 import org.pjp.museum.ui.component.appnav.AppNavItem;
 import org.pjp.museum.ui.view.about.AboutView;
@@ -8,8 +9,13 @@ import org.pjp.museum.ui.view.intro.IntroductionView;
 import org.pjp.museum.ui.view.number.TailNumberView;
 import org.pjp.museum.ui.view.scan.ScannerView;
 import org.pjp.museum.ui.view.settings.SettingsView;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import com.vaadin.flow.component.AttachEvent;
 import com.vaadin.flow.component.Component;
+import com.vaadin.flow.component.DetachEvent;
+import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.applayout.AppLayout;
 import com.vaadin.flow.component.applayout.DrawerToggle;
 import com.vaadin.flow.component.button.ButtonVariant;
@@ -17,7 +23,10 @@ import com.vaadin.flow.component.html.Footer;
 import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.html.H2;
 import com.vaadin.flow.component.html.Header;
+import com.vaadin.flow.component.notification.Notification;
+import com.vaadin.flow.component.notification.NotificationVariant;
 import com.vaadin.flow.router.PageTitle;
+import com.vaadin.flow.shared.Registration;
 
 /**
  * The main view is a top-level placeholder for other views.
@@ -26,12 +35,43 @@ public class MainLayout extends AppLayout {
 
     private static final long serialVersionUID = 6777899833487418585L;
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(MainLayout.class);
+
     private H1 viewTitle;
+
+    private Registration broadcasterRegistration;
 
     public MainLayout() {
         setPrimarySection(Section.DRAWER);
         addToNavbar(true, createHeaderContent());
         addToDrawer(createDrawerContent());
+    }
+
+    @Override
+    protected void onAttach(AttachEvent attachEvent) {
+        UI ui = attachEvent.getUI();
+
+        broadcasterRegistration = Broadcaster.register(newMessage -> {
+            ui.access(() -> {
+                LOGGER.debug("received message {}", newMessage);
+
+                switch (newMessage.messageType()) {
+                case CLOSING_TIME:
+                    String msg = String.format("Museum will be closing in %s minutes", newMessage.minutes());
+                    Notification.show(msg).addThemeVariants(NotificationVariant.LUMO_PRIMARY);
+                    break;
+                case CLOSED:
+                    Notification.show("The museum is closed, please make your way to the shop and exit.").addThemeVariants(NotificationVariant.LUMO_ERROR);
+                    break;
+                }
+            });
+        });
+    }
+
+    @Override
+    protected void onDetach(DetachEvent detachEvent) {
+        broadcasterRegistration.remove();
+        broadcasterRegistration = null;
     }
 
     private Component createHeaderContent() {
