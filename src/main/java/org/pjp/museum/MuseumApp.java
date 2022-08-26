@@ -1,9 +1,7 @@
 package org.pjp.museum;
 
 import org.pjp.museum.service.ExhibitService;
-import org.pjp.museum.ui.collab.Broadcaster;
-import org.pjp.museum.ui.collab.MuseumMessage;
-import org.pjp.museum.ui.collab.MuseumMessage.MessageType;
+import org.pjp.museum.service.MuseumService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.ApplicationArguments;
@@ -11,7 +9,6 @@ import org.springframework.boot.ApplicationRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
-import org.springframework.data.mongodb.repository.config.EnableMongoRepositories;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 
@@ -34,7 +31,6 @@ import com.vaadin.flow.theme.Theme;
 @NpmPackage(value = "line-awesome", version = "1.3.0")
 @NpmPackage(value = "@vaadin-component-factory/vcf-nav", version = "1.0.6")
 @EnableScheduling
-@EnableMongoRepositories(basePackages = "org.pjp.museum.repository")
 @SpringBootApplication
 public class MuseumApp extends SpringBootServletInitializer implements AppShellConfigurator, ApplicationRunner {
 
@@ -46,6 +42,9 @@ public class MuseumApp extends SpringBootServletInitializer implements AppShellC
     @Autowired
     private ExhibitService exhibitService;
 
+    @Autowired
+    private MuseumService museumService;
+
     public static void main(String[] args) {
         SpringApplication.run(MuseumApp.class, args);
     }
@@ -53,13 +52,14 @@ public class MuseumApp extends SpringBootServletInitializer implements AppShellC
     @Override
     public void run(ApplicationArguments args) throws Exception {
         if ("docker".equals(activeProfile)) {
+            museumService.testData();
             exhibitService.testData();
         }
     }
 
-    @Scheduled(cron = "0 * * * * *")	// TODO for testing only
+    @Scheduled(cron = "0 * * * * *")
     public void checkRosta() {
-        Broadcaster.broadcast(new MuseumMessage(MessageType.CLOSING_TIME, 30));
+        museumService.checkForAndNotifyClosingTime();
     }
 
 }

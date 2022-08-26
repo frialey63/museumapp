@@ -25,6 +25,7 @@ import com.vaadin.flow.component.html.H2;
 import com.vaadin.flow.component.html.Header;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.notification.NotificationVariant;
+import com.vaadin.flow.component.notification.Notification.Position;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.shared.Registration;
 
@@ -58,10 +59,10 @@ public class MainLayout extends AppLayout {
                 switch (newMessage.messageType()) {
                 case CLOSING_TIME:
                     String msg = String.format("Museum will be closing in %s minutes", newMessage.minutes());
-                    Notification.show(msg).addThemeVariants(NotificationVariant.LUMO_PRIMARY);
+                    Notification.show(msg, 30, Position.BOTTOM_START).addThemeVariants(NotificationVariant.LUMO_PRIMARY);
                     break;
                 case CLOSED:
-                    Notification.show("The museum is closed, please make your way to the shop and exit.").addThemeVariants(NotificationVariant.LUMO_ERROR);
+                    Notification.show("The museum is closed, please make your way to the shop and exit.", 0, Position.BOTTOM_START).addThemeVariants(NotificationVariant.LUMO_ERROR);
                     break;
                 }
             });
