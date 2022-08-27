@@ -6,6 +6,7 @@ import com.vaadin.flow.component.ClientCallable;
 import com.vaadin.flow.component.dependency.JavaScript;
 import com.vaadin.flow.component.html.Div;
 
+//@JavaScript("http://localhost/html5-qrcode/html5-qrcode.min.js")
 @JavaScript("https://unpkg.com/html5-qrcode")
 public class Html5Qrcode extends Div {
 
