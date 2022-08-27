@@ -27,6 +27,14 @@ public class ScannerView extends VerticalLayout {
 
             UI.getCurrent().navigate(ExhibitView.class, sc.getUuid());
         });
+
+        component.setWidthFull();
+        component.setHeightFull();
+
+        setHorizontalComponentAlignment(Alignment.CENTER, component);
+
         add(component);
+
+        setSizeFull();
     }
 }
