@@ -2,6 +2,9 @@ package org.pjp.museum;
 
 import org.pjp.museum.service.ExhibitService;
 import org.pjp.museum.service.MuseumService;
+import org.pjp.museum.ui.util.QrCodeUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.ApplicationArguments;
@@ -36,8 +39,15 @@ public class MuseumApp extends SpringBootServletInitializer implements AppShellC
 
     private static final long serialVersionUID = -6201010168785334238L;
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(MuseumApp.class);
+
+    private static final String APP_DOWNLOAD_URL = "app-download-url.jpg";
+
     @Value("${spring.profiles.active:default}")
     private String activeProfile;
+
+    @Value("${app.download.url}")
+    private String appDownloadUrl;
 
     @Autowired
     private ExhibitService exhibitService;
@@ -55,6 +65,9 @@ public class MuseumApp extends SpringBootServletInitializer implements AppShellC
             museumService.testData();
             exhibitService.testData();
         }
+
+        LOGGER.info("creating QR code for app download URL {} and writing to file {}", appDownloadUrl, APP_DOWNLOAD_URL);
+        QrCodeUtils.createAndWriteQR(appDownloadUrl, APP_DOWNLOAD_URL);
     }
 
     @Scheduled(cron = "0 * * * * *")

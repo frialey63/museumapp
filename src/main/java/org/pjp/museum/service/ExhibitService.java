@@ -59,20 +59,20 @@ public class ExhibitService {
             repository.save(exhibit);
         }
 
-        if (QrCodeUtils.createAndWriteQR(TEST_BUCCANEER_UUID, "buccaneer.png")) {
+        if (QrCodeUtils.createAndWriteQR(TEST_BUCCANEER_UUID, "buccaneer-qrcode.jpg")) {
             String description = "The Buccaneer was originally designed as a Maritime Strike aircraft for the Royal Navy, under the requirement designation NA.39. " +
                     "Later adopted by the Royal Air Force, the Buccaneer had a successful career, culminating with participation in the Gulf War.";
             Exhibit exhibit = new Exhibit(TEST_BUCCANEER_UUID, 0, "Blackburn Buccaneer S.2B", "XV352", description, "buccaneer.jpg", "buccaneer.wav");
             repository.save(exhibit);
         }
 
-        if (QrCodeUtils.createAndWriteQR(TEST_CANBERRA_UUID, "canberra.png")) {
+        if (QrCodeUtils.createAndWriteQR(TEST_CANBERRA_UUID, "canberra-qrcode.jpg")) {
             String description = "English Electric Canberra WT205 was built in 1955 as part of Contract 6/ACFT/6448 as a B6 bomber, by Short Bros & Harland in Belfast.  Fifty aircraft were built in this batch.";
             Exhibit exhibit = new Exhibit(TEST_CANBERRA_UUID, 0, "English Electric Canberra B6", "WT205", description, "canberra.jpg", "canberra.wav");
             repository.save(exhibit);
         }
 
-        if (QrCodeUtils.createAndWriteQR(TEST_HUNTER_UUID, "hunter.png")) {
+        if (QrCodeUtils.createAndWriteQR(TEST_HUNTER_UUID, "hunter-qrcode.jpg")) {
             String description = "XG226 was part of a third production batch of 110 F.Mk.6A Hunters constructed by Hawker Siddeley at Kingston-upon-Thames, and first took to the air on 28th September 1956, piloted by Hawker test pilot Frank Bullen.";
             Exhibit exhibit = new Exhibit(TEST_HUNTER_UUID, 0, "Hawker Siddeley Hunter F.Mk.6A ", "XG226", description, "hunter.jpg", "hunter.wav");
             repository.save(exhibit);

@@ -32,6 +32,8 @@ public class IntroductionView extends VerticalLayout implements AfterNavigationO
                 Many of the exhibits in this museum have a QR Code. Scan the code using this app to access an audio description of the exhibit. If the scanner does not work then the exhibit can be identified by using a manually selected (tail) number.
                 <br/><br/>
                 <em>For the best experience we recommend using headphones otherwise we respectfully request that the volume on your phone handset is minimised to avoid disturbance to other visitors.</em>
+                <br/><br/>
+                <em>Note the screensaver may cause the scanner to fail. In this case it will be necessary to restart the app.</em>
             """;
 
     public IntroductionView() {

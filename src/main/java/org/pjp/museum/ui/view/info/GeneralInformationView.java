@@ -36,7 +36,7 @@ public class GeneralInformationView extends VerticalLayout implements AfterNavig
         {
             H4 heading = new H4("Toilets");
 
-            Paragraph paragraph = new Paragraph("Toilets are located behind T-133 in the middle hangar (signed). From the entrance follow the corridor out of the shop, turn right at the first hangar and then right again at the second hangar.");
+            Paragraph paragraph = new Paragraph("Toilets are located behind the T-133 in the middle hangar. From the entrance follow the corridor out of the shop, turn right at the first hangar and then right again at the second hangar.");
 
             add(heading, paragraph);
         }
@@ -52,13 +52,13 @@ public class GeneralInformationView extends VerticalLayout implements AfterNavig
         {
             H4 heading = new H4("The Museum Shop");
 
-            Paragraph paragraph = new Paragraph("The museum shop at the entrance has a wide selection of souvenirs, books, models and toys. Don't forget to reserve some time at the end of your visit to explore.");
+            Paragraph paragraph = new Paragraph("The museum shop at the entrance has a wide selection of souvenirs, books, models and toys. Don't forget to reserve some time at the end of your visit to peruse.");
 
             add(heading, paragraph);
         }
 
         {
-            H4 heading = new H4("The NAAFI Cafe");
+            H4 heading = new H4("The NAAFI Café");
 
             Paragraph paragraph = new Paragraph("The NAAFI Café serves homemade family favourite light bites, such as breakfast butties and delicious range of homemade cakes and afternoon teas.");
 
