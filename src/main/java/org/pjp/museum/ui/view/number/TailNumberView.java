@@ -8,6 +8,7 @@ import org.pjp.museum.ui.view.exhibit.ExhibitView;
 import com.vaadin.flow.component.AbstractField.ComponentValueChangeEvent;
 import com.vaadin.flow.component.HasValue.ValueChangeListener;
 import com.vaadin.flow.component.UI;
+import com.vaadin.flow.component.html.Paragraph;
 import com.vaadin.flow.component.listbox.ListBox;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.AfterNavigationEvent;
@@ -29,12 +30,15 @@ public class TailNumberView extends VerticalLayout implements AfterNavigationObs
         super();
         this.service = service;
 
-        listBox.addValueChangeListener(this);
+        Paragraph helpText = new Paragraph("In case the QR Code scanner is not working, it is possible to load the exhibit information by selecting the relevant aircraft tail number from the list below. (Use the Settings page to set this mode as default.)");
 
+        setHorizontalComponentAlignment(Alignment.START, helpText);
+        add(helpText);
+
+        listBox.addValueChangeListener(this);
         listBox.setHeightFull();
 
         setHorizontalComponentAlignment(Alignment.CENTER, listBox);
-
         add(listBox);
 
         setSizeFull();

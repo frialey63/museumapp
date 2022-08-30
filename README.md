@@ -7,22 +7,14 @@ It contains all the necessary configuration and some placeholder files to get yo
 
 Audio announcements, PA
 
-Links to web site, Facebook and eStore
+Links to web site for museum and cafe
 
 General Information for Visitor
 - Opening hours
 - Shop
 - Cafe
 - Toilets
-
-Local Information
-- Other attractions in the area
-- hotels
-- pubs
-- petrol station
-- supermarket
-
-Register email for newsletter
+- Map
 
 Survey
 - Visit feedback

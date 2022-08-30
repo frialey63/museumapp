@@ -20,17 +20,27 @@ public class SettingsView extends VerticalLayout {
 
         setSpacing(false);
 
-        RadioButtonGroup<String> radioGroup = new RadioButtonGroup<>();
-        radioGroup.setLabel("Exhibit Identification Mode");
-        radioGroup.setItems(SettingsUtil.QR_CODE, SettingsUtil.NUMBER);
-        radioGroup.setValue(SettingsUtil.getMode());
+        RadioButtonGroup<String> idMode = new RadioButtonGroup<>();
+        idMode.setLabel("Exhibit Identification Mode");
+        idMode.setItems(SettingsUtil.QR_CODE, SettingsUtil.NUMBER);
+        idMode.setValue(SettingsUtil.getMode());
 
+        RadioButtonGroup<String> deafAccess = new RadioButtonGroup<>();
+        deafAccess.setEnabled(false);
+        deafAccess.setLabel("For the Hard of Hearing");
+        deafAccess.setItems("Audio", "Text");
+        deafAccess.setValue("Audio");
 
-        setHorizontalComponentAlignment(Alignment.START, radioGroup);
+        RadioButtonGroup<String> language = new RadioButtonGroup<>();
+        language.setEnabled(false);
+        language.setLabel("Language");
+        language.setItems("English", "French", "German");
+        language.setValue("English");
 
-        add(radioGroup);
+        setHorizontalComponentAlignment(Alignment.START, idMode, deafAccess, language);
+        add(idMode, deafAccess, language);
 
-        radioGroup.addValueChangeListener(l -> {
+        idMode.addValueChangeListener(l -> {
             SettingsUtil.setMode(UI.getCurrent().getSession(), l.getValue());
         });
 

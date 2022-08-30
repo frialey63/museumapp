@@ -5,10 +5,13 @@ import org.pjp.museum.ui.collab.Broadcaster;
 import org.pjp.museum.ui.component.appnav.AppNav;
 import org.pjp.museum.ui.component.appnav.AppNavItem;
 import org.pjp.museum.ui.view.about.AboutView;
+import org.pjp.museum.ui.view.info.GeneralInformationView;
 import org.pjp.museum.ui.view.intro.IntroductionView;
+import org.pjp.museum.ui.view.kids.KidsStuffView;
 import org.pjp.museum.ui.view.number.TailNumberView;
 import org.pjp.museum.ui.view.scan.ScannerView;
 import org.pjp.museum.ui.view.settings.SettingsView;
+import org.pjp.museum.ui.view.survey.VisitorSurveyView;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -24,8 +27,8 @@ import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.html.H2;
 import com.vaadin.flow.component.html.Header;
 import com.vaadin.flow.component.notification.Notification;
-import com.vaadin.flow.component.notification.NotificationVariant;
 import com.vaadin.flow.component.notification.Notification.Position;
+import com.vaadin.flow.component.notification.NotificationVariant;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.shared.Registration;
 
@@ -106,6 +109,9 @@ public class MainLayout extends AppLayout {
         nav.addItem(new AppNavItem("Introduction", IntroductionView.class, "la la-home"));
         nav.addItem(new AppNavItem("Scan QR Code", ScannerView.class, "la la-qrcode"));
         nav.addItem(new AppNavItem("Enter Tail Number", TailNumberView.class, "la la-keyboard-o"));
+        nav.addItem(new AppNavItem("Kids Stuff", KidsStuffView.class, "la la-gamepad"));
+        nav.addItem(new AppNavItem("General Information", GeneralInformationView.class, "la la-info"));
+        nav.addItem(new AppNavItem("Visitor Survey", VisitorSurveyView.class, "la la-question-circle-o"));
         nav.addItem(new AppNavItem("Settings", SettingsView.class, "la la-cog"));
         nav.addItem(new AppNavItem("About", AboutView.class, "la la-info"));
 

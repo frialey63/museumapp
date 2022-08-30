@@ -24,6 +24,14 @@ public class MuseumService {
         this.repository = repository;
     }
 
+    public String getClosingTime() {
+        final StringBuffer result = new StringBuffer();
+
+        repository.findByName(Setting.CLOSING_TIME).ifPresent(setting -> result.append(setting.getValue()));
+
+        return result.toString();
+    }
+
     public void checkForAndNotifyClosingTime() {
         LocalTime now = LocalTime.now();
 
