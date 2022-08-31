@@ -30,22 +30,12 @@ public class AboutView extends VerticalLayout implements AfterNavigationObserver
     @Value("${about.museum.url}")
     private String aboutMuseumUrl;
 
-    @Value("${about.cafe.image}")
-    private String aboutCafeImage;
-
-    @Value("${about.cafe.url}")
-    private String aboutCafeUrl;
-
     @Value("${application.version}")
     private String applicationVersion;
 
     private final Image museumImage = new Image("images/empty-plant.png", "logo");
 
     private final Anchor museumAnchor = new Anchor("http://google.co.uk/", museumImage);
-
-    private final Image cafeImage = new Image("images/empty-plant.png", "logo");
-
-    private final Anchor cafeAnchor = new Anchor("http://google.co.uk/", cafeImage);
 
     private final H2 heading = new H2();
 
@@ -56,13 +46,7 @@ public class AboutView extends VerticalLayout implements AfterNavigationObserver
 
         setSpacing(false);
 
-        VerticalLayout vl1 = new VerticalLayout(museumAnchor);
-        vl1.setDefaultHorizontalComponentAlignment(Alignment.CENTER);
-
-        VerticalLayout vl2 = new VerticalLayout(cafeAnchor);
-        vl2.setDefaultHorizontalComponentAlignment(Alignment.CENTER);
-
-        add(vl1, vl2, heading, appParagraph);
+        add(museumAnchor, heading, appParagraph);
 
         setSizeFull();
         setJustifyContentMode(JustifyContentMode.CENTER);
@@ -76,10 +60,6 @@ public class AboutView extends VerticalLayout implements AfterNavigationObserver
         museumImage.setSrc(aboutMuseumImage);
         museumImage.setWidth("200px");
         museumAnchor.setHref(aboutMuseumUrl);
-
-        cafeImage.setSrc(aboutCafeImage);
-        cafeImage.setWidth("200px");
-        cafeAnchor.setHref(aboutCafeUrl);
 
         heading.setText(aboutHeading);
 

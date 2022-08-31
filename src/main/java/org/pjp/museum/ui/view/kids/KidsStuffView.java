@@ -2,9 +2,9 @@ package org.pjp.museum.ui.view.kids;
 
 import org.pjp.museum.ui.view.MainLayout;
 
+import com.vaadin.flow.component.html.H2;
 import com.vaadin.flow.component.html.H4;
-import com.vaadin.flow.component.html.H6;
-import com.vaadin.flow.component.html.Paragraph;
+import com.vaadin.flow.component.html.Image;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.AfterNavigationEvent;
 import com.vaadin.flow.router.AfterNavigationObserver;
@@ -23,41 +23,31 @@ public class KidsStuffView extends VerticalLayout implements AfterNavigationObse
         setSpacing(false);
 
         {
-            add(new H4("The Youngest Ones"));
+            add(new H2("All Year"));
 
-            add(new H6("Drawing Table"));
-            add(new Paragraph("todo"));
+            add(new H4("Manston Railway"));
+            add(new Image("images/manston_railway_400.jpg", "Manston Railway"));
 
-            add(new H6("Teddy Hunt"));
-            add(new Paragraph("todo"));
-
-            add(new H6("Disney Flight Simulator"));
-            add(new Paragraph("todo"));
+            add(new H4("Disney Flight Simulator"));
+            add(new Image("images/disney_planes_400.jpg", "Disney Planes"));
         }
 
         {
-            add(new H4("For Older Ones"));
+            add(new H2("School Holiday Extras"));
 
-            add(new H6("Code Breakers"));
-            add(new Paragraph("todo"));
+            add(new H4("Teddy Hunt"));
+            add(new Image("images/teddy_hunt_400.jpg", "Teddy Hunt"));
 
-            add(new H6("Manston Railway"));
-            add(new Paragraph("todo"));
-        }
+            add(new H4("Drawing Table"));
+            add(new Image("images/drawing_table_400.jpg", "Drawing Table"));
 
-        {
-            add(new H4("We're All Kids"));
-
-            add(new H6("Open Cockpits"));
-            add(new Paragraph("todo"));
-
-            add(new H6("Tank Rides"));
-            add(new Paragraph("todo"));
+            add(new H4("Code Breakers"));
+            add(new Image("images/code_breakers_400.jpg", "Code Breakers"));
         }
 
         setSizeFull();
         setJustifyContentMode(JustifyContentMode.START);
-        setDefaultHorizontalComponentAlignment(Alignment.START);
+        setDefaultHorizontalComponentAlignment(Alignment.CENTER);
 
         getStyle().set("text-align", "start");
     }
