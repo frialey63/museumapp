@@ -19,7 +19,7 @@ public class Html5Qrcode extends Div {
 
     private static final long serialVersionUID = -2678129358775527301L;
 
-    private String javascript = """
+    private final String javascript = """
             function onScanSuccess(decodedText, decodedResult) {
                 $0.$server.myScanSuccess(decodedText); html5QrcodeScanner.clear();
             };
