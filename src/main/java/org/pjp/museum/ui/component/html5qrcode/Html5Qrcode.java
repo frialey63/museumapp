@@ -35,7 +35,6 @@ public class Html5Qrcode extends Div {
         this.scanConsumer = scanConsumer;
 
         setId("reader");
-        //getStyle().set("width", "300px");
 
         getElement().executeJs(javascript, this.getElement());
     }
