@@ -24,3 +24,4 @@ webpack.generated.js
 /tsconfig.json
 /types.d.ts
 /webpack.config.js
+/unused/
