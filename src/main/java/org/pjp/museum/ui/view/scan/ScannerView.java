@@ -7,8 +7,8 @@ import org.pjp.museum.ui.view.MainLayout;
 import org.pjp.museum.ui.view.exhibit.ExhibitView;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.vaadin.addon.html5qrcode.Html5Qrcode;
-import org.vaadin.addon.html5qrcode.Html5Qrcode.Option;
+import org.vaadin.addons.pjp.html5qrcode.Html5Qrcode;
+import org.vaadin.addons.pjp.html5qrcode.Html5Qrcode.Option;
 
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
