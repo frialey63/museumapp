@@ -168,6 +168,12 @@
             <version>3.10.1</version>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>net.codebox</groupId>
+            <artifactId>javabean-tester</artifactId>
+            <version>1.0.0</version>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 
     <build>

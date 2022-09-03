@@ -22,6 +22,10 @@ public class Setting {
     @NotNull
     private Object value;
 
+    public Setting() {
+        super();
+    }
+
     public Setting(String uuid, @NotBlank String name, @NotNull Object value) {
         super();
         this.uuid = uuid;
