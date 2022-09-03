@@ -18,11 +18,11 @@ import com.google.zxing.qrcode.decoder.ErrorCorrectionLevel;
 
 public final class QrCodeUtils {
 
+    public static final String QRCODE_DIR = "data/qrcode";
+
     private static final Logger LOGGER = LoggerFactory.getLogger(QrCodeUtils.class);
 
     private static final String CHARSET = "UTF-8";
-
-    private static final String QRCODE_DIR = "data/qrcode";
 
     private static final int SIZE = 200;
 

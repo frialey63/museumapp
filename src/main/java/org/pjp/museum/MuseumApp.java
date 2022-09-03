@@ -71,7 +71,7 @@ public class MuseumApp extends SpringBootServletInitializer implements AppShellC
     }
 
     @Scheduled(cron = "0 * * * * *")
-    public void checkRosta() {
+    public void checkClosingTime() {
         museumService.checkForAndNotifyClosingTime();
     }
 

@@ -1,5 +1,7 @@
 package org.pjp.museum.model;
 
+import java.util.Objects;
+
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
@@ -49,6 +51,24 @@ public class Setting {
 
     public void setValue(Object value) {
         this.value = value;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(name, uuid, value);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        Setting other = (Setting) obj;
+        return Objects.equals(name, other.name) && Objects.equals(uuid, other.uuid)
+                && Objects.equals(value, other.value);
     }
 
     @Override
