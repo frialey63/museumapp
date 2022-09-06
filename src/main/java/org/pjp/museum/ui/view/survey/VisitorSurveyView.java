@@ -28,6 +28,8 @@ public class VisitorSurveyView extends VerticalLayout implements AfterNavigation
 
         add(heading);
 
+        // TODO this is an anonymous survey
+
         setSizeFull();
         setJustifyContentMode(JustifyContentMode.CENTER);
         setDefaultHorizontalComponentAlignment(Alignment.CENTER);
