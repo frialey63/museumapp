@@ -1,5 +1,6 @@
 package org.pjp.museum.ui.view.survey;
 
+import org.pjp.museum.service.QuestionnaireService;
 import org.pjp.museum.ui.view.MainLayout;
 
 import com.vaadin.flow.component.html.H2;
@@ -17,8 +18,11 @@ public class VisitorSurveyView extends VerticalLayout implements AfterNavigation
 
     private final H2 heading = new H2("Coming Soon");
 
-    public VisitorSurveyView() {
+    private final QuestionnaireService service;
+
+    public VisitorSurveyView(QuestionnaireService service) {
         super();
+        this.service = service;
 
         setSpacing(false);
 

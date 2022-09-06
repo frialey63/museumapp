@@ -8,6 +8,7 @@ public class UserAnswer implements Serializable {
 
     private int questionId;
     private String value;
+    // TODO date/time
 
     public UserAnswer() {
     }
