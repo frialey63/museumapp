@@ -4,6 +4,7 @@ import org.pjp.museum.service.MuseumService;
 import org.pjp.museum.ui.view.MainLayout;
 
 import com.vaadin.flow.component.html.H4;
+import com.vaadin.flow.component.html.Image;
 import com.vaadin.flow.component.html.Paragraph;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.AfterNavigationEvent;
@@ -34,19 +35,30 @@ public class GeneralInformationView extends VerticalLayout implements AfterNavig
         }
 
         {
-            H4 heading = new H4("Toilets");
+            //H4 heading = new H4("Fire Exits");
+            Image image = new Image("icons/exit.png", "Fire Exit");
 
-            Paragraph paragraph = new Paragraph("Toilets are located behind the T-133 in the middle hangar. From the entrance follow the corridor out of the shop, turn right at the first hangar and then right again at the second hangar.");
+            Paragraph paragraph = new Paragraph("In case of fire, walk back to the shop/entrance or leave via the nearest fire exit door marked with green \"Fire Exit\" sign.");
 
-            add(heading, paragraph);
+            add(image, paragraph);
         }
 
         {
-            H4 heading = new H4("Wheel Chair Access");
+            //H4 heading = new H4("Toilets");
+            Image image = new Image("icons/toilets.png", "Toilets");
+
+            Paragraph paragraph = new Paragraph("Toilets are located behind the T-133 in the middle hangar. From the entrance follow the corridor out of the shop, turn right at the first hangar and then right again at the second hangar.");
+
+            add(image, paragraph);
+        }
+
+        {
+            //H4 heading = new H4("Wheel Chair");
+            Image image = new Image("icons/wheelchair.png", "Wheel Chair");
 
             Paragraph paragraph = new Paragraph("The museum galleries on the first floor may be accessed via a ramp. From the entrance follow the corridor out of the shop, go straight across the hangar through the Armoury and bear left through The Blitz sound and light display.");
 
-            add(heading, paragraph);
+            add(image, paragraph);
         }
 
         {

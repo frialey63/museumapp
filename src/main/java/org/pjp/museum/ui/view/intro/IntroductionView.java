@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.html.H2;
+import com.vaadin.flow.component.html.Image;
 import com.vaadin.flow.component.html.Paragraph;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.AfterNavigationEvent;
@@ -41,6 +42,8 @@ public class IntroductionView extends VerticalLayout implements AfterNavigationO
 
         setSpacing(false);
 
+        Image image = new Image("images/raf-manston-logo.png", "logo");
+
         H2 title = new H2("Welcome to the Museum App");
 
         Paragraph description = new Paragraph();
@@ -56,7 +59,7 @@ public class IntroductionView extends VerticalLayout implements AfterNavigationO
         setHorizontalComponentAlignment(Alignment.CENTER, title, startButton);
         setHorizontalComponentAlignment(Alignment.START, description);
 
-        add(title, description, startButton);
+        add(image, title, description, startButton);
 
         setSizeFull();
     }
