@@ -68,6 +68,10 @@ public class QuestionComponent extends CompactVerticalLayout {
             getContent().add(label, hl, statusLabel);
         }
 
+        public void setRequired(boolean required) {
+            // nothing to do
+        }
+
         private String getPresentationValue() {
             StringBuilder stringBuilder = new StringBuilder();
 
@@ -125,8 +129,8 @@ public class QuestionComponent extends CompactVerticalLayout {
             break;
         case CHECKBOX:
             MultiCheckboxField multiCheckboxField = new MultiCheckboxField(question);
+            multiCheckboxField.setRequired(required);
             binder.forField(multiCheckboxField).withStatusLabel(multiCheckboxField.statusLabel).withValidator(value -> validate(required, value), question.getRequiredError()).bind(UserAnswer::getValue, UserAnswer::setValue);
-            // FIXME required indicator
             add(multiCheckboxField);
             break;
         case RADIOBUTTON:
