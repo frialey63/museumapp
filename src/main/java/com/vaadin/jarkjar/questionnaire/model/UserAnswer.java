@@ -1,52 +1,56 @@
 package com.vaadin.jarkjar.questionnaire.model;
 
-import java.io.Serializable;
-
-public class UserAnswer implements Serializable {
-
-    private static final long serialVersionUID = 585246572881301413L;
+/**
+ * Represents single user answer.
+ *
+ * @author Paul Parlett
+ *
+ */
+public class UserAnswer {
 
     private int questionId;
     private String value;
 
+    /**
+     * Default constructor for UserAnswer
+     */
     public UserAnswer() {
+        super();
     }
 
+    /**
+     * Constructor for UserAnswer
+     *
+     * @param questionId the question id
+     * @param value the value
+     */
     public UserAnswer(int questionId, String value) {
+        super();
         this.questionId = questionId;
         this.value = value;
     }
 
+    /**
+     * Constructor for UserAnswer
+     *
+     * @param questionId the question id
+     */
     public UserAnswer(int questionId) {
         this(questionId, null);
     }
 
-    /**
-     * @return the questionId
-     */
     public int getQuestionId() {
         return questionId;
     }
 
-    /**
-     * @param questionId
-     *            the questionId to set
-     */
     public void setQuestionId(int questionId) {
         this.questionId = questionId;
     }
 
-    /**
-     * @return the value
-     */
     public String getValue() {
         return value;
     }
 
-    /**
-     * @param value
-     *            the value to set
-     */
     public void setValue(String value) {
         this.value = value;
     }

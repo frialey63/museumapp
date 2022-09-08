@@ -51,7 +51,7 @@ public class PlayerControls extends PolymerTemplate<PlayerControls.PlayerControl
         void setTime(String time);
     }
 
-    //TODO moding of buttons
+    // TODO moding of buttons
 
     @Id("back5Button")
     private Button back5Button;

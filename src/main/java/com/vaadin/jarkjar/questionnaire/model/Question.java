@@ -5,28 +5,28 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Represents single question in questionnaire
+ * Represents single question in questionnaire.
  *
+ * @author Paul Parlett
  * @author Jarkko Järvinen
  *
  */
-public class Question implements Serializable {
-
-    private static final long serialVersionUID = -5868558554332257008L;
+public class Question {
 
     private static final int DEFAULT_TEXTFIELD_MAX_VALUE = 255;
+
     private static final int DEFAULT_TEXTAREA_MAX_VALUE = 4000;
-    private static final String DEFAULT_REQUIRED_INDICATOR = "*";
+
     private static final String DEFAULT_REQUIRED_ERROR = "Required!";
-    private String defaultMaxLengthError = "Max length is ";
+
+    private static final String DEFAULT_MAX_LENGTH_ERROR = "Max length is ";
 
     private int id;
     private String text;
     private QuestionType type;
-    private List<String> answers;
+    private List<String> answers = new ArrayList<String>();
     private boolean required;
     private int answerMaxLength;
-    private String requiredIndicator;
     private String requiredError;
     private String maxLengthError;
 
@@ -50,8 +50,7 @@ public class Question implements Serializable {
          */
         CHECKBOX,
         /**
-         * RadioButtons will be used in UI. This is question type is always
-         * required.
+         * RadioButtons will be used in UI.
          */
         RADIOBUTTON
     }
@@ -59,7 +58,7 @@ public class Question implements Serializable {
     /**
      * Constructor for Question which type is TEXTFIELD
      *
-     * @param title
+     * @param title the title
      */
     public Question(int id, String title) {
         this();
@@ -67,6 +66,13 @@ public class Question implements Serializable {
         setText(title);
     }
 
+    /**
+     * Constructor for Question
+     *
+     * @param id the id
+     * @param title the title
+     * @param type the type
+     */
     public Question(int id, String title, QuestionType type) {
         this();
         setId(id);
@@ -78,39 +84,39 @@ public class Question implements Serializable {
      * Default constructor for Question which type is TEXTFIELD
      */
     public Question() {
-        this.id = 0;
+        super();
         this.type = QuestionType.TEXTFIELD;
-        this.answers = new ArrayList<String>();
     }
 
-    /**
-     * @return the type
-     */
-    public QuestionType getType() {
-        return type;
+    public int getId() {
+        return id;
     }
 
-    /**
-     * @param type
-     *            the type to set
-     */
-    public void setType(QuestionType type) {
-        this.type = type;
+    public void setId(int id) {
+        this.id = id;
     }
-
-    /**
-     * @return the text of the question
-     */
     public String getText() {
         return text;
     }
 
-    /**
-     * @param text
-     *            the text to question
-     */
     public void setText(String text) {
         this.text = text;
+    }
+
+    public QuestionType getType() {
+        return type;
+    }
+
+    public void setType(QuestionType type) {
+        this.type = type;
+    }
+
+    public List<String> getAnswers() {
+        return answers;
+    }
+
+    public void setAnswers(List<String> answers) {
+        this.answers = answers;
     }
 
     /**
@@ -119,53 +125,13 @@ public class Question implements Serializable {
      * @param answer
      */
     public void addAnswer(String answer) {
-        this.answers.add(answer);
+        answers.add(answer);
     }
 
-    /**
-     * Set answers to the question
-     *
-     * @param answers
-     */
-    public void setAnswers(List<String> answers) {
-        this.answers = answers;
-    }
-
-    /**
-     * Returns all answers of the question
-     *
-     * @return
-     */
-    public List<String> getAnswers() {
-        return answers;
-    }
-
-    /**
-     * @return the id
-     */
-    public int getId() {
-        return id;
-    }
-
-    /**
-     * @param id
-     *            the id to set
-     */
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    /**
-     * @return the required
-     */
     public boolean isRequired() {
         return required;
     }
 
-    /**
-     * @param required
-     *            the required to set
-     */
     public void setRequired(boolean required) {
         this.required = required;
     }
@@ -177,14 +143,15 @@ public class Question implements Serializable {
      * @return
      */
     public int getAnswerMaxLength() {
-        if (this.answerMaxLength == 0) {
-            if (this.type == QuestionType.TEXTFIELD) {
+        if (answerMaxLength == 0) {
+            if (type == QuestionType.TEXTFIELD) {
                 return Question.DEFAULT_TEXTFIELD_MAX_VALUE;
             } else if (this.type == QuestionType.TEXTAREA) {
                 return Question.DEFAULT_TEXTAREA_MAX_VALUE;
             }
         }
-        return this.answerMaxLength;
+
+        return answerMaxLength;
     }
 
     public void setAnswerMaxLength(int maxLength) {
@@ -192,51 +159,18 @@ public class Question implements Serializable {
     }
 
     /**
-     * @return the requiredIndicator
-     */
-    @Deprecated
-    public String getRequiredIndicator() {
-        if (this.requiredIndicator == null) {
-            return Question.DEFAULT_REQUIRED_INDICATOR;
-        }
-        return requiredIndicator;
-    }
-
-    /**
-     * @param indicator
-     *            the requiredIndicator to set
-     */
-    @Deprecated
-    public void setRequiredIndicator(String indicator) {
-        this.requiredIndicator = indicator;
-    }
-
-    /**
      * @return the requiredError
      */
     public String getRequiredError() {
-        if (this.requiredError == null) {
+        if (requiredError == null) {
             return Question.DEFAULT_REQUIRED_ERROR;
         }
+
         return requiredError;
     }
 
-    /**
-     * Set required error message
-     *
-     * @param requiredErrorMessage
-     */
     public void setRequiredError(String requiredErrorMessage) {
         this.requiredError = requiredErrorMessage;
-    }
-
-    /**
-     * Set maximum length error message
-     *
-     * @param maxLengthError
-     */
-    public void setMaxLengthError(String maxLengthErrorMessage) {
-        this.maxLengthError = maxLengthErrorMessage;
     }
 
     /**
@@ -245,10 +179,38 @@ public class Question implements Serializable {
      * @return
      */
     public String getMaxLengthError() {
-        if (this.maxLengthError == null) {
-            return defaultMaxLengthError + this.getAnswerMaxLength();
+        if (maxLengthError == null) {
+            return DEFAULT_MAX_LENGTH_ERROR + this.getAnswerMaxLength();
         }
+
         return maxLengthError;
+    }
+
+    public void setMaxLengthError(String maxLengthErrorMessage) {
+        this.maxLengthError = maxLengthErrorMessage;
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder builder = new StringBuilder();
+        builder.append("Question [id=");
+        builder.append(id);
+        builder.append(", text=");
+        builder.append(text);
+        builder.append(", type=");
+        builder.append(type);
+        builder.append(", answers=");
+        builder.append(answers);
+        builder.append(", required=");
+        builder.append(required);
+        builder.append(", answerMaxLength=");
+        builder.append(answerMaxLength);
+        builder.append(", requiredError=");
+        builder.append(requiredError);
+        builder.append(", maxLengthError=");
+        builder.append(maxLengthError);
+        builder.append("]");
+        return builder.toString();
     }
 
 }

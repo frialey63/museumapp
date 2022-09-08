@@ -11,6 +11,7 @@ import org.springframework.stereotype.Component;
 import com.vaadin.flow.router.RouteConfiguration;
 import com.vaadin.flow.server.ServiceInitEvent;
 import com.vaadin.flow.server.VaadinServiceInitListener;
+import com.vaadin.flow.server.VaadinSession;
 
 @Component
 public class ServiceListener implements VaadinServiceInitListener {
@@ -34,8 +35,9 @@ public class ServiceListener implements VaadinServiceInitListener {
         }
 
         event.getSource().addSessionInitListener(initEvent -> {
-            LOGGER.debug("A new Session has been initialized!");
-            SettingsUtil.setMode(initEvent.getSession(), SettingsUtil.QR_CODE);
+            VaadinSession vaadinSession = initEvent.getSession();
+			LOGGER.debug("A new Session {} has been initialized!", vaadinSession.getSession().getId());
+            SettingsUtil.setMode(vaadinSession, SettingsUtil.QR_CODE);
         });
 
     }

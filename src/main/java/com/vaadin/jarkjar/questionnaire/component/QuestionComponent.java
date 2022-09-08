@@ -21,11 +21,11 @@ import com.vaadin.jarkjar.questionnaire.model.Question;
 import com.vaadin.jarkjar.questionnaire.model.UserAnswer;
 
 /**
- * Represents Question item in QuestionnaireWidget. Wraps all fields used in
+ * Container for Question item in QuestionnaireWidget. Wraps all fields used in
  * question. Handle user answer returning functionality.
  *
- * @author Jarkko Järvinen
  * @author Paul Parlett
+ * @author Jarkko Järvinen
  *
  */
 public class QuestionComponent extends CompactVerticalLayout {

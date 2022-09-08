@@ -1,19 +1,29 @@
 package org.pjp.museum.service;
 
-import java.util.List;
-
+import org.pjp.museum.repository.UserAnswerSetRepository;
 import org.springframework.stereotype.Service;
 
 import com.vaadin.jarkjar.questionnaire.component.QuestionnaireComponent;
 import com.vaadin.jarkjar.questionnaire.model.Question;
-import com.vaadin.jarkjar.questionnaire.model.QuestionSet;
-import com.vaadin.jarkjar.questionnaire.model.UserAnswer;
 import com.vaadin.jarkjar.questionnaire.model.Question.QuestionType;
+import com.vaadin.jarkjar.questionnaire.model.QuestionSet;
+import com.vaadin.jarkjar.questionnaire.model.UserAnswerSet;
 
 @Service
 public class QuestionnaireService {
 
     public enum Category { MUSEUM, VISITOR }
+
+    public static final String MUSEUM_QUESTION_SET_UUID = "b051c76d-d577-4c6f-9d67-250e50f0fb14";
+
+    public static final String VISITOR_QUESTION_SET_UUID = "cf3c92e7-c514-4d19-b56c-52cce168c60b";
+
+    private final UserAnswerSetRepository repository;
+
+    public QuestionnaireService(UserAnswerSetRepository repository) {
+        super();
+        this.repository = repository;
+    }
 
     public QuestionSet getQuestionSet(Category category) {
         return switch(category) {
@@ -26,13 +36,13 @@ public class QuestionnaireService {
         QuestionSet questionSet = new QuestionSet();
         questionSet.setText("The Museum");
         questionSet.setDescription("Some questions about your experience of the museum. Required anwsers are indicated by " + QuestionnaireComponent.LUMO_REQUIRED_INDICATOR);
-        questionSet.setId(1);
+        questionSet.setUuid(MUSEUM_QUESTION_SET_UUID);
         questionSet.setSubmitButtonText("Submit");
 
         int qid = 1;
         Question question;
 
-        question = new Question(qid++, "How did you find out about the museum", QuestionType.CHECKBOX);
+        question = new Question(qid++, "How did you find out about the museum?", QuestionType.CHECKBOX);
         question.setRequired(true);
         question.setRequiredError("Answer required");
         question.addAnswer("Web");
@@ -40,6 +50,14 @@ public class QuestionnaireService {
         question.addAnswer("Friend");
         question.addAnswer("Museum");
         question.addAnswer("Other");
+        questionSet.add(question);
+
+        question = new Question(qid++, "Is this your first visit to the museum or are you a regular visitor?", QuestionType.CHECKBOX);
+        question.setRequired(true);
+        question.setRequiredError("Answer required");
+        question.addAnswer("First");
+        question.addAnswer("Occasional");
+        question.addAnswer("Regular");
         questionSet.add(question);
 
         question = new Question(qid++, "The staff were friendly and helpful", QuestionType.RADIOBUTTON);
@@ -85,6 +103,24 @@ public class QuestionnaireService {
         question = new Question(qid++, "The static displays were well presented and explained", QuestionType.RADIOBUTTON);
         question.setRequired(true);
         question.setRequiredError("Answer required");
+        question.addAnswer("Strongly agree");
+        question.addAnswer("Agree");
+        question.addAnswer("Neutral");
+        question.addAnswer("Disagree");
+        question.addAnswer("Strongly disagree");
+        questionSet.add(question);
+
+        question = new Question(qid++, "The museum indoor hangers were clean, comfortable and safe", QuestionType.RADIOBUTTON);
+        question.setRequired(true);
+        question.addAnswer("Strongly agree");
+        question.addAnswer("Agree");
+        question.addAnswer("Neutral");
+        question.addAnswer("Disagree");
+        question.addAnswer("Strongly disagree");
+        questionSet.add(question);
+
+        question = new Question(qid++, "The museum external areas were tidy and safe", QuestionType.RADIOBUTTON);
+        question.setRequired(true);
         question.addAnswer("Strongly agree");
         question.addAnswer("Agree");
         question.addAnswer("Neutral");
@@ -140,16 +176,27 @@ public class QuestionnaireService {
         question.addAnswer("Strongly disagree");
         questionSet.add(question);
 
+        question = new Question(qid++, "Which of these special attractions did you use during your visit?", QuestionType.CHECKBOX);
+        question.setRequired(false);
+        question.addAnswer("Railway");
+        question.addAnswer("Simulator");
+        questionSet.add(question);
+
+        question = new Question(qid++, "Which of the associated facilties did you make use of during your visit?", QuestionType.CHECKBOX);
+        question.setRequired(false);
+        question.addAnswer("Shop");
+        question.addAnswer("Cafe");
+        question.addAnswer("Emporium");
+        questionSet.add(question);
+
         question = new Question(qid++, "What did you like the most about the museum?", QuestionType.TEXTAREA);
         question.setAnswerMaxLength(4_000);
-        question.setRequired(true);
-        question.setRequiredError("Answer required");
+        question.setRequired(false);
         questionSet.add(question);
 
         question = new Question(qid++, "How could the museum best be improved?", QuestionType.TEXTAREA);
         question.setAnswerMaxLength(4_000);
-        question.setRequired(true);
-        question.setRequiredError("Answer required");
+        question.setRequired(false);
         questionSet.add(question);
 
         return questionSet;
@@ -159,7 +206,7 @@ public class QuestionnaireService {
         QuestionSet questionSet = new QuestionSet();
         questionSet.setText("Our Visitor");
         questionSet.setDescription("Some questions about you and / or your group. All of these are optional");
-        questionSet.setId(1);
+        questionSet.setUuid(VISITOR_QUESTION_SET_UUID);
         questionSet.setSubmitButtonText("Submit");
 
         int qid = 1;
@@ -214,7 +261,13 @@ public class QuestionnaireService {
         return questionSet;
     }
 
-    public void saveUserAnswers(List<UserAnswer> answers) {
+    public String saveUserAnswerSet(UserAnswerSet userAnswerSet) {
+        repository.save(userAnswerSet);
 
+        return userAnswerSet.uuid();
+    }
+
+    public boolean hasUserAnswerSet(String questionSetUuid, String sessionId) {
+        return repository.findByQuestionSetUuidAndSessionId(questionSetUuid, sessionId).isPresent();
     }
 }

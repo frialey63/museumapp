@@ -1,12 +1,15 @@
 package com.vaadin.jarkjar.questionnaire.component;
 
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.pjp.museum.ui.component.CompactVerticalLayout;
+import org.pjp.museum.util.UuidStr;
 
 import com.vaadin.flow.component.ClickEvent;
 import com.vaadin.flow.component.ComponentEventListener;
+import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.html.H4;
 import com.vaadin.flow.component.html.Span;
@@ -14,12 +17,13 @@ import com.vaadin.flow.shared.Registration;
 import com.vaadin.jarkjar.questionnaire.model.Question;
 import com.vaadin.jarkjar.questionnaire.model.QuestionSet;
 import com.vaadin.jarkjar.questionnaire.model.UserAnswer;
+import com.vaadin.jarkjar.questionnaire.model.UserAnswerSet;
 
 /**
  * Represents complete Questionnaire in QuestionnaireWidget.
  *
- * @author Jarkko Järvinen
  * @author Paul Parlett
+ * @author Jarkko Järvinen
  *
  */
 public class QuestionnaireComponent extends CompactVerticalLayout implements ComponentEventListener<ClickEvent<Button>>, Questionnaire {
@@ -30,7 +34,6 @@ public class QuestionnaireComponent extends CompactVerticalLayout implements Com
 
     private QuestionSet questionSet;
 
-    // Get user answers and transmit those to server
     private List<UserAnswer> userAnswers = new ArrayList<UserAnswer>();
 
     private boolean valid;
@@ -119,13 +122,9 @@ public class QuestionnaireComponent extends CompactVerticalLayout implements Com
     }
 
     @Override
-    public QuestionSet getQuestionSet() {
-        return questionSet;
-    }
-
-    @Override
-    public List<UserAnswer> getUserAnswers() {
-        return userAnswers;
+    public UserAnswerSet getUserAnswerSet() {
+        String sessionId = UI.getCurrent().getSession().getSession().getId();
+        return new UserAnswerSet(UuidStr.random(), questionSet.getUuid(), userAnswers, Instant.now(), sessionId);
     }
 
     @Override
