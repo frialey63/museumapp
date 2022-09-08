@@ -26,6 +26,8 @@ public class QuestionnaireComponent extends CompactVerticalLayout implements Com
 
     private static final long serialVersionUID = -6523431408378169759L;
 
+    public static final String LUMO_REQUIRED_INDICATOR = "•";
+
     private QuestionSet questionSet;
 
     // Get user answers and transmit those to server
@@ -57,7 +59,6 @@ public class QuestionnaireComponent extends CompactVerticalLayout implements Com
      * Default constructor
      */
     public QuestionnaireComponent() {
-
         questionnaireTitle = new H4();
 
         questionnaireDescription = new Span();

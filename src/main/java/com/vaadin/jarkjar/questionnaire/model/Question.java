@@ -159,9 +159,6 @@ public class Question implements Serializable {
      * @return the required
      */
     public boolean isRequired() {
-        if (type == QuestionType.RADIOBUTTON) {
-            return true;
-        }
         return required;
     }
 

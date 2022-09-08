@@ -11,7 +11,6 @@ import com.vaadin.flow.component.AbstractCompositeField;
 import com.vaadin.flow.component.checkbox.Checkbox;
 import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
-import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.radiobutton.RadioButtonGroup;
 import com.vaadin.flow.component.textfield.TextArea;
 import com.vaadin.flow.component.textfield.TextField;
@@ -33,9 +32,7 @@ public class QuestionComponent extends CompactVerticalLayout {
 
     private static final long serialVersionUID = 3231017557951720771L;
 
-    private static final String LUMO_REQUIRED_INDICATOR = "•";
-
-    public static class MultiCheckboxField extends AbstractCompositeField<VerticalLayout, MultiCheckboxField, String> {
+    public static class MultiCheckboxField extends AbstractCompositeField<CompactVerticalLayout, MultiCheckboxField, String> {
         private static final long serialVersionUID = -8566712597298599657L;
 
         private final List<Checkbox> checkBoxes = new ArrayList<>();
@@ -50,7 +47,12 @@ public class QuestionComponent extends CompactVerticalLayout {
         public MultiCheckboxField(Question question) {
             super(null);
 
-            Label label = new Label(question.getText() + (question.isRequired() ? " " + LUMO_REQUIRED_INDICATOR : ""));
+            Label label = new Label(question.getText() + (question.isRequired() ? " " + QuestionnaireComponent.LUMO_REQUIRED_INDICATOR : ""));
+            label.getStyle().set("font-size", "var(--lumo-font-size-s)");
+            label.getStyle().set("font-weight", "500");
+            label.getStyle().set("line-height", "var(--lumo-line-height-s)");
+            label.getStyle().set("color", "var(--lumo-secondary-text-color)");
+
             HorizontalLayout hl = new CompactHorizontalLayout();
 
             for (String answer : question.getAnswers()) {
@@ -107,6 +109,7 @@ public class QuestionComponent extends CompactVerticalLayout {
         switch (question.getType()) {
         case TEXTFIELD:
             TextField textField = new TextField(question.getText());
+            textField.setWidthFull();
             textField.setMaxLength(question.getAnswerMaxLength());
             textField.setRequired(required);
             binder.forField(textField).withValidator(value -> validate(required, value), question.getRequiredError()).bind(UserAnswer::getValue, UserAnswer::setValue);
@@ -114,6 +117,7 @@ public class QuestionComponent extends CompactVerticalLayout {
             break;
         case TEXTAREA:
             TextArea textArea = new TextArea(question.getText());
+            textArea.setWidthFull();
             textArea.setMaxLength(question.getAnswerMaxLength());
             textArea.setRequired(required);
             binder.forField(textArea).withValidator(value -> validate(required, value), question.getRequiredError()).bind(UserAnswer::getValue, UserAnswer::setValue);
@@ -122,6 +126,7 @@ public class QuestionComponent extends CompactVerticalLayout {
         case CHECKBOX:
             MultiCheckboxField multiCheckboxField = new MultiCheckboxField(question);
             binder.forField(multiCheckboxField).withStatusLabel(multiCheckboxField.statusLabel).withValidator(value -> validate(required, value), question.getRequiredError()).bind(UserAnswer::getValue, UserAnswer::setValue);
+            // FIXME required indicator
             add(multiCheckboxField);
             break;
         case RADIOBUTTON:
