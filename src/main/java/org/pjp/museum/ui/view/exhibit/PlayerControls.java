@@ -51,8 +51,6 @@ public class PlayerControls extends PolymerTemplate<PlayerControls.PlayerControl
         void setTime(String time);
     }
 
-    // TODO moding of buttons
-
     @Id("back5Button")
     private Button back5Button;
     @Id("stopButton")
@@ -89,7 +87,9 @@ public class PlayerControls extends PolymerTemplate<PlayerControls.PlayerControl
         });
         back5Button.setIcon(VaadinIcon.FAST_BACKWARD.create());
 
-        stopButton.addClickListener(e -> player.stop());
+        stopButton.addClickListener(e -> {
+            player.stop();
+        });
         stopButton.setIcon(VaadinIcon.STOP.create());
 
         pauseButton.addClickListener(e -> {
@@ -158,11 +158,17 @@ public class PlayerControls extends PolymerTemplate<PlayerControls.PlayerControl
 
         player.addStateChangeListener(new StateChangeCallback() {
 
+            {
+                modeButtons(PlaybackState.STOPPED);
+            }
+
             @Override
-            public void playbackStateChanged(final PlaybackState new_state) {
+            public void playbackStateChanged(final PlaybackState newState) {
                 ui.access(() -> {
+                    modeButtons(newState);
+
                     String text = "Player status: ";
-                    switch (new_state) {
+                    switch (newState) {
                         case PAUSED:
                             text += "PAUSED";
                             break;
@@ -185,6 +191,28 @@ public class PlayerControls extends PolymerTemplate<PlayerControls.PlayerControl
                     // TODO for proper slider setting, we need to know the position in millis and total duration of audio
                     updateSlider(newPositionMillis);
                 });
+            }
+
+            private void modeButtons(PlaybackState newState) {
+                switch (newState) {
+                case PAUSED:
+                    stopButton.setEnabled(true);
+                    playButton.setEnabled(false);
+                    pauseButton.setEnabled(true);
+                    break;
+                case PLAYING:
+                    stopButton.setEnabled(true);
+                    playButton.setEnabled(false);
+                    pauseButton.setEnabled(true);
+                    break;
+                case STOPPED:
+                    stopButton.setEnabled(false);
+                    playButton.setEnabled(true);
+                    pauseButton.setEnabled(false);
+                    break;
+                default:
+                    break;
+                }
             }
         });
 
