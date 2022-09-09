@@ -122,6 +122,10 @@ public class PlayerControls extends PolymerTemplate<PlayerControls.PlayerControl
         forward5Button.setIcon(VaadinIcon.FAST_FORWARD.create());
     }
 
+    /**
+     * @param player The AudioPlayer instance
+     * @param streamName The name of the stream
+     */
     public void setPlayer(AudioPlayer player, String streamName) {
         this.player = player;
 
@@ -219,6 +223,9 @@ public class PlayerControls extends PolymerTemplate<PlayerControls.PlayerControl
         getModel().setStreamName("Stream " + streamName);
     }
 
+    /**
+     * Initialise the slider position.
+     */
     public void initPositionSlider() {
         int duration = player.getDuration();
 
