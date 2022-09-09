@@ -3,6 +3,9 @@ package org.pjp.museum.ui.view.survey;
 import org.pjp.museum.service.QuestionnaireService;
 import org.pjp.museum.service.QuestionnaireService.Category;
 import org.pjp.museum.ui.view.MainLayout;
+import org.pjp.museum.util.UuidStr;
+import org.vaadin.addons.pjp.questionnaire.component.QuestionnaireComponent;
+import org.vaadin.addons.pjp.questionnaire.model.QuestionSet;
 
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.html.Emphasis;
@@ -13,8 +16,6 @@ import com.vaadin.flow.router.AfterNavigationEvent;
 import com.vaadin.flow.router.AfterNavigationObserver;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
-import com.vaadin.jarkjar.questionnaire.component.QuestionnaireComponent;
-import com.vaadin.jarkjar.questionnaire.model.QuestionSet;
 
 @PageTitle("Visitor Survey")
 @Route(value = "survey", layout = MainLayout.class)
@@ -45,12 +46,12 @@ public class VisitorSurveyView extends VerticalLayout implements AfterNavigation
         Emphasis anon = new Emphasis("All results are anonymous.");
 
         museumQuestionnaire.addSubmitButtonClickListener(l -> {
-            service.saveUserAnswerSet(museumQuestionnaire.getUserAnswerSet());
+            service.saveUserAnswerSet(museumQuestionnaire.getUserAnswerSet(UuidStr.random()));
             museumQuestionnaire.setEnabled(false);
         });
 
         visitorQuestionnaire.addSubmitButtonClickListener(l -> {
-            service.saveUserAnswerSet(visitorQuestionnaire.getUserAnswerSet());
+            service.saveUserAnswerSet(visitorQuestionnaire.getUserAnswerSet(UuidStr.random()));
             visitorQuestionnaire.setEnabled(false);
         });
 

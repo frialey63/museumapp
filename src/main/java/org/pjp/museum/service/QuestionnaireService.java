@@ -2,12 +2,11 @@ package org.pjp.museum.service;
 
 import org.pjp.museum.repository.UserAnswerSetRepository;
 import org.springframework.stereotype.Service;
-
-import com.vaadin.jarkjar.questionnaire.component.QuestionnaireComponent;
-import com.vaadin.jarkjar.questionnaire.model.Question;
-import com.vaadin.jarkjar.questionnaire.model.Question.QuestionType;
-import com.vaadin.jarkjar.questionnaire.model.QuestionSet;
-import com.vaadin.jarkjar.questionnaire.model.UserAnswerSet;
+import org.vaadin.addons.pjp.questionnaire.component.QuestionnaireComponent;
+import org.vaadin.addons.pjp.questionnaire.model.Question;
+import org.vaadin.addons.pjp.questionnaire.model.Question.QuestionType;
+import org.vaadin.addons.pjp.questionnaire.model.QuestionSet;
+import org.vaadin.addons.pjp.questionnaire.model.UserAnswerSet;
 
 @Service
 public class QuestionnaireService {
