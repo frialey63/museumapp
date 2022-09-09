@@ -11,7 +11,7 @@ import java.util.List;
  * @author Jarkko Järvinen
  *
  */
-public class Question {
+public class Question implements Comparable<Question> {
 
     private static final int DEFAULT_TEXTFIELD_MAX_VALUE = 255;
 
@@ -211,6 +211,11 @@ public class Question {
         builder.append(maxLengthError);
         builder.append("]");
         return builder.toString();
+    }
+
+    @Override
+    public int compareTo(Question o) {
+        return Integer.valueOf(id).compareTo(Integer.valueOf(o.id));
     }
 
 }
