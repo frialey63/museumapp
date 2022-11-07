@@ -7,6 +7,8 @@ It contains all the necessary configuration and some placeholder files to get yo
 
 Audio announcements, PA
 
+"This Day in Aviation History", https://www.thisdayinaviation.com/
+
 Alternative languages
 
 Accessibility (deaf)
