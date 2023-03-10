@@ -30,10 +30,13 @@ public class IntroductionView extends VerticalLayout implements AfterNavigationO
     private static final Logger LOGGER = LoggerFactory.getLogger(IntroductionView.class);
 
     private final String descriptionStr = """
-                Many of the exhibits in this museum have a QR Code. Scan the code using this app to access an audio description of the exhibit. If the scanner does not work then the exhibit can be identified by using a manually selected (tail) number.
+                Many of the exhibits in this museum have a QR Code. Scan the code using this App to access an audio description of the exhibit. If the scanner does not work then the exhibit can be identified by using a manually selected (tail) number.
                 <br/><br/>
-                <em>For the best experience we recommend using headphones otherwise we respectfully request that the volume on your phone handset is minimised to avoid disturbance to other visitors.</em>
-                <br/><br/>
+                For the best App experience we recommend the following set-up on your mobile:
+                <ul>
+                    <li>Install to the Android home screen when prompted (or via Install option on the Chrome menu)</li>
+                    <li>Use headphones, otherwise please minimise speaker volume to avoid disturbance to other visitors</li>
+                </ul>
                 <em>Note the screensaver may cause the scanner to fail. In this case it will be necessary to restart the app.</em>
             """;
 
@@ -42,7 +45,7 @@ public class IntroductionView extends VerticalLayout implements AfterNavigationO
 
         setSpacing(false);
 
-        Image image = new Image("images/raf-manston-logo.png", "logo");
+        Image image = new Image("images/raf-manston-logo_66pct.png", "logo");
 
         H2 title = new H2("Welcome to the Museum App");
 

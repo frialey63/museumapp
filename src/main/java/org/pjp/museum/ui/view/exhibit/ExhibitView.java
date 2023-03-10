@@ -35,7 +35,11 @@ import com.vaadin.flow.server.StreamResource;
 @Route(value = "exhibit", layout = MainLayout.class)
 public class ExhibitView extends VerticalLayout implements AfterNavigationObserver, HasUrlParameter<String> {
 
-    private static final long serialVersionUID = -3241685802423500738L;
+	private static final long serialVersionUID = -3241685802423500738L;
+
+    private static final String SORRY_AN_ERROR = "Sorry, an error occurred while attempting to look-up the exhibit for this QR Code.";
+
+    private static final String NOT_FOUND = "not-found.jpg";
 
     private final H2 title = new H2();
 
@@ -77,7 +81,7 @@ public class ExhibitView extends VerticalLayout implements AfterNavigationObserv
 
     @Override
     public void afterNavigation(AfterNavigationEvent event) {
-        service.getExhibit(uuid).ifPresent(exhibit -> {
+        service.getExhibit(uuid).ifPresentOrElse(exhibit -> {
             title.getElement().setProperty("innerHTML", String.format("%s<br/>%s", exhibit.getName(), exhibit.getTailNumber()));
             title.getStyle().set("text-align", "center");
 
@@ -100,6 +104,16 @@ public class ExhibitView extends VerticalLayout implements AfterNavigationObserv
 
             playerControls.setPlayer(player, audioFile);
             playerControls.initPositionSlider();
+        }, () -> {
+
+            description.getElement().setProperty("innerHTML", SORRY_AN_ERROR);
+
+            StreamResource imageResource = new StreamResource(NOT_FOUND, () -> ImageUtils.getInputStreamFromFile(NOT_FOUND));
+
+            image.setSrc(imageResource);
+            image.setWidth("80%");
+
+            playerControls.setEnabled(false);
         });
     }
 
