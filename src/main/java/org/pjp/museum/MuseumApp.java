@@ -61,7 +61,7 @@ public class MuseumApp extends SpringBootServletInitializer implements AppShellC
 
     @Override
     public void run(ApplicationArguments args) throws Exception {
-        if ("docker".equals(activeProfile)) {
+        if ("dev".equals(activeProfile)) {
             museumService.testData();
             exhibitService.testData();
         }

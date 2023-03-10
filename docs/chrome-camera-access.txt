@@ -1,0 +1,25 @@
+Scott Carmichael
+Nov 21, 2018
+
+Enabling the Microphone/Camera in Chrome for (Local) Unsecure Origins
+
+Chrome’s security policy will only allow you to access your device’s microphone/camera when a site’s has a secure origin.
+See here for a detailed explanation about what a secure (and unsecure) origin is. In summary; you need to host your site on https or called localhost (for when in development).
+
+This can cause problems if you’re using a dev environment like Vagrant. You could have many named local websites configured.
+Moving them all over to localhost could be a real pain; both impractical and time consuming.
+
+To ignore Chrome’s secure origin policy, follow these steps.
+
+1. Navigate to `chrome://flags/#unsafely-treat-insecure-origin-as-secure` in Chrome.
+2. Find and enable the `Insecure origins treated as secure` section (see below).
+3. Add any addresses you want to ignore the secure origin policy for. Remember to include the port number too (if required).
+4. Save and restart Chrome.
+
+Remember this is for dev purposes only. The live working app will need to be hosted on https for users to be able to use their microphone or camera.
+
+Chrome
+Web Development
+Html5
+JavaScript
+WebRTC

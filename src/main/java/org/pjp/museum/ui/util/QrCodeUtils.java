@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.pjp.museum.Env;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -18,7 +19,7 @@ import com.google.zxing.qrcode.decoder.ErrorCorrectionLevel;
 
 public final class QrCodeUtils {
 
-    public static final String QRCODE_DIR = "data/qrcode";
+    public static final String QRCODE_DIR = Env.MUSEUM_DATA + "data/qrcode";
 
     private static final Logger LOGGER = LoggerFactory.getLogger(QrCodeUtils.class);
 

@@ -12,6 +12,7 @@ import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.UnsupportedAudioFileException;
 
+import org.pjp.museum.Env;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.vaadin.addon.audio.server.Encoder;
@@ -26,7 +27,7 @@ public final class AudioUtils {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(AudioUtils.class);
 
-    private static final String AUDIO_DIR = "data/audio";
+    private static final String AUDIO_DIR = Env.MUSEUM_DATA + "data/audio";
 
     /**
      * Returns a ByteBuffer filled with PCM data. If the original audio file is using
