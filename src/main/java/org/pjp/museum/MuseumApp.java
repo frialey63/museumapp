@@ -1,5 +1,6 @@
 package org.pjp.museum;
 
+import org.apache.commons.compress.utils.Sets;
 import org.pjp.museum.service.ExhibitService;
 import org.pjp.museum.service.MuseumService;
 import org.pjp.museum.ui.util.QrCodeUtils;
@@ -44,7 +45,7 @@ public class MuseumApp extends SpringBootServletInitializer implements AppShellC
     private static final String APP_DOWNLOAD_URL = "app-download-url.jpg";
 
     @Value("${spring.profiles.active:default}")
-    private String activeProfile;
+    private String[] springProfilesActive;
 
     @Value("${app.download.url}")
     private String appDownloadUrl;
@@ -61,7 +62,7 @@ public class MuseumApp extends SpringBootServletInitializer implements AppShellC
 
     @Override
     public void run(ApplicationArguments args) throws Exception {
-        if ("dev".equals(activeProfile)) {
+        if (Sets.newHashSet(springProfilesActive).contains("test")) {
             museumService.testData();
             exhibitService.testData();
         }

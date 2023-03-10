@@ -13,10 +13,10 @@ import com.mongodb.MongoClientSettings;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
 
-@Profile("!dev")
+@Profile("cosmos")
 @EnableMongoRepositories(basePackages = "org.pjp.museum.repository")
 @Configuration
-public class CosmosDbConfig extends AbstractMongoClientConfiguration {
+public class CosmosConfig extends AbstractMongoClientConfiguration {
 
     @Override
     protected String getDatabaseName() {

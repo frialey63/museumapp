@@ -199,6 +199,12 @@
                     <to>
                         <image>${docker.image.prefix}/${project.artifactId}</image>
                     </to>
+                    <container>
+                        <jvmFlags>
+                            <jvmFlag>-Dspring.profiles.active=cosmos,test</jvmFlag>
+                        </jvmFlags>
+                        <mainClass>org.pjp.museum.MuseumApp</mainClass>
+                    </container>
                 </configuration>
             </plugin>
             <plugin>
