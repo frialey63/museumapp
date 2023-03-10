@@ -13,6 +13,8 @@
         <java.version>17</java.version>
         <vaadin.version>23.1.2</vaadin.version>
         <selenium.version>4.1.2</selenium.version>
+        <jib-maven-plugin.version>3.2.0</jib-maven-plugin.version>
+        <docker.image.prefix>rafmanstoncontainerregistry.azurecr.io</docker.image.prefix>
     </properties>
 
     <parent>
@@ -184,6 +186,19 @@
     <build>
         <defaultGoal>spring-boot:run</defaultGoal>
         <plugins>
+            <plugin>
+                <artifactId>jib-maven-plugin</artifactId>
+                <groupId>com.google.cloud.tools</groupId>
+                <version>${jib-maven-plugin.version}</version>
+                <configuration>
+                    <from>
+                        <image>mcr.microsoft.com/java/jre:17-zulu-alpine</image>
+                    </from>
+                    <to>
+                        <image>${docker.image.prefix}/${project.artifactId}</image>
+                    </to>
+                </configuration>
+            </plugin>
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
