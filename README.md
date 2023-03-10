@@ -7,6 +7,21 @@ It contains all the necessary configuration and some placeholder files to get yo
 
 Audio announcements, PA
 
+"This Day in Aviation History", https://www.thisdayinaviation.com/
+
+Alternative languages
+
+Accessibility (deaf)
+
+Flight Simulator Self-Service
+
+Monetisation
+- Adverts
+- Raffles
+- Membership
+
+## DONE
+
 Links to web site for museum and cafe
 
 General Information for Visitor
@@ -21,23 +36,10 @@ Survey
 - Behaviour stats
 - Demographics
 
-Alternative languages
-
-Accessibility (deaf)
-
-Flight Simulator Self-Service
-
 Kids Stuff
 - Teddy Hunt
 - Quizes
 - Games
-
-Monetisation
-- Adverts
-- Raffles
-- Membership
-
-## DONE
 
 Notifications of museum closing (automatic)
 
