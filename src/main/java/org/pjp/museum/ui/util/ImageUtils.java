@@ -5,9 +5,11 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 
+import org.pjp.museum.Env;
+
 public final class ImageUtils {
 
-    private static final String IMAGE_DIR = "data/image";
+    private static final String IMAGE_DIR = Env.MUSEUM_DATA + "data/image";
 
     public static InputStream getInputStreamFromFile(String filename) throws RuntimeException {
         InputStream is = null;
