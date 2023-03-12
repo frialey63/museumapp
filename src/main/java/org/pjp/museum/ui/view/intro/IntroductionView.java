@@ -45,7 +45,8 @@ public class IntroductionView extends VerticalLayout implements AfterNavigationO
 
         setSpacing(false);
 
-        Image image = new Image("images/raf-manston-logo_66pct.png", "logo");
+        Image image = new Image("images/raf-manston-logo.png", "logo");
+        image.setWidth("66%");
 
         H2 title = new H2("Welcome to the Museum App");
 
