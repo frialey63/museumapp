@@ -25,3 +25,4 @@ webpack.generated.js
 /types.d.ts
 /webpack.config.js
 /unused/
+/logs/
