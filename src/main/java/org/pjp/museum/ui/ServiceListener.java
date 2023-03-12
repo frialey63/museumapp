@@ -1,5 +1,7 @@
 package org.pjp.museum.ui;
 
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.UnknownHostException;
 
 import org.apache.logging.log4j.util.Strings;
@@ -66,11 +68,13 @@ public class ServiceListener implements VaadinServiceInitListener {
 
                         // check whether App is being accessed on Museum wifi network, if not redirect to the Access Denied page
                         try {
-                            if (!IPWithGivenRangeCheck.checkIPv4IsInRangeByConvertingToInt(ipAddress, secureAddressRangeArr[0], secureAddressRangeArr[1])) {
-                                LOGGER.debug("IP address {} is not within the secure address range {}", ipAddress, secureAddressRange);
+                            String host = new URI("http://" + ipAddress).getHost();
+
+                            if (!IPWithGivenRangeCheck.checkIPv4IsInRangeByConvertingToInt(host, secureAddressRangeArr[0], secureAddressRangeArr[1])) {
+                                LOGGER.debug("IP address {} is not within the secure address range {}", host, secureAddressRange);
                                 l.rerouteTo(AccessDeniedView.class);
                             }
-                        } catch (UnknownHostException e) {
+                        } catch (UnknownHostException | URISyntaxException e) {
                             LOGGER.error("failed to check IP address is in secure address range", e);
                         }
                     } else {
