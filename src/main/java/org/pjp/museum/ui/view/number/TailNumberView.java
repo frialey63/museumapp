@@ -51,7 +51,7 @@ public class TailNumberView extends VerticalLayout implements AfterNavigationObs
 
     @Override
     public void valueChanged(ComponentValueChangeEvent<ListBox<TailNumber>, TailNumber> event) {
-        UI.getCurrent().navigate(ExhibitView.class, event.getValue().uuid());
+        UI.getCurrent().navigate(ExhibitView.class, event.getValue().tailNumber());
     }
 
 }

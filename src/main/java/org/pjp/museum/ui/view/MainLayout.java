@@ -9,7 +9,7 @@ import org.pjp.museum.ui.view.info.GeneralInformationView;
 import org.pjp.museum.ui.view.intro.IntroductionView;
 import org.pjp.museum.ui.view.kids.KidsStuffView;
 import org.pjp.museum.ui.view.number.TailNumberView;
-import org.pjp.museum.ui.view.scan.ScannerView;
+import org.pjp.museum.ui.view.scan.ScannerZxingView;
 import org.pjp.museum.ui.view.settings.SettingsView;
 import org.pjp.museum.ui.view.survey.VisitorSurveyView;
 import org.slf4j.Logger;
@@ -107,7 +107,7 @@ public class MainLayout extends AppLayout {
         nav.addClassNames("app-nav");
 
         nav.addItem(new AppNavItem("Introduction", IntroductionView.class, "la la-home"));
-        nav.addItem(new AppNavItem("Scan QR Code", ScannerView.class, "la la-qrcode"));
+        nav.addItem(new AppNavItem("Scan QR Code", ScannerZxingView.class, "la la-qrcode"));
         nav.addItem(new AppNavItem("Enter Tail Number", TailNumberView.class, "la la-keyboard-o"));
         nav.addItem(new AppNavItem("Kids Stuff", KidsStuffView.class, "la la-gamepad"));
         nav.addItem(new AppNavItem("General Information", GeneralInformationView.class, "la la-info"));

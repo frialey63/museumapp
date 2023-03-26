@@ -46,6 +46,10 @@ public class Exhibit {
         this.audioFile = audioFile;
     }
 
+    public Exhibit(int displayOrder, @NotBlank String name, @NotBlank String tailNumber, @NotBlank String description, @NotBlank String imageFile, @NotBlank String audioFile) {
+        this(null, displayOrder, name, tailNumber, description, imageFile, audioFile);
+    }
+
     public String getUuid() {
         return uuid;
     }

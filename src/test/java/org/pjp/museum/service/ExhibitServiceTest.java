@@ -52,16 +52,16 @@ class ExhibitServiceTest {
     void testGetExhibit() {
         // GIVEN
 
-        String uuid = UuidStr.random();
-        Exhibit exhibit = new Exhibit(uuid, 0, "name", "tailNumber", "description", "imageFile", "audioFile");
+        String tailNumber = "XV352";
+        Exhibit exhibit = new Exhibit(UuidStr.random(), 0, "name", tailNumber, "description", "imageFile", "audioFile");
 
         // WHEN
 
-        Mockito.when(repository.findById(uuid)).thenReturn(Optional.of(exhibit));
+        Mockito.when(repository.findByTailNumber(tailNumber)).thenReturn(Optional.of(exhibit));
 
         // THEN
 
-        Optional<Exhibit> optExhibit = service.getExhibit(uuid);
+        Optional<Exhibit> optExhibit = service.getExhibit(tailNumber);
 
         assertTrue(optExhibit.isPresent());
         assertEquals(exhibit, optExhibit.get());

@@ -54,7 +54,7 @@ public class ImportCsvView extends VerticalLayout {
                     String imageFile = record.get("imageFile");
                     String audioFile = record.get("audioFile");
 
-                    Exhibit exhibit = new Exhibit(null, displayOrder, name, tailNumber, description, imageFile, audioFile);
+                    Exhibit exhibit = new Exhibit(displayOrder, name, tailNumber, description, imageFile, audioFile);
                     LOGGER.info(exhibit.toString());
 
                     service.saveExhibit(qrCode, exhibit);

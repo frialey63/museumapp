@@ -9,7 +9,7 @@ import org.pjp.museum.ui.util.ImageUtils;
 import org.pjp.museum.ui.util.SettingsUtil;
 import org.pjp.museum.ui.view.MainLayout;
 import org.pjp.museum.ui.view.number.TailNumberView;
-import org.pjp.museum.ui.view.scan.ScannerView;
+import org.pjp.museum.ui.view.scan.ScannerZxingView;
 import org.vaadin.addon.audio.server.AudioPlayer;
 import org.vaadin.addon.audio.server.Stream;
 import org.vaadin.addon.audio.server.encoders.WaveEncoder;
@@ -35,7 +35,7 @@ import com.vaadin.flow.server.StreamResource;
 @Route(value = "exhibit", layout = MainLayout.class)
 public class ExhibitView extends VerticalLayout implements AfterNavigationObserver, HasUrlParameter<String> {
 
-	private static final long serialVersionUID = -3241685802423500738L;
+    private static final long serialVersionUID = -3241685802423500738L;
 
     private static final String SORRY_AN_ERROR = "Sorry, an error occurred while attempting to look-up the exhibit for this QR Code.";
 
@@ -51,7 +51,7 @@ public class ExhibitView extends VerticalLayout implements AfterNavigationObserv
 
     private final ExhibitService service;
 
-    private String uuid;
+    private String tailNumber;
 
     public ExhibitView(ExhibitService service) {
         super();
@@ -59,7 +59,7 @@ public class ExhibitView extends VerticalLayout implements AfterNavigationObserv
 
         Button nextButton = new Button("Goto Next Exhibit", e -> {
             if (SettingsUtil.isScanning()) {
-                UI.getCurrent().navigate(ScannerView.class);
+                UI.getCurrent().navigate(ScannerZxingView.class);
             } else {
                 UI.getCurrent().navigate(TailNumberView.class);
             }
@@ -81,7 +81,7 @@ public class ExhibitView extends VerticalLayout implements AfterNavigationObserv
 
     @Override
     public void afterNavigation(AfterNavigationEvent event) {
-        service.getExhibit(uuid).ifPresentOrElse(exhibit -> {
+        service.getExhibit(tailNumber).ifPresentOrElse(exhibit -> {
             title.getElement().setProperty("innerHTML", String.format("%s<br/>%s", exhibit.getName(), exhibit.getTailNumber()));
             title.getStyle().set("text-align", "center");
 
@@ -119,7 +119,7 @@ public class ExhibitView extends VerticalLayout implements AfterNavigationObserv
 
     @Override
     public void setParameter(BeforeEvent event, @OptionalParameter String parameter) {
-        uuid = parameter;
+        tailNumber = parameter;
     }
 
 }
