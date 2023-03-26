@@ -55,9 +55,7 @@ public class IntroductionView extends VerticalLayout implements AfterNavigationO
 
 
         Button startButton = new Button("Start Tour", e -> {
-            String uuid = ExhibitService.MUSEUM_UUID;
-
-            UI.getCurrent().navigate(ExhibitView.class, uuid);
+            UI.getCurrent().navigate(ExhibitView.class, ExhibitService.MUSEUM);
         });
 
         setHorizontalComponentAlignment(Alignment.CENTER, title, startButton);

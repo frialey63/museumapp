@@ -3,6 +3,12 @@
 This project can be used as a starting point to create your own Vaadin application with Spring Boot.
 It contains all the necessary configuration and some placeholder files to get you started.
 
+## Azure
+
+    az login
+    ac acr login -n rafmanstoncontainerregistry
+    mvn -Pproduction compile jib:build
+
 ## TODO
 
 Audio announcements, PA
