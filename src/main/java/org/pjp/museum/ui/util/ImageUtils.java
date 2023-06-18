@@ -22,6 +22,11 @@ public final class ImageUtils {
 
         return is;
     }
+    
+    public static boolean existsAndReadable(String filename) {
+    	File file = new File(IMAGE_DIR, filename);
+		return file.exists() && file.canRead();
+    }
 
     private ImageUtils() {
         // prevent instantiation

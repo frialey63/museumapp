@@ -8,10 +8,14 @@ import org.pjp.museum.ui.collab.Broadcaster;
 import org.pjp.museum.ui.collab.MuseumMessage;
 import org.pjp.museum.ui.collab.MuseumMessage.MessageType;
 import org.pjp.museum.util.UuidStr;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 @Service
 public class MuseumService {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(MuseumService.class);
 
     private static final int TEN_MINUTES = 10;
 
@@ -56,11 +60,12 @@ public class MuseumService {
         });
     }
 
-    public void testData() {
-        repository.deleteAll();
-
-        Setting setting = new Setting(UuidStr.random(), Setting.CLOSING_TIME, "16:00");
-        repository.save(setting);
-
+    public void initData() {
+        if (repository.count() == 0) {
+        	LOGGER.info("initialising the museum repository with Setting");
+        	
+            Setting setting = new Setting(UuidStr.random(), Setting.CLOSING_TIME, "16:00");
+            repository.save(setting);
+        }
     }
 }

@@ -62,8 +62,9 @@ public class MuseumApp extends SpringBootServletInitializer implements AppShellC
 
     @Override
     public void run(ApplicationArguments args) throws Exception {
+        museumService.initData();
+
         if (Sets.newHashSet(springProfilesActive).contains("test")) {
-            museumService.testData();
             exhibitService.testData();
         }
 

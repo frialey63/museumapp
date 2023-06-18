@@ -84,6 +84,11 @@ public final class AudioUtils {
         return stream;
     }
 
+    public static boolean existsAndReadable(String filename) {
+    	File file = new File(AUDIO_DIR, filename);
+		return file.exists() && file.canRead();
+    }
+
     private AudioUtils() {
         // prevent instantiation
     }

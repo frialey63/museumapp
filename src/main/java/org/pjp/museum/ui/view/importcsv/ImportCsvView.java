@@ -9,6 +9,9 @@ import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVRecord;
 import org.pjp.museum.model.Exhibit;
 import org.pjp.museum.service.ExhibitService;
+import org.pjp.museum.ui.util.AudioUtils;
+import org.pjp.museum.ui.util.ImageUtils;
+import org.pjp.museum.ui.util.TextUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -24,6 +27,14 @@ public class ImportCsvView extends VerticalLayout {
     private static final long serialVersionUID = 3386437553156944523L;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ImportCsvView.class);
+
+    private static final String TEXT_EXTN = ".txt";
+
+    private static final String IMAGE_EXTN = ".jpg";
+
+    private static final String AUDIO_EXTN = ".wav";
+
+    private static final String QR_EXTN = "-qrcode.png";
 
     private MultiFileMemoryBuffer buffer = new MultiFileMemoryBuffer();
 
@@ -46,20 +57,25 @@ public class ImportCsvView extends VerticalLayout {
                 int count = 0;
 
                 for (CSVRecord record : records) {
-                    String qrCode = record.get("qrCode");
                     int displayOrder = Integer.parseInt(record.get("displayOrder"));
                     String name = record.get("name");
                     String tailNumber = record.get("tailNumber");
-                    String description = record.get("description");
-                    String imageFile = record.get("imageFile");
-                    String audioFile = record.get("audioFile");
+                    String baseFilename = record.get("baseFilename");
+                    
+                    String textFilename = baseFilename + TEXT_EXTN;
+                    String imageFilename = baseFilename + IMAGE_EXTN;
+                    String audioFilename = baseFilename + AUDIO_EXTN;
+                    
+                    if (TextUtils.existsAndReadable(textFilename) && AudioUtils.existsAndReadable(audioFilename) && ImageUtils.existsAndReadable(imageFilename)) {
+                    	String qrCode = baseFilename + QR_EXTN;
+                    	
+                        Exhibit exhibit = new Exhibit(displayOrder, name, tailNumber, textFilename, imageFilename, audioFilename);
+                        LOGGER.info(exhibit.toString());
 
-                    Exhibit exhibit = new Exhibit(displayOrder, name, tailNumber, description, imageFile, audioFile);
-                    LOGGER.info(exhibit.toString());
+                        service.saveExhibit(qrCode, exhibit);
 
-                    service.saveExhibit(qrCode, exhibit);
-
-                    count++;
+                        count++;
+                    }
                 }
 
                 LOGGER.info("finished loading {} exhibits from CSV", count);
