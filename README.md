@@ -6,7 +6,7 @@ It contains all the necessary configuration and some placeholder files to get yo
 ## Azure
 
     az login
-    ac acr login -n rafmanstoncontainerregistry
+    az acr login -n rafmanstoncontainerregistry
     mvn -Pproduction compile jib:build
 
 ## TODO
