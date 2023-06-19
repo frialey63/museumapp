@@ -11,6 +11,8 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Document
 public class Exhibit {
 
+    public static final String MUSEUM = "MUSEUM";
+
     @Id
     private String uuid;
 
@@ -83,7 +85,7 @@ public class Exhibit {
     }
 
     public boolean hasTailNumber() {
-        return !tailNumber.isBlank();
+        return !MUSEUM.equals(tailNumber);
     }
 
     public String getDescription() {

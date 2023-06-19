@@ -14,8 +14,6 @@ import org.springframework.stereotype.Service;
 @Service
 public class ExhibitService {
 
-    public static final String MUSEUM = "MUSEUM";
-
     private final ExhibitRepository repository;
 
     public ExhibitService(ExhibitRepository repository) {
@@ -49,7 +47,7 @@ public class ExhibitService {
 
         {
             String description = "The RAF Manston History Museum started life as the RAF Manston History Club in 1986 with the intention of presenting exhibits and artefacts connected with this famous airfield from its beginning on 29th May 1916 as Royal Naval Air Service Manston. Housed in a large wooden hut that had been used by the Intelligence Section during World War 2, the museum has had a couple of moves to other buildings before settling in its present location, the former Mechanical Transport Section hangars, in the mid 1990's.";
-            Exhibit exhibit = new Exhibit(UuidStr.random(), 0, "The RAF Manston History Museum", MUSEUM, description, "museum.jpg", "museum.wav");
+            Exhibit exhibit = new Exhibit(UuidStr.random(), 0, "The RAF Manston History Museum", Exhibit.MUSEUM, description, "museum.jpg", "museum.wav");
             repository.save(exhibit);
         }
 

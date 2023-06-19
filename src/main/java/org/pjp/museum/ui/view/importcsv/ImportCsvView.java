@@ -16,6 +16,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.vaadin.flow.component.html.Label;
+import com.vaadin.flow.component.notification.Notification;
+import com.vaadin.flow.component.notification.NotificationVariant;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.upload.Upload;
 import com.vaadin.flow.component.upload.receivers.MultiFileMemoryBuffer;
@@ -69,16 +71,21 @@ public class ImportCsvView extends VerticalLayout {
                     if (TextUtils.existsAndReadable(textFilename) && AudioUtils.existsAndReadable(audioFilename) && ImageUtils.existsAndReadable(imageFilename)) {
                     	String qrCode = baseFilename + QR_EXTN;
                     	
-                        Exhibit exhibit = new Exhibit(displayOrder, name, tailNumber, textFilename, imageFilename, audioFilename);
+                        Exhibit exhibit = new Exhibit(displayOrder, name, tailNumber, TextUtils.readText(textFilename), imageFilename, audioFilename);
                         LOGGER.info(exhibit.toString());
 
                         service.saveExhibit(qrCode, exhibit);
 
                         count++;
+                    } else {
+                    	Notification notification = new Notification(String.format("Failed to import exhibit %s with baseFilename %s", tailNumber, baseFilename));
+                    	notification.addThemeVariants(NotificationVariant.LUMO_ERROR);
                     }
                 }
+                
+                Notification notification = Notification.show(String.format("Finished importing %d exhibits from CSV", count));
+                notification.addThemeVariants(NotificationVariant.LUMO_SUCCESS);
 
-                LOGGER.info("finished loading {} exhibits from CSV", count);
             } catch (NumberFormatException e) {
                 LOGGER.warn("problem converting number while attempting to import exhibits from CSV file", e);
             } catch (IOException e) {

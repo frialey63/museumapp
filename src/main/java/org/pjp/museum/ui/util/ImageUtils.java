@@ -12,15 +12,11 @@ public final class ImageUtils {
     private static final String IMAGE_DIR = Env.MUSEUM_DATA + "data/image";
 
     public static InputStream getInputStreamFromFile(String filename) throws RuntimeException {
-        InputStream is = null;
-
         try {
-            is = new FileInputStream(IMAGE_DIR + File.separator + filename);
+        	return new FileInputStream(IMAGE_DIR + File.separator + filename);
         } catch (FileNotFoundException e) {
             throw new RuntimeException(e);
         }
-
-        return is;
     }
     
     public static boolean existsAndReadable(String filename) {

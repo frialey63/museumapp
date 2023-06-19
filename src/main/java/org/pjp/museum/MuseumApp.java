@@ -42,7 +42,7 @@ public class MuseumApp extends SpringBootServletInitializer implements AppShellC
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MuseumApp.class);
 
-    private static final String APP_DOWNLOAD_URL = "app-download-url.jpg";
+    private static final String APP_DOWNLOAD_URL = "app-download-url.png";
 
     @Value("${spring.profiles.active:default}")
     private String[] springProfilesActive;

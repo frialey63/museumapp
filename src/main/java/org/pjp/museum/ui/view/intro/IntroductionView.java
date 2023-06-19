@@ -1,6 +1,6 @@
 package org.pjp.museum.ui.view.intro;
 
-import org.pjp.museum.service.ExhibitService;
+import org.pjp.museum.model.Exhibit;
 import org.pjp.museum.ui.view.MainLayout;
 import org.pjp.museum.ui.view.exhibit.ExhibitView;
 import org.slf4j.Logger;
@@ -55,7 +55,7 @@ public class IntroductionView extends VerticalLayout implements AfterNavigationO
 
 
         Button startButton = new Button("Start Tour", e -> {
-            UI.getCurrent().navigate(ExhibitView.class, ExhibitService.MUSEUM);
+            UI.getCurrent().navigate(ExhibitView.class, Exhibit.MUSEUM);
         });
 
         setHorizontalComponentAlignment(Alignment.CENTER, title, startButton);
