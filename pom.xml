@@ -206,7 +206,7 @@
                     </to>
                     <container>
                         <jvmFlags>
-                            <jvmFlag>-Dspring.profiles.active=cosmos,test</jvmFlag>
+                            <jvmFlag>-Dspring.profiles.active=cosmos</jvmFlag>
                         </jvmFlags>
                         <mainClass>org.pjp.museum.MuseumApp</mainClass>
                     </container>
