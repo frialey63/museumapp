@@ -41,6 +41,8 @@ public class MainLayout extends AppLayout {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MainLayout.class);
 
+    private static final boolean SHOW_SURVEY = false;
+
     private H1 viewTitle;
 
     private Registration broadcasterRegistration;
@@ -111,7 +113,9 @@ public class MainLayout extends AppLayout {
         nav.addItem(new AppNavItem("Enter Tail Number", TailNumberView.class, "la la-keyboard-o"));
         nav.addItem(new AppNavItem("Kids Stuff", KidsStuffView.class, "la la-gamepad"));
         nav.addItem(new AppNavItem("General Information", GeneralInformationView.class, "la la-info"));
-        nav.addItem(new AppNavItem("Visitor Survey", VisitorSurveyView.class, "la la-question-circle-o"));
+        if (SHOW_SURVEY) {
+            nav.addItem(new AppNavItem("Visitor Survey", VisitorSurveyView.class, "la la-question-circle-o"));
+        }
         nav.addItem(new AppNavItem("Settings", SettingsView.class, "la la-cog"));
         nav.addItem(new AppNavItem("About", AboutView.class, "la la-info"));
 
