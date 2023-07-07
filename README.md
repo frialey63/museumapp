@@ -26,6 +26,10 @@ Monetisation
 - Raffles
 - Membership
 
+Quiz of the Day
+
+Exhibit mechanisation / animations
+
 ## DONE
 
 Links to web site for museum and cafe

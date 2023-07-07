@@ -4,6 +4,7 @@ import org.pjp.museum.ui.view.MainLayout;
 import org.springframework.beans.factory.annotation.Value;
 
 import com.vaadin.flow.component.html.Anchor;
+import com.vaadin.flow.component.html.AnchorTarget;
 import com.vaadin.flow.component.html.H2;
 import com.vaadin.flow.component.html.Image;
 import com.vaadin.flow.component.html.Paragraph;
@@ -40,6 +41,9 @@ public class AboutView extends VerticalLayout implements AfterNavigationObserver
     @Value("${application.version}")
     private String applicationVersion;
 
+    @Value("${privacy-policy.url}")
+    private String privacyPolicyUrl;
+
     private final Image museumImage = new Image("images/empty-plant.png", "logo");
 
     private final Anchor museumAnchor = new Anchor("http://google.co.uk/", museumImage);
@@ -56,12 +60,14 @@ public class AboutView extends VerticalLayout implements AfterNavigationObserver
 
     private final Paragraph appParagraph = new Paragraph();
 
+    private final Anchor privacyPolicyAnchor = new Anchor("https://en.wikipedia.org/wiki/Privacy_policy", "Privacy Policy", AnchorTarget.BLANK);
+
     public AboutView() {
         super();
 
         setSpacing(false);
 
-        add(museumAnchor, heading, new Span(facebookAnchor, new Span(" "), instagramAnchor), appParagraph);
+        add(museumAnchor, heading, new Span(facebookAnchor, new Span(" "), instagramAnchor), appParagraph, privacyPolicyAnchor);
 
         setSizeFull();
         setJustifyContentMode(JustifyContentMode.CENTER);
@@ -82,6 +88,8 @@ public class AboutView extends VerticalLayout implements AfterNavigationObserver
         heading.setText(aboutHeading);
 
         appParagraph.setText(APP_NAME + applicationVersion);
+
+        privacyPolicyAnchor.setHref(privacyPolicyUrl);
     }
 
 }
