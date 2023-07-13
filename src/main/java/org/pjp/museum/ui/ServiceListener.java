@@ -18,6 +18,7 @@ import org.springframework.stereotype.Component;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.router.RouteConfiguration;
 import com.vaadin.flow.server.ServiceInitEvent;
+import com.vaadin.flow.server.VaadinService;
 import com.vaadin.flow.server.VaadinServiceInitListener;
 import com.vaadin.flow.server.VaadinSession;
 
@@ -27,6 +28,21 @@ public class ServiceListener implements VaadinServiceInitListener {
     private static final long serialVersionUID = -3678291874101081863L;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(VaadinServiceInitListener.class);
+
+	/**
+	 * Get the real IP address where there may be a redirect by a proxy or load-balancer.  
+	 * @param session
+	 * @return
+	 */
+	private static String getRealAddress(VaadinSession session) {
+        String header = VaadinService.getCurrentRequest().getHeader("X-Forwarded-For");
+        
+        if (Strings.isNotBlank(header)) {
+        	return header.split(",")[0].trim();
+        }
+        
+		return session.getBrowser().getAddress();
+	}
 
     @Value("${enable.csv.import:false}")
     private boolean enableCsvImport;
@@ -60,11 +76,11 @@ public class ServiceListener implements VaadinServiceInitListener {
                 ui.addBeforeEnterListener(l -> {
                     String[] secureAddressRangeArr = secureAddressRange.split("-");
 
+                    String ipAddress = getRealAddress(ui.getSession());
+                    LOGGER.info("IP address = {}", ipAddress);
+                    
                     if (secureAddressRangeArr.length == 2) {
                         LOGGER.debug("secureAddressRangeArr[0] = {}, secureAddressRangeArr[1] = {}", secureAddressRangeArr[0], secureAddressRangeArr[1]);
-
-                        String ipAddress = ui.getSession().getBrowser().getAddress();
-                        LOGGER.info("IP address = {}", ipAddress);
 
                         // check whether App is being accessed on Museum wifi network, if not redirect to the Access Denied page
                         try {

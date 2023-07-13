@@ -2,6 +2,7 @@ package org.pjp.museum.ui.view.exhibit;
 
 import java.nio.ByteBuffer;
 
+import org.pjp.museum.model.Exhibit;
 import org.pjp.museum.service.ExhibitService;
 import org.pjp.museum.ui.component.CompactVerticalLayout;
 import org.pjp.museum.ui.util.AudioUtils;
@@ -41,6 +42,16 @@ public class ExhibitView extends VerticalLayout implements AfterNavigationObserv
 
     private static final String NOT_FOUND = "not-found.jpg";
 
+	private static String formatNameAndTailNumber(Exhibit exhibit) {
+		String tailNumber = exhibit.getTailNumber();
+		
+		if (Exhibit.MUSEUM.equals(tailNumber)) {
+			return exhibit.getName();
+		}
+		
+		return String.format("%s<br/>%s", exhibit.getName(), tailNumber);
+	}
+
     private final H2 title = new H2();
 
     private final Image image = new Image();
@@ -57,7 +68,7 @@ public class ExhibitView extends VerticalLayout implements AfterNavigationObserv
         super();
         this.service = service;
 
-        Button nextButton = new Button("Goto Next Exhibit", e -> {
+        Button nextButton = new Button("Go To Next Exhibit", e -> {
             if (SettingsUtil.isScanning()) {
                 UI.getCurrent().navigate(ScannerZxingView.class);
             } else {
@@ -82,7 +93,7 @@ public class ExhibitView extends VerticalLayout implements AfterNavigationObserv
     @Override
     public void afterNavigation(AfterNavigationEvent event) {
         service.getExhibit(tailNumber).ifPresentOrElse(exhibit -> {
-            title.getElement().setProperty("innerHTML", String.format("%s<br/>%s", exhibit.getName(), exhibit.getTailNumber()));
+            title.getElement().setProperty("innerHTML", formatNameAndTailNumber(exhibit));
             title.getStyle().set("text-align", "center");
 
             description.getElement().setProperty("innerHTML", exhibit.getDescription());

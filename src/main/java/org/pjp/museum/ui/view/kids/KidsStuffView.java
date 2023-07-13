@@ -27,9 +27,6 @@ public class KidsStuffView extends VerticalLayout implements AfterNavigationObse
 
             add(new H4("Manston Railway"));
             add(new Image("images/manston_railway_400.jpg", "Manston Railway"));
-
-            add(new H4("Disney Flight Simulator"));
-            add(new Image("images/disney_planes_400.jpg", "Disney Planes"));
         }
 
         {
@@ -40,12 +37,9 @@ public class KidsStuffView extends VerticalLayout implements AfterNavigationObse
 
             add(new H4("Drawing Table"));
             add(new Image("images/drawing_table_400.jpg", "Drawing Table"));
-
-            add(new H4("Code Breakers"));
-            add(new Image("images/code_breakers_400.jpg", "Code Breakers"));
         }
 
-        setSizeFull();
+        setWidthFull();
         setJustifyContentMode(JustifyContentMode.START);
         setDefaultHorizontalComponentAlignment(Alignment.CENTER);
 

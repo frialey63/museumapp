@@ -36,6 +36,7 @@ public class IntroductionView extends VerticalLayout implements AfterNavigationO
                 <ul>
                     <li>On Android, "Add App to Home screen" when prompted <em>and restart app from icon</em></li>
                     <li>Use headphones, otherwise please minimise speaker volume to avoid disturbance to other visitors</li>
+                    <li>Audio is mono therefore wireless ear pieces may be shared between two people</li>
                 </ul>
                 <em>Note screensaver may cause the scanner to fail, then it will be necessary to restart the app.</em>
             """;
