@@ -55,19 +55,19 @@ public class ExhibitService {
             String description = "The Buccaneer was originally designed as a Maritime Strike aircraft for the Royal Navy, under the requirement designation NA.39. " +
                     "Later adopted by the Royal Air Force, the Buccaneer had a successful career, culminating with participation in the Gulf War.";
             Exhibit exhibit = new Exhibit(0, "Blackburn Buccaneer S.2B", "XV352", description, "buccaneer.jpg", "buccaneer.wav");
-            saveExhibit("buccaneer-qrcode.jpg", exhibit);
+            saveExhibit("buccaneer-qrcode.png", exhibit);
         }
 
         {
             String description = "English Electric Canberra WT205 was built in 1955 as part of Contract 6/ACFT/6448 as a B6 bomber, by Short Bros & Harland in Belfast.  Fifty aircraft were built in this batch.";
             Exhibit exhibit = new Exhibit(0, "English Electric Canberra B6", "WT205", description, "canberra.jpg", "canberra.wav");
-            saveExhibit("canberra-qrcode.jpg", exhibit);
+            saveExhibit("canberra-qrcode.png", exhibit);
         }
 
         {
             String description = "XG226 was part of a third production batch of 110 F.Mk.6A Hunters constructed by Hawker Siddeley at Kingston-upon-Thames, and first took to the air on 28th September 1956, piloted by Hawker test pilot Frank Bullen.";
             Exhibit exhibit = new Exhibit(0, "Hawker Siddeley Hunter F.Mk.6A ", "XG226", description, "hunter.jpg", "hunter.wav");
-            saveExhibit("hunter-qrcode.jpg", exhibit);
+            saveExhibit("hunter-qrcode.png", exhibit);
         }
     }
 }
