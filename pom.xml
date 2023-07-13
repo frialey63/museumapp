@@ -142,7 +142,7 @@
         <dependency>
            <groupId>org.vaadin.addon.audio</groupId>
            <artifactId>AudioPlayer</artifactId>
-           <version>3.1.0</version>
+           <version>SNAPSHOT-3.0.0a</version>
         </dependency>
         <dependency>
            <groupId>org.vaadin.addons.pjp</groupId>
