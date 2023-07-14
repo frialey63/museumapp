@@ -5,6 +5,7 @@ import java.net.URISyntaxException;
 import java.net.UnknownHostException;
 
 import org.apache.logging.log4j.util.Strings;
+import org.pjp.museum.service.SessionRecordService;
 import org.pjp.museum.ui.util.SettingsUtil;
 import org.pjp.museum.ui.view.MainLayout;
 import org.pjp.museum.ui.view.accessdenied.AccessDeniedView;
@@ -21,6 +22,7 @@ import com.vaadin.flow.server.ServiceInitEvent;
 import com.vaadin.flow.server.VaadinService;
 import com.vaadin.flow.server.VaadinServiceInitListener;
 import com.vaadin.flow.server.VaadinSession;
+import com.vaadin.flow.server.WrappedSession;
 
 @Component
 public class ServiceListener implements VaadinServiceInitListener {
@@ -28,7 +30,7 @@ public class ServiceListener implements VaadinServiceInitListener {
     private static final long serialVersionUID = -3678291874101081863L;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(VaadinServiceInitListener.class);
-
+    
 	/**
 	 * Get the real IP address where there may be a redirect by a proxy or load-balancer.  
 	 * @param session
@@ -50,7 +52,7 @@ public class ServiceListener implements VaadinServiceInitListener {
     @Value("${secure.address.range}")
     private String secureAddressRange;
 
-    @SuppressWarnings("unchecked")
+	@SuppressWarnings("unchecked")
     @Override
     public void serviceInit(ServiceInitEvent event) {
         LOGGER.info("enableCsvImport = {}" + enableCsvImport);
@@ -63,8 +65,22 @@ public class ServiceListener implements VaadinServiceInitListener {
 
         event.getSource().addSessionInitListener(initEvent -> {
             VaadinSession vaadinSession = initEvent.getSession();
-            LOGGER.debug("A new Session {} has been initialized!", vaadinSession.getSession().getId());
+            
+            LOGGER.debug("A new Session {} has been initialised", vaadinSession.getSession().getId());
             SettingsUtil.setMode(vaadinSession, SettingsUtil.QR_CODE);
+            
+            SessionRecordService service = StaticHelper.getBean(SessionRecordService.class);
+            service.createRecord(vaadinSession);
+        });
+        
+        event.getSource().addSessionDestroyListener(destroyEvent -> {
+            VaadinSession vaadinSession = destroyEvent.getSession();
+            WrappedSession wrappedSession = vaadinSession.getSession();
+            
+			LOGGER.debug("Session {} has been destroyed, saving a SessionRecord", wrappedSession.getId());
+			
+            SessionRecordService service = StaticHelper.getBean(SessionRecordService.class);
+            service.finaliseRecord(vaadinSession);
         });
 
         LOGGER.info("secureAddressRange = {}", secureAddressRange);
@@ -77,7 +93,7 @@ public class ServiceListener implements VaadinServiceInitListener {
                     String[] secureAddressRangeArr = secureAddressRange.split("-");
 
                     String ipAddress = getRealAddress(ui.getSession());
-                    LOGGER.info("IP address = {}", ipAddress);
+                    LOGGER.debug("IP address = {}", ipAddress);
                     
                     if (secureAddressRangeArr.length == 2) {
                         LOGGER.debug("secureAddressRangeArr[0] = {}, secureAddressRangeArr[1] = {}", secureAddressRangeArr[0], secureAddressRangeArr[1]);
