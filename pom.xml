@@ -6,7 +6,7 @@
     <groupId>org.pjp.museum</groupId>
     <artifactId>museumapp</artifactId>
     <name>Museum App</name>
-    <version>0.2.1-SNAPSHOT</version>
+    <version>0.3.0-SNAPSHOT</version>
     <packaging>jar</packaging>
 
     <properties>
@@ -142,7 +142,7 @@
         <dependency>
            <groupId>org.vaadin.addon.audio</groupId>
            <artifactId>AudioPlayer</artifactId>
-           <version>SNAPSHOT-3.0.2a</version>
+           <version>3.0.2a-SNAPSHOT</version>
         </dependency>
         <dependency>
            <groupId>org.vaadin.addons.pjp</groupId>
