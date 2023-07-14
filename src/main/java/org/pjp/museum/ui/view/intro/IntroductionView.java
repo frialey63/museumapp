@@ -70,7 +70,7 @@ public class IntroductionView extends VerticalLayout implements AfterNavigationO
     @Override
     public void afterNavigation(AfterNavigationEvent event) {
         WebBrowser browser = VaadinSession.getCurrent().getBrowser();
-        LOGGER.info(browser.getBrowserApplication());
+        LOGGER.debug(browser.getBrowserApplication());
     }
 
 }
