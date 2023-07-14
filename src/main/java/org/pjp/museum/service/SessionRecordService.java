@@ -2,11 +2,13 @@ package org.pjp.museum.service;
 
 import java.time.Instant;
 
+import org.pjp.museum.model.MobileType;
 import org.pjp.museum.model.SessionRecord;
 import org.pjp.museum.repository.SessionRecordRepository;
 import org.springframework.stereotype.Service;
 
 import com.vaadin.flow.server.VaadinSession;
+import com.vaadin.flow.server.WebBrowser;
 import com.vaadin.flow.server.WrappedSession;
 
 @Service
@@ -22,7 +24,8 @@ public class SessionRecordService {
     public void createRecord(VaadinSession vaadinSession) {
         WrappedSession wrappedSession = vaadinSession.getSession();
 
-        SessionRecord sessionRecord = new SessionRecord(wrappedSession.getId(), vaadinSession.getBrowser().getBrowserApplication(), Instant.now());
+        WebBrowser browser = vaadinSession.getBrowser();
+		SessionRecord sessionRecord = new SessionRecord(wrappedSession.getId(), browser.getBrowserApplication(), MobileType.get(browser), Instant.now());
 		repository.save(sessionRecord);
     }
 

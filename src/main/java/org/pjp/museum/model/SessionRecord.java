@@ -19,6 +19,9 @@ public class SessionRecord {
 
     @NotBlank
     private String browserApplication;
+    
+    @NotNull
+    private MobileType mobileType;
 
     @NotNull
     private Instant startTime;
@@ -29,10 +32,11 @@ public class SessionRecord {
 
     private Set<String> tailPicks = new HashSet<>();
 
-	public SessionRecord(String uuid, @NotBlank String browserApplication, @NotNull Instant startTime) {
+	public SessionRecord(String uuid, @NotBlank String browserApplication, @NotNull MobileType mobileType, @NotNull Instant startTime) {
 		super();
 		this.uuid = uuid;
 		this.browserApplication = browserApplication;
+		this.mobileType = mobileType;
 		this.startTime = startTime;
 	}
 
@@ -50,6 +54,10 @@ public class SessionRecord {
 
 	public String getBrowserApplication() {
 		return browserApplication;
+	}
+
+	public MobileType getMobileType() {
+		return mobileType;
 	}
 
 	public Instant getStartTime() {
