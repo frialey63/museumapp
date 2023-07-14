@@ -1,5 +1,6 @@
 package org.pjp.museum.ui.view.scan;
 
+import org.pjp.museum.service.SessionRecordService;
 import org.pjp.museum.ui.view.MainLayout;
 import org.pjp.museum.ui.view.exhibit.ExhibitView;
 import org.slf4j.Logger;
@@ -11,6 +12,7 @@ import com.vaadin.flow.component.dependency.NpmPackage;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
+import com.vaadin.flow.server.VaadinSession;
 import com.wontlost.zxing.Constants;
 import com.wontlost.zxing.ZXingVaadinReader;
 
@@ -24,7 +26,7 @@ public class ScannerZxingView extends VerticalLayout {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ScannerZxingView.class);
 
-    public ScannerZxingView() {
+    public ScannerZxingView(SessionRecordService service) {
         super();
 
         ZXingVaadinReader zxingReader = new ZXingVaadinReader();
@@ -32,9 +34,12 @@ public class ScannerZxingView extends VerticalLayout {
         zxingReader.setId("video"); //id needs to be 'video' if From.camera.
 
         zxingReader.addValueChangeListener(e -> {
-            LOGGER.debug("tailNumber = {}", e.getValue());
+            String tailNumber = e.getValue();
+			LOGGER.debug("tailNumber = {}", tailNumber);
+            
+            service.updateRecord(VaadinSession.getCurrent(), tailNumber, true);
 
-            UI.getCurrent().navigate(ExhibitView.class, e.getValue());
+            UI.getCurrent().navigate(ExhibitView.class, tailNumber);
         });
 
         zxingReader.setWidthFull();
