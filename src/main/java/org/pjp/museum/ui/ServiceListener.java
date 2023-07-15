@@ -6,6 +6,7 @@ import java.net.UnknownHostException;
 
 import org.apache.logging.log4j.util.Strings;
 import org.pjp.museum.service.SessionRecordService;
+import org.pjp.museum.ui.util.AddressUtils;
 import org.pjp.museum.ui.util.SettingsUtil;
 import org.pjp.museum.ui.view.MainLayout;
 import org.pjp.museum.ui.view.accessdenied.AccessDeniedView;
@@ -19,7 +20,6 @@ import org.springframework.stereotype.Component;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.router.RouteConfiguration;
 import com.vaadin.flow.server.ServiceInitEvent;
-import com.vaadin.flow.server.VaadinService;
 import com.vaadin.flow.server.VaadinServiceInitListener;
 import com.vaadin.flow.server.VaadinSession;
 import com.vaadin.flow.server.WrappedSession;
@@ -31,21 +31,6 @@ public class ServiceListener implements VaadinServiceInitListener {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(VaadinServiceInitListener.class);
     
-	/**
-	 * Get the real IP address where there may be a redirect by a proxy or load-balancer.  
-	 * @param session
-	 * @return
-	 */
-	private static String getRealAddress(VaadinSession session) {
-        String header = VaadinService.getCurrentRequest().getHeader("X-Forwarded-For");
-        
-        if (Strings.isNotBlank(header)) {
-        	return header.split(",")[0].trim();
-        }
-        
-		return session.getBrowser().getAddress();
-	}
-
     @Value("${enable.csv.import:false}")
     private boolean enableCsvImport;
 
@@ -92,7 +77,7 @@ public class ServiceListener implements VaadinServiceInitListener {
                 ui.addBeforeEnterListener(l -> {
                     String[] secureAddressRangeArr = secureAddressRange.split("-");
 
-                    String ipAddress = getRealAddress(ui.getSession());
+                    String ipAddress = AddressUtils.getRealAddress(ui.getSession());
                     LOGGER.debug("IP address = {}", ipAddress);
                     
                     if (secureAddressRangeArr.length == 2) {
