@@ -18,6 +18,9 @@ public class SessionRecord {
     private String uuid;
 
     @NotBlank
+    private String ipAddress;
+    
+    @NotBlank
     private String browserApplication;
     
     @NotNull
@@ -32,9 +35,10 @@ public class SessionRecord {
 
     private Set<String> tailPicks = new HashSet<>();
 
-	public SessionRecord(String uuid, @NotBlank String browserApplication, @NotNull MobileType mobileType, @NotNull Instant startTime) {
+	public SessionRecord(String uuid, @NotBlank String ipAddress, @NotBlank String browserApplication, @NotNull MobileType mobileType, @NotNull Instant startTime) {
 		super();
 		this.uuid = uuid;
+		this.ipAddress = ipAddress;
 		this.browserApplication = browserApplication;
 		this.mobileType = mobileType;
 		this.startTime = startTime;
@@ -50,6 +54,10 @@ public class SessionRecord {
 
 	public String getUuid() {
 		return uuid;
+	}
+
+	public String getIpAddress() {
+		return ipAddress;
 	}
 
 	public String getBrowserApplication() {
