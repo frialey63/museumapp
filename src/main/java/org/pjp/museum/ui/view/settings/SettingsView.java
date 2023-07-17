@@ -41,7 +41,8 @@ public class SettingsView extends VerticalLayout {
         add(idMode, deafAccess, language);
 
         idMode.addValueChangeListener(l -> {
-            SettingsUtil.setMode(UI.getCurrent().getSession(), l.getValue());
+            String mode = l.getValue();
+			SettingsUtil.setMode(UI.getCurrent().getSession(), mode);
         });
 
         setSizeFull();

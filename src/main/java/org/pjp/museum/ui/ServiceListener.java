@@ -1,9 +1,5 @@
 package org.pjp.museum.ui;
 
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.net.UnknownHostException;
-
 import org.apache.logging.log4j.util.Strings;
 import org.pjp.museum.service.SessionRecordService;
 import org.pjp.museum.ui.util.AddressUtils;
@@ -11,7 +7,6 @@ import org.pjp.museum.ui.util.SettingsUtil;
 import org.pjp.museum.ui.view.MainLayout;
 import org.pjp.museum.ui.view.accessdenied.AccessDeniedView;
 import org.pjp.museum.ui.view.importcsv.ImportCsvView;
-import org.pjp.museum.util.IPWithGivenRangeCheck;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -34,8 +29,8 @@ public class ServiceListener implements VaadinServiceInitListener {
     @Value("${enable.csv.import:false}")
     private boolean enableCsvImport;
 
-    @Value("${secure.address.range}")
-    private String secureAddressRange;
+    @Value("${secure.addresses}")
+    private String secureAddresses;
 
 	@SuppressWarnings("unchecked")
     @Override
@@ -68,35 +63,24 @@ public class ServiceListener implements VaadinServiceInitListener {
             service.finaliseRecord(vaadinSession);
         });
 
-        LOGGER.info("secureAddressRange = {}", secureAddressRange);
+        LOGGER.info("secureAddresses = {}", secureAddresses);
 
         event.getSource().addUIInitListener(uiEvent -> {
             UI ui = uiEvent.getUI();
 
-            if (Strings.isNotEmpty(secureAddressRange)) {
+            if (Strings.isNotEmpty(secureAddresses)) {
                 ui.addBeforeEnterListener(l -> {
-                    String[] secureAddressRangeArr = secureAddressRange.split("-");
+                    // check whether App is being accessed on Museum wifi network, if not redirect to the Access Denied page
 
-                    String ipAddress = AddressUtils.getRealAddress(ui.getSession());
+                	String ipAddress = AddressUtils.getRealAddress(ui.getSession());
                     LOGGER.debug("IP address = {}", ipAddress);
                     
-                    if (secureAddressRangeArr.length == 2) {
-                        LOGGER.debug("secureAddressRangeArr[0] = {}, secureAddressRangeArr[1] = {}", secureAddressRangeArr[0], secureAddressRangeArr[1]);
-
-                        // check whether App is being accessed on Museum wifi network, if not redirect to the Access Denied page
-                        try {
-                            String host = new URI("http://" + ipAddress).getHost();
-
-                            if (!IPWithGivenRangeCheck.checkIPv4IsInRangeByConvertingToInt(host, secureAddressRangeArr[0], secureAddressRangeArr[1])) {
-                                LOGGER.debug("IP address {} is not within the secure address range {}", host, secureAddressRange);
-                                l.rerouteTo(AccessDeniedView.class);
-                            }
-                        } catch (UnknownHostException | URISyntaxException e) {
-                            LOGGER.error("failed to check IP address is in secure address range", e);
-                        }
-                    } else {
-                        LOGGER.debug("error in specification of the secure address range {}", secureAddressRange);
-                    }
+                	boolean result = AddressUtils.checkAddressIsSecure(secureAddresses, ipAddress);
+                	
+                	if (!result) {
+                        LOGGER.debug("IP address {} is not within the secure addresses {}", ipAddress, secureAddresses);
+                        l.rerouteTo(AccessDeniedView.class);
+                	}
                 });
             }
         });
