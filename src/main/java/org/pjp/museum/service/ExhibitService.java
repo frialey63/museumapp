@@ -28,6 +28,10 @@ public class ExhibitService {
     public List<TailNumber> getTailNumbers() {
         return repository.findAll().stream().filter(Exhibit::hasTailNumber).map(e -> new TailNumber(e.getTailNumber(), e.getUuid())).sorted().collect(Collectors.toList());
     }
+    
+    public List<Exhibit> findAllExhibits() {
+    	return repository.findAll();
+    }
 
     public String saveExhibit(String qrCode, Exhibit exhibit) {
         String uuid = UuidStr.random();
