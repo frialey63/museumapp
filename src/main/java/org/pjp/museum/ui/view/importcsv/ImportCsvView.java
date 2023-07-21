@@ -20,11 +20,16 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.vaadin.olli.FileDownloadWrapper;
 
+import com.vaadin.flow.component.accordion.Accordion;
+import com.vaadin.flow.component.accordion.AccordionPanel;
 import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.details.DetailsVariant;
 import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.notification.NotificationVariant;
+import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.component.textfield.IntegerField;
 import com.vaadin.flow.component.upload.Upload;
 import com.vaadin.flow.component.upload.receivers.MultiFileMemoryBuffer;
 import com.vaadin.flow.router.PageTitle;
@@ -47,15 +52,43 @@ public class ImportCsvView extends VerticalLayout {
 
     private static final String QR_EXTN = "-qrcode.png";
 
-    private MultiFileMemoryBuffer buffer = new MultiFileMemoryBuffer();
+    static {
+		LOGGER.info("tmpdir = {}", TMPDIR);
+    }
+    
+    private final ExhibitService service;
+    
+    private final MultiFileMemoryBuffer buffer = new MultiFileMemoryBuffer();
 
     private final FileDownloadWrapper buttonWrapper = new FileDownloadWrapper(null);
 
+    private final IntegerField sizeField = new IntegerField();
+    
+    private final IntegerField fontSizeField = new IntegerField();
+    
     /**
      * @param service
      */
     public ImportCsvView(ExhibitService service) {
         super();
+        this.service = service;
+        
+        Accordion accordion = new Accordion();
+        
+        AccordionPanel csvImportPanel = accordion.add("CSV Import", getCsvImportLayout());
+        csvImportPanel.addThemeVariants(DetailsVariant.FILLED);
+        
+        AccordionPanel qrCodeGenerationPanel = accordion.add("QR Code Generation", getQrCodeGenerationLayout());
+        qrCodeGenerationPanel.addThemeVariants(DetailsVariant.FILLED);
+        qrCodeGenerationPanel.addOpenedChangeListener(l -> {
+        	sizeField.setValue(400);
+            fontSizeField.setValue(40);
+        });
+
+        add(accordion);
+    }
+
+    private VerticalLayout getCsvImportLayout() {
         Label label = new Label("Select the CSV file containing the exhibits for import into MongoDB.");
 
         Upload upload = new Upload(buffer);
@@ -105,31 +138,43 @@ public class ImportCsvView extends VerticalLayout {
                 LOGGER.error("problem with IO while attempting to import exhibits from CSV file", e);
             }
         });
-
-        setMargin(true);
-        setHorizontalComponentAlignment(Alignment.START, label, upload);
-
-        add(label, upload);
         
-        int size = 400;
-        int fontSize = 40;
+        VerticalLayout vl = new VerticalLayout(label, upload);
+        vl.setHorizontalComponentAlignment(Alignment.START, label, upload);
+        vl.setMargin(true);
         
-		String downloadFilename = String.format("qrcodes-%d.zip", size);
+        return vl;
+    }
+    
+    private VerticalLayout getQrCodeGenerationLayout() {
+        Label label = new Label("Download the Zip file containing QR codes of all exhibits for printing.");
+        
+        sizeField.setLabel("Size (px)");
+        sizeField.setValue(400);
+        sizeField.setHasControls(true);
+        sizeField.setMin(0);
+        sizeField.setMax(1000);
+        sizeField.setStep(50);
 
-        label = new Label("Download the Zip file containing QR codes of all exhibits for printing.");
+        fontSizeField.setLabel("Font Size (px)");
+        fontSizeField.setValue(40);
+        fontSizeField.setHasControls(true);
+        fontSizeField.setMin(0);
+        fontSizeField.setMax(100);
+        fontSizeField.setStep(5);
+
+        HorizontalLayout horizontalLayout = new HorizontalLayout(sizeField, fontSizeField);
 
 		buttonWrapper.wrapComponent(new Button("Download Zip"));
-        buttonWrapper.setResource(new StreamResource(downloadFilename, () -> {
+        buttonWrapper.setResource(new StreamResource("qrcodes.zip", () -> {
             InputStream result = null;
 
-    		LOGGER.info("tmpdir = {}", TMPDIR);
-    		
     		File workDir = new File(TMPDIR, "work");
     		workDir.mkdir();
     		
-    		service.findAllExhibits().forEach(exhibit -> {
-    			String filename = String.format("%s-qrcode-%d.png", FileUtils.getBase(exhibit.getImageFile()), size);
-        		QrCodeUtils.createAndWriteQR(exhibit.getTailNumber(), workDir, filename, size, fontSize);
+	        service.findAllExhibits().forEach(exhibit -> {
+    			String filename = String.format("%s-qrcode.png", FileUtils.getBase(exhibit.getImageFile()));
+        		QrCodeUtils.createAndWriteQR(exhibit.getTailNumber(), workDir, filename, sizeField.getValue(), fontSizeField.getValue());
     		});
     		
             try {
@@ -147,10 +192,10 @@ public class ImportCsvView extends VerticalLayout {
             return result;
         }));
 
-        setMargin(true);
-        setHorizontalComponentAlignment(Alignment.START, label, buttonWrapper);
-
-        add(label, buttonWrapper);
+        VerticalLayout vl = new VerticalLayout(label, horizontalLayout, buttonWrapper);
+        vl.setHorizontalComponentAlignment(Alignment.START, label, horizontalLayout, buttonWrapper);
+        vl.setMargin(true);
+        
+        return vl;
     }
-
 }
