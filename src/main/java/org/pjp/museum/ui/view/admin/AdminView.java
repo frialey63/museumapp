@@ -84,7 +84,10 @@ public class AdminView extends VerticalLayout {
         	sizeField.setValue(400);
             fontSizeField.setValue(40);
         });
-
+        
+        setHorizontalComponentAlignment(Alignment.STRETCH, accordion);
+        setWidth("98%");
+        
         add(accordion);
     }
 
