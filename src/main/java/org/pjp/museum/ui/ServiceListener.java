@@ -6,7 +6,7 @@ import org.pjp.museum.ui.util.AddressUtils;
 import org.pjp.museum.ui.util.SettingsUtil;
 import org.pjp.museum.ui.view.MainLayout;
 import org.pjp.museum.ui.view.accessdenied.AccessDeniedView;
-import org.pjp.museum.ui.view.importcsv.ImportCsvView;
+import org.pjp.museum.ui.view.admin.AdminView;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -26,8 +26,8 @@ public class ServiceListener implements VaadinServiceInitListener {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(VaadinServiceInitListener.class);
     
-    @Value("${enable.csv.import:false}")
-    private boolean enableCsvImport;
+    @Value("${enable.admin:false}")
+    private boolean enableAdmin;
 
     @Value("${secure.addresses}")
     private String secureAddresses;
@@ -35,12 +35,12 @@ public class ServiceListener implements VaadinServiceInitListener {
 	@SuppressWarnings("unchecked")
     @Override
     public void serviceInit(ServiceInitEvent event) {
-        LOGGER.info("enableCsvImport = {}" + enableCsvImport);
+        LOGGER.info("enableAdmin = {}" + enableAdmin);
 
-        if (enableCsvImport) {
+        if (enableAdmin) {
             RouteConfiguration configuration = RouteConfiguration.forApplicationScope();
 
-            configuration.setRoute("importcsv", ImportCsvView.class, MainLayout.class);
+            configuration.setRoute("admin", AdminView.class, MainLayout.class);
         }
 
         event.getSource().addSessionInitListener(initEvent -> {

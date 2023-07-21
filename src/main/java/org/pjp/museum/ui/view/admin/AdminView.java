@@ -1,4 +1,4 @@
-package org.pjp.museum.ui.view.importcsv;
+package org.pjp.museum.ui.view.admin;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -35,12 +35,12 @@ import com.vaadin.flow.component.upload.receivers.MultiFileMemoryBuffer;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.server.StreamResource;
 
-@PageTitle("Import CSV")
-public class ImportCsvView extends VerticalLayout {
+@PageTitle("Admin")
+public class AdminView extends VerticalLayout {
 
     private static final long serialVersionUID = 3386437553156944523L;
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(ImportCsvView.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(AdminView.class);
 
 	private static final File TMPDIR = new File(System.getProperty("java.io.tmpdir"));
 	
@@ -69,7 +69,7 @@ public class ImportCsvView extends VerticalLayout {
     /**
      * @param service
      */
-    public ImportCsvView(ExhibitService service) {
+    public AdminView(ExhibitService service) {
         super();
         this.service = service;
         
