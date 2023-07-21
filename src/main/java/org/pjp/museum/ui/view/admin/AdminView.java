@@ -33,6 +33,7 @@ import com.vaadin.flow.component.textfield.IntegerField;
 import com.vaadin.flow.component.upload.Upload;
 import com.vaadin.flow.component.upload.receivers.MultiFileMemoryBuffer;
 import com.vaadin.flow.router.PageTitle;
+import com.vaadin.flow.server.InputStreamFactory;
 import com.vaadin.flow.server.StreamResource;
 
 @PageTitle("Admin")
@@ -152,6 +153,16 @@ public class AdminView extends VerticalLayout {
     private VerticalLayout getQrCodeGenerationLayout() {
         Label label = new Label("Download the Zip file containing QR codes of all exhibits for printing.");
         
+        sizeField.addValueChangeListener(l -> {
+            String name = String.format("qrcodes-%s-%s.zip", sizeField.getValue(), fontSizeField.getValue());
+			buttonWrapper.setResource(new StreamResource(name, getInputStreamFactory()));
+        });
+        
+        fontSizeField.addValueChangeListener(l -> {
+            String name = String.format("qrcodes-%s-%s.zip", sizeField.getValue(), fontSizeField.getValue());
+			buttonWrapper.setResource(new StreamResource(name, getInputStreamFactory()));
+        });
+        
         sizeField.setLabel("Size (px)");
         sizeField.setValue(400);
         sizeField.setHasControls(true);
@@ -169,18 +180,27 @@ public class AdminView extends VerticalLayout {
         HorizontalLayout horizontalLayout = new HorizontalLayout(sizeField, fontSizeField);
 
 		buttonWrapper.wrapComponent(new Button("Download Zip"));
-        buttonWrapper.setResource(new StreamResource("qrcodes.zip", () -> {
-            InputStream result = null;
 
-    		File workDir = new File(TMPDIR, "work");
-    		workDir.mkdir();
-    		
-	        service.findAllExhibits().forEach(exhibit -> {
-    			String filename = String.format("%s-qrcode.png", FileUtils.getBase(exhibit.getImageFile()));
-        		QrCodeUtils.createAndWriteQR(exhibit.getTailNumber(), workDir, filename, sizeField.getValue(), fontSizeField.getValue());
-    		});
-    		
-            try {
+        VerticalLayout vl = new VerticalLayout(label, horizontalLayout, buttonWrapper);
+        vl.setHorizontalComponentAlignment(Alignment.START, label, horizontalLayout, buttonWrapper);
+        vl.setMargin(true);
+        
+        return vl;
+    }
+
+	private InputStreamFactory getInputStreamFactory() {
+		return () -> {
+		    InputStream result = null;
+
+			File workDir = new File(TMPDIR, "work");
+			workDir.mkdir();
+			
+		    service.findAllExhibits().forEach(exhibit -> {
+				String filename = String.format("%s-qrcode.png", FileUtils.getBase(exhibit.getImageFile()));
+				QrCodeUtils.createAndWriteQR(exhibit.getTailNumber(), workDir, filename, sizeField.getValue(), fontSizeField.getValue());
+			});
+			
+		    try {
 				File zipFile = File.createTempFile("tmp-", ".zip", TMPDIR);
 				zipFile.deleteOnExit();
 
@@ -192,13 +212,7 @@ public class AdminView extends VerticalLayout {
 				LOGGER.error("error attempting to zip the QR codes", e);
 			}
 
-            return result;
-        }));
-
-        VerticalLayout vl = new VerticalLayout(label, horizontalLayout, buttonWrapper);
-        vl.setHorizontalComponentAlignment(Alignment.START, label, horizontalLayout, buttonWrapper);
-        vl.setMargin(true);
-        
-        return vl;
-    }
+		    return result;
+		};
+	}
 }
