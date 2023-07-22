@@ -12,8 +12,7 @@ import java.util.zip.ZipOutputStream;
 public final class FileUtils {
 
 	public static String getExtension(File path) {
-		String name = path.getName();
-		return name.substring(name.lastIndexOf('.') + 1);
+		return getExtension(path.getName());
 	}
 
 	public static String getExtension(String path) {
@@ -42,15 +41,15 @@ public final class FileUtils {
 	            } catch (IOException e) {
 	                System.err.println(e);
 	            }
-	          });
+	        });
 	    }
 	}
 	
 	/*
 	 * https://www.baeldung.com/java-delete-directory
 	 */
-	public static void deleteDirectory(File directoryToBeDeleted) throws IOException {
-		Files.walk(directoryToBeDeleted.toPath())
+	public static void deleteDirectory(File dir) throws IOException {
+		Files.walk(dir.toPath())
 	      .sorted(Comparator.reverseOrder())
 	      .map(Path::toFile)
 	      .forEach(File::delete);
