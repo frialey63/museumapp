@@ -23,6 +23,7 @@ import org.pjp.museum.ui.util.QrCodeUtils;
 import org.pjp.museum.ui.util.TextUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.vaadin.olli.FileDownloadWrapper;
 import org.vaadin.stefan.table.Table;
 import org.vaadin.stefan.table.TableCell;
@@ -40,12 +41,14 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.IntegerField;
 import com.vaadin.flow.component.upload.Upload;
 import com.vaadin.flow.component.upload.receivers.MultiFileMemoryBuffer;
+import com.vaadin.flow.router.AfterNavigationEvent;
+import com.vaadin.flow.router.AfterNavigationObserver;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.server.InputStreamFactory;
 import com.vaadin.flow.server.StreamResource;
 
 @PageTitle("Admin")
-public class AdminView extends VerticalLayout {
+public class AdminView extends VerticalLayout implements AfterNavigationObserver {
 
     private static final long serialVersionUID = 3386437553156944523L;
 
@@ -75,6 +78,11 @@ public class AdminView extends VerticalLayout {
     
     private final SessionRecordService sessionRecordService;
     
+    @Value("${enable.csv-import:false}")
+    private boolean enableCsvImport;
+    
+    private AccordionPanel csvImportPanel;
+
     private final MultiFileMemoryBuffer buffer = new MultiFileMemoryBuffer();
 
     private final FileDownloadWrapper buttonWrapper = new FileDownloadWrapper(null);
@@ -83,6 +91,8 @@ public class AdminView extends VerticalLayout {
     
     private final IntegerField fontSizeField = new IntegerField();
     
+    private final Table table = new Table();
+    
     public AdminView(ExhibitService exhibitService, SessionRecordService sessionRecordService) {
         super();
         this.exhibitService = exhibitService;
@@ -90,13 +100,10 @@ public class AdminView extends VerticalLayout {
         
         Accordion accordion = new Accordion();
         
-        AccordionPanel statsPanel = accordion.add("Statistics", getStatisticsLayout(true));
+        AccordionPanel statsPanel = accordion.add("Statistics", getStatisticsLayout());
         statsPanel.addThemeVariants(DetailsVariant.FILLED);
-        statsPanel.addOpenedChangeListener(l -> {
-        	// TODO compile statistics on opened
-        });
         
-        AccordionPanel csvImportPanel = accordion.add("CSV Import", getCsvImportLayout());
+        csvImportPanel = accordion.add("CSV Import", getCsvImportLayout());
         csvImportPanel.addThemeVariants(DetailsVariant.FILLED);
         
         AccordionPanel qrCodeGenerationPanel = accordion.add("QR Code Generation", getQrCodeGenerationLayout());
@@ -111,6 +118,26 @@ public class AdminView extends VerticalLayout {
         
         add(accordion);
     }
+
+	@Override
+	public void afterNavigation(AfterNavigationEvent event) {
+    	Map<Period, Statistic> statistics = sessionRecordService.compileStatistics();
+        
+        for (Period period : Period.values()) {
+            Statistic statistic = statistics.get(period);
+			
+            TableRow detailsRow = table.addRow();
+            detailsRow.addDataCell().setText(period.name());
+			addDataCell(detailsRow, Integer.toString(statistic.getCount(MobileType.ANDROID)));
+            addDataCell(detailsRow, Integer.toString(statistic.getCount(MobileType.IPHONE)));
+            addDataCell(detailsRow, Integer.toString(statistic.getCount(MobileType.WINDOWS_PHONE)));
+            addDataCell(detailsRow, Integer.toString(statistic.getCount(MobileType.OTHER)));
+            addDataCell(detailsRow, Integer.toString(statistic.getTotalCount()));
+            detailsRow = table.addRow();
+		}
+        
+        csvImportPanel.setEnabled(enableCsvImport);
+	}
 
     private VerticalLayout getCsvImportLayout() {
         Label label = new Label("Select the CSV file containing the exhibits for import into MongoDB.");
@@ -237,11 +264,9 @@ public class AdminView extends VerticalLayout {
 	}
 	
     
-    private VerticalLayout getStatisticsLayout(boolean opened) {
+    private VerticalLayout getStatisticsLayout() {
         Label label = new Label("The usage statistics for various periods.");
         
-        Table table = new Table();
-
         TableRow headerRow = table.addRow();
         headerRow.addHeaderCell().setText("");
         headerRow.addHeaderCell().setText("Android");
@@ -250,23 +275,6 @@ public class AdminView extends VerticalLayout {
         headerRow.addHeaderCell().setText("Other");
         headerRow.addHeaderCell().setText("Total");
 
-        if (opened) {
-        	Map<Period, Statistic> statistics = sessionRecordService.compileStatistics();
-            
-            for (Period period : Period.values()) {
-                Statistic statistic = statistics.get(period);
-    			
-                TableRow detailsRow = table.addRow();
-                detailsRow.addDataCell().setText(period.name());
-    			addDataCell(detailsRow, Integer.toString(statistic.getCount(MobileType.ANDROID)));
-                addDataCell(detailsRow, Integer.toString(statistic.getCount(MobileType.IPHONE)));
-                addDataCell(detailsRow, Integer.toString(statistic.getCount(MobileType.WINDOWS_PHONE)));
-                addDataCell(detailsRow, Integer.toString(statistic.getCount(MobileType.OTHER)));
-                addDataCell(detailsRow, Integer.toString(statistic.getTotalCount()));
-                detailsRow = table.addRow();
-    		}
-        }
-        
         table.setWidth("80%");
         
         VerticalLayout vl = new VerticalLayout(label, table);
