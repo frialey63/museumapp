@@ -72,6 +72,7 @@ public class SessionRecordService {
 
     	repository.findAll().forEach(sessionRecord -> {
     		LOGGER.debug(sessionRecord.toString());
+    		
     		sessionRecord.getPeriods().forEach(period -> {
     			result.get(period).incCount(sessionRecord.getMobileType());
     		});

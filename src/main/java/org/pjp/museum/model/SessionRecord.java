@@ -18,7 +18,9 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Document
 public class SessionRecord {
 
-    @Id
+    private static final ZoneOffset UTC = ZoneOffset.UTC;
+
+	@Id
     private String uuid;
 
     @NotBlank
@@ -141,10 +143,10 @@ public class SessionRecord {
     	
     	LocalDate now = LocalDate.now();
     	
-		Instant startOfDay = now.atStartOfDay().toInstant(ZoneOffset.UTC);    	
-		Instant startOfWeek = now.with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY)).atStartOfDay().toInstant(ZoneOffset.UTC);
-		Instant startOfMonth = now.with(TemporalAdjusters.firstDayOfMonth()).atStartOfDay().toInstant(ZoneOffset.UTC);
-		Instant startOfYear = now.with(TemporalAdjusters.firstDayOfYear()).atStartOfDay().toInstant(ZoneOffset.UTC);
+		Instant startOfDay = now.atStartOfDay().toInstant(UTC);    	
+		Instant startOfWeek = now.with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY)).atStartOfDay().toInstant(UTC);
+		Instant startOfMonth = now.with(TemporalAdjusters.firstDayOfMonth()).atStartOfDay().toInstant(UTC);
+		Instant startOfYear = now.with(TemporalAdjusters.firstDayOfYear()).atStartOfDay().toInstant(UTC);
 		
     	if (startTime.isAfter(startOfDay)) {
     		result.add(Period.TODAY);
