@@ -6,11 +6,16 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
+import java.util.Map;
 
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVRecord;
 import org.pjp.museum.model.Exhibit;
+import org.pjp.museum.model.MobileType;
+import org.pjp.museum.model.Period;
 import org.pjp.museum.service.ExhibitService;
+import org.pjp.museum.service.SessionRecordService;
+import org.pjp.museum.ui.bean.Statistic;
 import org.pjp.museum.ui.util.AudioUtils;
 import org.pjp.museum.ui.util.FileUtils;
 import org.pjp.museum.ui.util.ImageUtils;
@@ -19,6 +24,9 @@ import org.pjp.museum.ui.util.TextUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.vaadin.olli.FileDownloadWrapper;
+import org.vaadin.stefan.table.Table;
+import org.vaadin.stefan.table.TableCell;
+import org.vaadin.stefan.table.TableRow;
 
 import com.vaadin.flow.component.accordion.Accordion;
 import com.vaadin.flow.component.accordion.AccordionPanel;
@@ -53,11 +61,19 @@ public class AdminView extends VerticalLayout {
 
     private static final String QR_EXTN = "-qrcode.png";
 
+	private static void addDataCell(TableRow detailsRow, String text) {
+		TableCell cell = detailsRow.addDataCell();
+        cell.setText(text);
+        cell.getStyle().set("text-align", "center");
+	}
+
     static {
 		LOGGER.info("tmpdir = {}", TMPDIR);
     }
     
-    private final ExhibitService service;
+    private final ExhibitService exhibitService;
+    
+    private final SessionRecordService sessionRecordService;
     
     private final MultiFileMemoryBuffer buffer = new MultiFileMemoryBuffer();
 
@@ -67,14 +83,18 @@ public class AdminView extends VerticalLayout {
     
     private final IntegerField fontSizeField = new IntegerField();
     
-    /**
-     * @param service
-     */
-    public AdminView(ExhibitService service) {
+    public AdminView(ExhibitService exhibitService, SessionRecordService sessionRecordService) {
         super();
-        this.service = service;
+        this.exhibitService = exhibitService;
+        this.sessionRecordService = sessionRecordService;
         
         Accordion accordion = new Accordion();
+        
+        AccordionPanel statsPanel = accordion.add("Statistics", getStatisticsLayout(true));
+        statsPanel.addThemeVariants(DetailsVariant.FILLED);
+        statsPanel.addOpenedChangeListener(l -> {
+        	// TODO compile statistics on opened
+        });
         
         AccordionPanel csvImportPanel = accordion.add("CSV Import", getCsvImportLayout());
         csvImportPanel.addThemeVariants(DetailsVariant.FILLED);
@@ -82,7 +102,7 @@ public class AdminView extends VerticalLayout {
         AccordionPanel qrCodeGenerationPanel = accordion.add("QR Code Generation", getQrCodeGenerationLayout());
         qrCodeGenerationPanel.addThemeVariants(DetailsVariant.FILLED);
         qrCodeGenerationPanel.addOpenedChangeListener(l -> {
-        	sizeField.setValue(400);
+            sizeField.setValue(400);
             fontSizeField.setValue(40);
         });
         
@@ -124,7 +144,7 @@ public class AdminView extends VerticalLayout {
                         Exhibit exhibit = new Exhibit(displayOrder, name, tailNumber, TextUtils.readText(textFilename), imageFilename, audioFilename);
                         LOGGER.info(exhibit.toString());
 
-                        service.saveExhibit(qrCode, exhibit);
+                        exhibitService.saveExhibit(qrCode, exhibit);
 
                         count++;
                     } else {
@@ -195,7 +215,7 @@ public class AdminView extends VerticalLayout {
 			File workDir = new File(TMPDIR, "work");
 			workDir.mkdir();
 			
-		    service.findAllExhibits().forEach(exhibit -> {
+		    exhibitService.findAllExhibits().forEach(exhibit -> {
 				String filename = String.format("%s-qrcode.png", FileUtils.getBase(exhibit.getImageFile()));
 				QrCodeUtils.createAndWriteQR(exhibit.getTailNumber(), workDir, filename, sizeField.getValue(), fontSizeField.getValue());
 			});
@@ -215,4 +235,44 @@ public class AdminView extends VerticalLayout {
 		    return result;
 		};
 	}
+	
+    
+    private VerticalLayout getStatisticsLayout(boolean opened) {
+        Label label = new Label("The usage statistics for various periods.");
+        
+        Table table = new Table();
+
+        TableRow headerRow = table.addRow();
+        headerRow.addHeaderCell().setText("");
+        headerRow.addHeaderCell().setText("Android");
+        headerRow.addHeaderCell().setText("iPhone");
+        headerRow.addHeaderCell().setText("Windows Phone");
+        headerRow.addHeaderCell().setText("Other");
+        headerRow.addHeaderCell().setText("Total");
+
+        if (opened) {
+        	Map<Period, Statistic> statistics = sessionRecordService.compileStatistics();
+            
+            for (Period period : Period.values()) {
+                Statistic statistic = statistics.get(period);
+    			
+                TableRow detailsRow = table.addRow();
+                detailsRow.addDataCell().setText(period.name());
+    			addDataCell(detailsRow, Integer.toString(statistic.getCount(MobileType.ANDROID)));
+                addDataCell(detailsRow, Integer.toString(statistic.getCount(MobileType.IPHONE)));
+                addDataCell(detailsRow, Integer.toString(statistic.getCount(MobileType.WINDOWS_PHONE)));
+                addDataCell(detailsRow, Integer.toString(statistic.getCount(MobileType.OTHER)));
+                addDataCell(detailsRow, Integer.toString(statistic.getTotalCount()));
+                detailsRow = table.addRow();
+    		}
+        }
+        
+        table.setWidth("80%");
+        
+        VerticalLayout vl = new VerticalLayout(label, table);
+        vl.setHorizontalComponentAlignment(Alignment.START, label, table);
+        vl.setMargin(true);
+        
+        return vl;
+    }
 }

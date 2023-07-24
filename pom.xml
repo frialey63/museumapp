@@ -174,6 +174,11 @@
 		   <artifactId>file-download-wrapper</artifactId>
 		   <version>6.0.0</version>
 		</dependency>
+		<dependency>
+   			<groupId>org.vaadin.stefan</groupId>
+   			<artifactId>html-table</artifactId>
+   			<version>1.2.0</version>
+		</dependency>
 
         <!-- Other dependencies -->
         <dependency>

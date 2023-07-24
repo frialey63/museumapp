@@ -1,6 +1,10 @@
 package org.pjp.museum.model;
 
+import java.time.DayOfWeek;
 import java.time.Instant;
+import java.time.LocalDate;
+import java.time.ZoneOffset;
+import java.time.temporal.TemporalAdjusters;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
@@ -81,7 +85,8 @@ public class SessionRecord {
 	}
 
 	public void addTailScan(String tailNumber) {
-		tailScans.add(tailNumber);
+		String entry = String.format("%d:%s", Instant.now().toEpochMilli(), tailNumber);
+		tailScans.add(entry);
 	}
 
 	public Set<String> getTailPicks() {
@@ -93,7 +98,8 @@ public class SessionRecord {
 	}
 
 	public void addTailPick(String tailNumber) {
-		tailPicks.add(tailNumber);
+		String entry = String.format("%d:%s", Instant.now().toEpochMilli(), tailNumber);
+		tailPicks.add(entry);
 	}
 
 	@Override
@@ -113,5 +119,52 @@ public class SessionRecord {
 		return Objects.equals(uuid, other.uuid);
 	}
     
+    @Override
+	public String toString() {
+		StringBuilder builder = new StringBuilder();
+		builder.append("SessionRecord [uuid=");
+		builder.append(uuid);
+		builder.append(", ipAddress=");
+		builder.append(ipAddress);
+		builder.append(", mobileType=");
+		builder.append(mobileType);
+		builder.append(", startTime=");
+		builder.append(startTime);
+		builder.append(", finishTime=");
+		builder.append(finishTime);
+		builder.append("]");
+		return builder.toString();
+	}
+
+	public Set<Period> getPeriods() {
+    	Set<Period> result = new HashSet<>();
+    	
+    	LocalDate now = LocalDate.now();
+    	
+		Instant startOfDay = now.atStartOfDay().toInstant(ZoneOffset.UTC);    	
+		Instant startOfWeek = now.with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY)).atStartOfDay().toInstant(ZoneOffset.UTC);
+		Instant startOfMonth = now.with(TemporalAdjusters.firstDayOfMonth()).atStartOfDay().toInstant(ZoneOffset.UTC);
+		Instant startOfYear = now.with(TemporalAdjusters.firstDayOfYear()).atStartOfDay().toInstant(ZoneOffset.UTC);
+		
+    	if (startTime.isAfter(startOfDay)) {
+    		result.add(Period.TODAY);
+    	}
+    	
+    	if (startTime.isAfter(startOfWeek)) {
+    		result.add(Period.WEEK);
+    	}
+    	
+    	if (startTime.isAfter(startOfMonth)) {
+    		result.add(Period.MONTH);
+    	}
+    	
+    	if (startTime.isAfter(startOfYear)) {
+    		result.add(Period.YEAR);
+    	}
+    	
+    	result.add(Period.ALL);
+    	
+    	return result;
+    }
     
 }
