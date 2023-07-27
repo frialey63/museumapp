@@ -6,16 +6,11 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
-import java.util.Map;
 
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVRecord;
 import org.pjp.museum.model.Exhibit;
-import org.pjp.museum.model.MobileType;
-import org.pjp.museum.model.Period;
 import org.pjp.museum.service.ExhibitService;
-import org.pjp.museum.service.SessionRecordService;
-import org.pjp.museum.ui.bean.Statistic;
 import org.pjp.museum.ui.util.AudioUtils;
 import org.pjp.museum.ui.util.FileUtils;
 import org.pjp.museum.ui.util.ImageUtils;
@@ -23,11 +18,7 @@ import org.pjp.museum.ui.util.QrCodeUtils;
 import org.pjp.museum.ui.util.TextUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Value;
 import org.vaadin.olli.FileDownloadWrapper;
-import org.vaadin.stefan.table.Table;
-import org.vaadin.stefan.table.TableCell;
-import org.vaadin.stefan.table.TableRow;
 
 import com.vaadin.flow.component.accordion.Accordion;
 import com.vaadin.flow.component.accordion.AccordionPanel;
@@ -64,22 +55,11 @@ public class AdminView extends VerticalLayout implements AfterNavigationObserver
 
     private static final String QR_EXTN = "-qrcode.png";
 
-	private static void addDataCell(TableRow detailsRow, String text) {
-		TableCell cell = detailsRow.addDataCell();
-        cell.setText(text);
-        cell.getStyle().set("text-align", "center");
-	}
-
     static {
 		LOGGER.info("tmpdir = {}", TMPDIR);
     }
     
     private final ExhibitService exhibitService;
-    
-    private final SessionRecordService sessionRecordService;
-    
-    @Value("${enable.csv-import:false}")
-    private boolean enableCsvImport;
     
     private AccordionPanel csvImportPanel;
 
@@ -91,27 +71,11 @@ public class AdminView extends VerticalLayout implements AfterNavigationObserver
     
     private final IntegerField fontSizeField = new IntegerField();
     
-    private final Table usageTable = new Table();
-    
-    private final Table tailNumberScansTable = new Table();
-    
-    private final Table tailNumberPicksTable = new Table();
-    
-    public AdminView(ExhibitService exhibitService, SessionRecordService sessionRecordService) {
+    public AdminView(ExhibitService exhibitService) {
         super();
         this.exhibitService = exhibitService;
-        this.sessionRecordService = sessionRecordService;
         
         Accordion accordion = new Accordion();
-        
-        AccordionPanel usagePanel = accordion.add("Usage Statistics", getUsageStatisticsLayout());
-        usagePanel.addThemeVariants(DetailsVariant.FILLED);
-        
-        AccordionPanel tailNumberScansPanel = accordion.add("Tail Number (Scans) Statistics", getTailNumberStatisticsLayout(tailNumberScansTable));
-        tailNumberScansPanel.addThemeVariants(DetailsVariant.FILLED);
-        
-        AccordionPanel tailNumberPicksPanel = accordion.add("Tail Number (Picks) Statistics", getTailNumberStatisticsLayout(tailNumberPicksTable));
-        tailNumberPicksPanel.addThemeVariants(DetailsVariant.FILLED);
         
         csvImportPanel = accordion.add("CSV Import", getCsvImportLayout());
         csvImportPanel.addThemeVariants(DetailsVariant.FILLED);
@@ -131,61 +95,7 @@ public class AdminView extends VerticalLayout implements AfterNavigationObserver
 
 	@Override
 	public void afterNavigation(AfterNavigationEvent event) {
-    	populateUsageStatistics();
-        
-    	populateTailNumberStatistics(tailNumberScansTable, true);
-        
-    	populateTailNumberStatistics(tailNumberPicksTable, false);
-        
-        csvImportPanel.setEnabled(enableCsvImport);
-	}
-
-	private void populateUsageStatistics() {
-		Map<Period, Statistic<MobileType>> statistics = sessionRecordService.compileUsageStatistics();
-        
-        for (MobileType mobileType : MobileType.values()) {
-            TableRow detailsRow = usageTable.addRow();
-            
-            detailsRow.addDataCell().setText(mobileType.toString());
-            for (Period period : Period.values()) {
-                Statistic<MobileType> statistic = statistics.get(period);
-    			
-    			addDataCell(detailsRow, Integer.toString(statistic.getCount(mobileType)));
-            }
-		}
-        
-        TableRow detailsRow = usageTable.addRow();
-        
-        detailsRow.addDataCell().setText("Total");
-        for (Period period : Period.values()) {
-            Statistic<MobileType> statistic = statistics.get(period);
-			
-            addDataCell(detailsRow, Integer.toString(statistic.getTotalCount()));
-        }
-	}
-
-	private void populateTailNumberStatistics(Table table, boolean scan) {
-		Map<Period, Statistic<String>> statistics = sessionRecordService.compileTailNumberStatistics(scan);
-        
-		exhibitService.getTailNumbers().stream().sorted().forEach(tailNumber -> {
-            TableRow detailsRow = table.addRow();
-            
-            detailsRow.addDataCell().setText(tailNumber.tailNumber());
-            for (Period period : Period.values()) {
-                Statistic<String> statistic = statistics.get(period);
-    			
-    			addDataCell(detailsRow, Integer.toString(statistic.getCount(tailNumber.tailNumber())));
-            }
-		});
-        
-        TableRow detailsRow = table.addRow();
-        
-        detailsRow.addDataCell().setText("Total");
-        for (Period period : Period.values()) {
-            Statistic<String> statistic = statistics.get(period);
-			
-            addDataCell(detailsRow, Integer.toString(statistic.getTotalCount()));
-        }
+		// nothing to do
 	}
 
     private VerticalLayout getCsvImportLayout() {
@@ -312,44 +222,4 @@ public class AdminView extends VerticalLayout implements AfterNavigationObserver
 		};
 	}
 	    
-    private VerticalLayout getUsageStatisticsLayout() {
-        Label label = new Label("The app usage statistics for various periods.");
-        
-        TableRow headerRow = usageTable.addRow();
-        
-        headerRow.addHeaderCell().setText("");
-        for (Period period : Period.values()) {
-            headerRow.addHeaderCell().setText(period.name());
-        }
-
-        usageTable.setWidth("80%");
-        
-        VerticalLayout vl = new VerticalLayout(label, usageTable);
-        vl.setHorizontalComponentAlignment(Alignment.START, label, usageTable);
-        vl.setMargin(true);
-        
-        return vl;
-    }
-    
-    
-    
-	private VerticalLayout getTailNumberStatisticsLayout(Table table) {
-		Label label = new Label("The tail number (scan/pick) statistics for various periods.");
-
-        TableRow headerRow = table.addRow();
-        
-        headerRow.addHeaderCell().setText("");
-        for (Period period : Period.values()) {
-            headerRow.addHeaderCell().setText(period.name());
-        }
-
-        table.setWidth("80%");
-        
-        VerticalLayout vl = new VerticalLayout(label, table);
-        vl.setHorizontalComponentAlignment(Alignment.START, label, table);
-        vl.setMargin(true);
-        
-        return vl;
-	}
-    
 }

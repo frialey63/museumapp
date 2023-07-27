@@ -7,6 +7,7 @@ import org.pjp.museum.ui.util.SettingsUtil;
 import org.pjp.museum.ui.view.MainLayout;
 import org.pjp.museum.ui.view.accessdenied.AccessDeniedView;
 import org.pjp.museum.ui.view.admin.AdminView;
+import org.pjp.museum.ui.view.stats.StatsView;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -29,6 +30,9 @@ public class ServiceListener implements VaadinServiceInitListener {
     @Value("${enable.admin:false}")
     private boolean enableAdmin;
 
+    @Value("${enable.stats:true}")
+    private boolean enableStats;
+
     @Value("${secure.addresses}")
     private String secureAddresses;
 
@@ -37,10 +41,14 @@ public class ServiceListener implements VaadinServiceInitListener {
     public void serviceInit(ServiceInitEvent event) {
         LOGGER.info("enableAdmin = {}" + enableAdmin);
 
-        if (enableAdmin) {
-            RouteConfiguration configuration = RouteConfiguration.forApplicationScope();
+        RouteConfiguration configuration = RouteConfiguration.forApplicationScope();
 
+        if (enableAdmin) {
             configuration.setRoute("admin", AdminView.class, MainLayout.class);
+        }
+
+        if (enableStats) {
+            configuration.setRoute("stats", StatsView.class, MainLayout.class);
         }
 
         event.getSource().addSessionInitListener(initEvent -> {
