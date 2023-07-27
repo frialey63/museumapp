@@ -91,7 +91,11 @@ public class AdminView extends VerticalLayout implements AfterNavigationObserver
     
     private final IntegerField fontSizeField = new IntegerField();
     
-    private final Table table = new Table();
+    private final Table usageTable = new Table();
+    
+    private final Table tailNumberScansTable = new Table();
+    
+    private final Table tailNumberPicksTable = new Table();
     
     public AdminView(ExhibitService exhibitService, SessionRecordService sessionRecordService) {
         super();
@@ -100,8 +104,14 @@ public class AdminView extends VerticalLayout implements AfterNavigationObserver
         
         Accordion accordion = new Accordion();
         
-        AccordionPanel statsPanel = accordion.add("Statistics", getStatisticsLayout());
-        statsPanel.addThemeVariants(DetailsVariant.FILLED);
+        AccordionPanel usagePanel = accordion.add("Usage Statistics", getUsageStatisticsLayout());
+        usagePanel.addThemeVariants(DetailsVariant.FILLED);
+        
+        AccordionPanel tailNumberScansPanel = accordion.add("Tail Number (Scans) Statistics", getTailNumberStatisticsLayout(tailNumberScansTable));
+        tailNumberScansPanel.addThemeVariants(DetailsVariant.FILLED);
+        
+        AccordionPanel tailNumberPicksPanel = accordion.add("Tail Number (Picks) Statistics", getTailNumberStatisticsLayout(tailNumberPicksTable));
+        tailNumberPicksPanel.addThemeVariants(DetailsVariant.FILLED);
         
         csvImportPanel = accordion.add("CSV Import", getCsvImportLayout());
         csvImportPanel.addThemeVariants(DetailsVariant.FILLED);
@@ -121,22 +131,61 @@ public class AdminView extends VerticalLayout implements AfterNavigationObserver
 
 	@Override
 	public void afterNavigation(AfterNavigationEvent event) {
-    	Map<Period, Statistic> statistics = sessionRecordService.compileStatistics();
+    	populateUsageStatistics();
         
-        for (Period period : Period.values()) {
-            Statistic statistic = statistics.get(period);
-			
-            TableRow detailsRow = table.addRow();
-            detailsRow.addDataCell().setText(period.name());
-			addDataCell(detailsRow, Integer.toString(statistic.getCount(MobileType.ANDROID)));
-            addDataCell(detailsRow, Integer.toString(statistic.getCount(MobileType.IPHONE)));
-            addDataCell(detailsRow, Integer.toString(statistic.getCount(MobileType.WINDOWS_PHONE)));
-            addDataCell(detailsRow, Integer.toString(statistic.getCount(MobileType.OTHER)));
-            addDataCell(detailsRow, Integer.toString(statistic.getTotalCount()));
-            detailsRow = table.addRow();
-		}
+    	populateTailNumberStatistics(tailNumberScansTable, true);
+        
+    	populateTailNumberStatistics(tailNumberPicksTable, false);
         
         csvImportPanel.setEnabled(enableCsvImport);
+	}
+
+	private void populateUsageStatistics() {
+		Map<Period, Statistic<MobileType>> statistics = sessionRecordService.compileUsageStatistics();
+        
+        for (MobileType mobileType : MobileType.values()) {
+            TableRow detailsRow = usageTable.addRow();
+            
+            detailsRow.addDataCell().setText(mobileType.toString());
+            for (Period period : Period.values()) {
+                Statistic<MobileType> statistic = statistics.get(period);
+    			
+    			addDataCell(detailsRow, Integer.toString(statistic.getCount(mobileType)));
+            }
+		}
+        
+        TableRow detailsRow = usageTable.addRow();
+        
+        detailsRow.addDataCell().setText("Total");
+        for (Period period : Period.values()) {
+            Statistic<MobileType> statistic = statistics.get(period);
+			
+            addDataCell(detailsRow, Integer.toString(statistic.getTotalCount()));
+        }
+	}
+
+	private void populateTailNumberStatistics(Table table, boolean scan) {
+		Map<Period, Statistic<String>> statistics = sessionRecordService.compileTailNumberStatistics(scan);
+        
+		exhibitService.getTailNumbers().stream().sorted().forEach(tailNumber -> {
+            TableRow detailsRow = table.addRow();
+            
+            detailsRow.addDataCell().setText(tailNumber.tailNumber());
+            for (Period period : Period.values()) {
+                Statistic<String> statistic = statistics.get(period);
+    			
+    			addDataCell(detailsRow, Integer.toString(statistic.getCount(tailNumber.tailNumber())));
+            }
+		});
+        
+        TableRow detailsRow = table.addRow();
+        
+        detailsRow.addDataCell().setText("Total");
+        for (Period period : Period.values()) {
+            Statistic<String> statistic = statistics.get(period);
+			
+            addDataCell(detailsRow, Integer.toString(statistic.getTotalCount()));
+        }
 	}
 
     private VerticalLayout getCsvImportLayout() {
@@ -262,18 +311,37 @@ public class AdminView extends VerticalLayout implements AfterNavigationObserver
 		    return result;
 		};
 	}
-	
-    
-    private VerticalLayout getStatisticsLayout() {
-        Label label = new Label("The usage statistics for various periods.");
+	    
+    private VerticalLayout getUsageStatisticsLayout() {
+        Label label = new Label("The app usage statistics for various periods.");
         
-        TableRow headerRow = table.addRow();
+        TableRow headerRow = usageTable.addRow();
+        
         headerRow.addHeaderCell().setText("");
-        headerRow.addHeaderCell().setText("Android");
-        headerRow.addHeaderCell().setText("iPhone");
-        headerRow.addHeaderCell().setText("Windows Phone");
-        headerRow.addHeaderCell().setText("Other");
-        headerRow.addHeaderCell().setText("Total");
+        for (Period period : Period.values()) {
+            headerRow.addHeaderCell().setText(period.name());
+        }
+
+        usageTable.setWidth("80%");
+        
+        VerticalLayout vl = new VerticalLayout(label, usageTable);
+        vl.setHorizontalComponentAlignment(Alignment.START, label, usageTable);
+        vl.setMargin(true);
+        
+        return vl;
+    }
+    
+    
+    
+	private VerticalLayout getTailNumberStatisticsLayout(Table table) {
+		Label label = new Label("The tail number (scan/pick) statistics for various periods.");
+
+        TableRow headerRow = table.addRow();
+        
+        headerRow.addHeaderCell().setText("");
+        for (Period period : Period.values()) {
+            headerRow.addHeaderCell().setText(period.name());
+        }
 
         table.setWidth("80%");
         
@@ -282,5 +350,6 @@ public class AdminView extends VerticalLayout implements AfterNavigationObserver
         vl.setMargin(true);
         
         return vl;
-    }
+	}
+    
 }

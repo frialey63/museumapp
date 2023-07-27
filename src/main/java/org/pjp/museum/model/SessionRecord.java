@@ -8,6 +8,7 @@ import java.time.temporal.TemporalAdjusters;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
@@ -82,6 +83,10 @@ public class SessionRecord {
 		return tailScans;
 	}
  
+	public Set<String> getTailScansByTailNumber() {
+		return tailScans.stream().map(str -> str.split("\\:")[1]).collect(Collectors.toSet());
+	}
+ 
 	public void setTailScans(Set<String> tailScans) {
 		this.tailScans = tailScans;
 	}
@@ -93,6 +98,10 @@ public class SessionRecord {
 
 	public Set<String> getTailPicks() {
 		return tailPicks;
+	}
+
+	public Set<String> getTailPicksByTailNumber() {
+		return tailPicks.stream().map(str -> str.split("\\:")[1]).collect(Collectors.toSet());
 	}
 
 	public void setTailPicks(Set<String> tailPicks) {
@@ -169,4 +178,8 @@ public class SessionRecord {
     	return result;
     }
     
+	public Set<String> getTailNumbers(boolean scan) {
+		return scan ? getTailScansByTailNumber() : getTailPicksByTailNumber();
+	}
+ 
 }
