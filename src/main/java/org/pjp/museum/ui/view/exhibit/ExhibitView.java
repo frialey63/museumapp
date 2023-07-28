@@ -17,6 +17,7 @@ import org.vaadin.addon.audio.server.encoders.WaveEncoder;
 
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.details.Details;
 import com.vaadin.flow.component.html.H2;
 import com.vaadin.flow.component.html.Image;
 import com.vaadin.flow.component.html.Paragraph;
@@ -75,11 +76,14 @@ public class ExhibitView extends VerticalLayout implements AfterNavigationObserv
                 UI.getCurrent().navigate(TailNumberView.class);
             }
         });
+        
+        Details details = new Details("Description", description);
+        details.setOpened(false);
 
-        VerticalLayout vl = new CompactVerticalLayout(title, image, description, playerControls, nextButton);
+        VerticalLayout vl = new CompactVerticalLayout(title, image, details, playerControls, nextButton);
 
         vl.setHorizontalComponentAlignment(Alignment.CENTER, title, image, playerControls, nextButton);
-        vl.setHorizontalComponentAlignment(Alignment.START, description);
+        vl.setHorizontalComponentAlignment(Alignment.START, details);
 
         Scroller scroller = new Scroller();
         scroller.setScrollDirection(ScrollDirection.VERTICAL);
