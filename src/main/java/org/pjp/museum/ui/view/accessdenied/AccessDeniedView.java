@@ -10,11 +10,13 @@ import com.vaadin.flow.router.Route;
 @Route(value = "accessdenied")
 public class AccessDeniedView extends VerticalLayout {
 
-    private static final long serialVersionUID = 9102902278596466238L;
+	public static final String MESSAGE = "Please connect to the museum wi-fi network for access to the Museum App.";
+
+	private static final long serialVersionUID = 9102902278596466238L;
 
     private final Image image = new Image("images/access_denied.jpg", "access_denied");
 
-    private final Paragraph paragraph = new Paragraph("Please connect to the museum wi-fi network for access to the Museum App.");
+    private final Paragraph paragraph = new Paragraph(MESSAGE);
 
     public AccessDeniedView() {
         super();

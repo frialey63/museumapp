@@ -2,10 +2,12 @@ package org.pjp.museum.ui;
 
 import org.apache.logging.log4j.util.Strings;
 import org.pjp.museum.service.SessionRecordService;
+import org.pjp.museum.ui.collab.Broadcaster;
+import org.pjp.museum.ui.collab.MuseumMessage;
+import org.pjp.museum.ui.collab.MuseumMessage.MessageType;
 import org.pjp.museum.ui.util.AddressUtils;
 import org.pjp.museum.ui.util.SettingsUtil;
 import org.pjp.museum.ui.view.MainLayout;
-import org.pjp.museum.ui.view.accessdenied.AccessDeniedView;
 import org.pjp.museum.ui.view.admin.AdminView;
 import org.pjp.museum.ui.view.stats.StatsView;
 import org.slf4j.Logger;
@@ -26,8 +28,6 @@ public class ServiceListener implements VaadinServiceInitListener {
     private static final long serialVersionUID = -3678291874101081863L;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(VaadinServiceInitListener.class);
-    
-    private static boolean SECURE = false;
     
     @Value("${enable.admin:false}")
     private boolean enableAdmin;
@@ -73,29 +73,28 @@ public class ServiceListener implements VaadinServiceInitListener {
             service.finaliseRecord(vaadinSession);
         });
         
-        if (SECURE) {
-            LOGGER.info("secureAddresses = {}", secureAddresses);
+        LOGGER.info("secureAddresses = {}", secureAddresses);
 
-            event.getSource().addUIInitListener(uiEvent -> {
-                UI ui = uiEvent.getUI();
+        event.getSource().addUIInitListener(uiEvent -> {
+            UI ui = uiEvent.getUI();
 
-                if (Strings.isNotEmpty(secureAddresses)) {
-                    ui.addBeforeEnterListener(l -> {
-                        // check whether App is being accessed on Museum wifi network, if not redirect to the Access Denied page
+            if (Strings.isNotEmpty(secureAddresses)) {
+                ui.addBeforeEnterListener(l -> {
+                    // check whether App is being accessed on Museum wifi network, if not redirect to the Access Denied page
 
-                    	String ipAddress = AddressUtils.getRealAddress(ui.getSession());
-                        LOGGER.debug("IP address = {}", ipAddress);
-                        
-                    	boolean result = AddressUtils.checkAddressIsSecure(secureAddresses, ipAddress);
-                    	
-                    	if (!result) {
-                            LOGGER.debug("IP address {} is not within the secure addresses {}", ipAddress, secureAddresses);
-                            l.rerouteTo(AccessDeniedView.class);
-                    	}
-                    });
-                }
-            });
-        }
+                	String ipAddress = AddressUtils.getRealAddress(ui.getSession());
+                    LOGGER.debug("IP address = {}", ipAddress);
+                    
+                	boolean result = AddressUtils.checkAddressIsSecure(secureAddresses, ipAddress);
+                	
+                	if (!result) {
+                        LOGGER.debug("IP address {} is not within the secure addresses {}", ipAddress, secureAddresses);
+                        //l.rerouteTo(AccessDeniedView.class);
+                        Broadcaster.broadcast(new MuseumMessage(MessageType.WI_FI, 0));
+                	}
+                });
+            }
+        });
     }
 
 }
