@@ -6,16 +6,11 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
-import java.util.Map;
 
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVRecord;
 import org.pjp.museum.model.Exhibit;
-import org.pjp.museum.model.MobileType;
-import org.pjp.museum.model.Period;
 import org.pjp.museum.service.ExhibitService;
-import org.pjp.museum.service.SessionRecordService;
-import org.pjp.museum.ui.bean.Statistic;
 import org.pjp.museum.ui.util.AudioUtils;
 import org.pjp.museum.ui.util.FileUtils;
 import org.pjp.museum.ui.util.ImageUtils;
@@ -23,11 +18,7 @@ import org.pjp.museum.ui.util.QrCodeUtils;
 import org.pjp.museum.ui.util.TextUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Value;
 import org.vaadin.olli.FileDownloadWrapper;
-import org.vaadin.stefan.table.Table;
-import org.vaadin.stefan.table.TableCell;
-import org.vaadin.stefan.table.TableRow;
 
 import com.vaadin.flow.component.accordion.Accordion;
 import com.vaadin.flow.component.accordion.AccordionPanel;
@@ -64,22 +55,11 @@ public class AdminView extends VerticalLayout implements AfterNavigationObserver
 
     private static final String QR_EXTN = "-qrcode.png";
 
-	private static void addDataCell(TableRow detailsRow, String text) {
-		TableCell cell = detailsRow.addDataCell();
-        cell.setText(text);
-        cell.getStyle().set("text-align", "center");
-	}
-
     static {
 		LOGGER.info("tmpdir = {}", TMPDIR);
     }
     
     private final ExhibitService exhibitService;
-    
-    private final SessionRecordService sessionRecordService;
-    
-    @Value("${enable.csv-import:false}")
-    private boolean enableCsvImport;
     
     private AccordionPanel csvImportPanel;
 
@@ -91,17 +71,11 @@ public class AdminView extends VerticalLayout implements AfterNavigationObserver
     
     private final IntegerField fontSizeField = new IntegerField();
     
-    private final Table table = new Table();
-    
-    public AdminView(ExhibitService exhibitService, SessionRecordService sessionRecordService) {
+    public AdminView(ExhibitService exhibitService) {
         super();
         this.exhibitService = exhibitService;
-        this.sessionRecordService = sessionRecordService;
         
         Accordion accordion = new Accordion();
-        
-        AccordionPanel statsPanel = accordion.add("Statistics", getStatisticsLayout());
-        statsPanel.addThemeVariants(DetailsVariant.FILLED);
         
         csvImportPanel = accordion.add("CSV Import", getCsvImportLayout());
         csvImportPanel.addThemeVariants(DetailsVariant.FILLED);
@@ -121,22 +95,7 @@ public class AdminView extends VerticalLayout implements AfterNavigationObserver
 
 	@Override
 	public void afterNavigation(AfterNavigationEvent event) {
-    	Map<Period, Statistic> statistics = sessionRecordService.compileStatistics();
-        
-        for (Period period : Period.values()) {
-            Statistic statistic = statistics.get(period);
-			
-            TableRow detailsRow = table.addRow();
-            detailsRow.addDataCell().setText(period.name());
-			addDataCell(detailsRow, Integer.toString(statistic.getCount(MobileType.ANDROID)));
-            addDataCell(detailsRow, Integer.toString(statistic.getCount(MobileType.IPHONE)));
-            addDataCell(detailsRow, Integer.toString(statistic.getCount(MobileType.WINDOWS_PHONE)));
-            addDataCell(detailsRow, Integer.toString(statistic.getCount(MobileType.OTHER)));
-            addDataCell(detailsRow, Integer.toString(statistic.getTotalCount()));
-            detailsRow = table.addRow();
-		}
-        
-        csvImportPanel.setEnabled(enableCsvImport);
+		// nothing to do
 	}
 
     private VerticalLayout getCsvImportLayout() {
@@ -262,25 +221,5 @@ public class AdminView extends VerticalLayout implements AfterNavigationObserver
 		    return result;
 		};
 	}
-	
-    
-    private VerticalLayout getStatisticsLayout() {
-        Label label = new Label("The usage statistics for various periods.");
-        
-        TableRow headerRow = table.addRow();
-        headerRow.addHeaderCell().setText("");
-        headerRow.addHeaderCell().setText("Android");
-        headerRow.addHeaderCell().setText("iPhone");
-        headerRow.addHeaderCell().setText("Windows Phone");
-        headerRow.addHeaderCell().setText("Other");
-        headerRow.addHeaderCell().setText("Total");
-
-        table.setWidth("80%");
-        
-        VerticalLayout vl = new VerticalLayout(label, table);
-        vl.setHorizontalComponentAlignment(Alignment.START, label, table);
-        vl.setMargin(true);
-        
-        return vl;
-    }
+	    
 }

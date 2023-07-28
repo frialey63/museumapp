@@ -63,11 +63,11 @@ public class SessionRecordService {
         });
     }
      
-    public Map<Period, Statistic> compileStatistics() {
-    	Map<Period, Statistic> result = new HashMap<>();
+    public Map<Period, Statistic<MobileType>> compileUsageStatistics() {
+    	Map<Period, Statistic<MobileType>> result = new HashMap<>();
     	
     	for (Period period : Period.values()) {
-    		result.put(period, new Statistic(period));
+    		result.put(period, new Statistic<MobileType>(period));
 		}
 
     	repository.findAll().forEach(sessionRecord -> {
@@ -80,4 +80,25 @@ public class SessionRecordService {
     	
     	return result;
     }
+
+	public Map<Period, Statistic<String>> compileTailNumberStatistics(boolean scan) {
+		Map<Period, Statistic<String>> result = new HashMap<>();
+    	
+    	for (Period period : Period.values()) {
+    		result.put(period, new Statistic<String>(period));
+		}
+
+    	repository.findAll().forEach(sessionRecord -> {
+    		LOGGER.debug(sessionRecord.toString());
+
+    		sessionRecord.getPeriods().forEach(period -> {
+    			sessionRecord.getTailNumbers(scan).forEach(tailNumber -> {
+    				result.get(period).incCount(tailNumber);
+    			});
+    		});
+    	});
+
+		return result;
+	}
+    
 }

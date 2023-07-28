@@ -3,14 +3,13 @@ package org.pjp.museum.ui.bean;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.pjp.museum.model.MobileType;
 import org.pjp.museum.model.Period;
 
-public class Statistic {
+public class Statistic<T> {
 
 	private final Period period;
 	
-	private final Map<MobileType, Integer> count = new HashMap<>();
+	private final Map<T, Integer> count = new HashMap<>();
 
 	public Statistic(Period period) {
 		super();
@@ -21,23 +20,23 @@ public class Statistic {
 		return period;
 	}
 
-	public Map<MobileType, Integer> getCount() {
+	public Map<T, Integer> getCount() {
 		return count;
 	}
 
-	public int getCount(MobileType mobileType) {
-		return count.containsKey(mobileType) ? count.get(mobileType) : 0;
+	public int getCount(T type) {
+		return count.containsKey(type) ? count.get(type) : 0;
 	}
 
 	public int getTotalCount() {
 		return count.values().stream().reduce(0, (a, b) -> a + b);
 	}
 
-	public void incCount(MobileType mobileType) {
-		if (count.containsKey(mobileType)) {
-			count.put(mobileType, count.get(mobileType) + 1);
+	public void incCount(T type) {
+		if (count.containsKey(type)) {
+			count.put(type, count.get(type) + 1);
 		} else {
-			count.put(mobileType, 1);
+			count.put(type, 1);
 		}
 	}
 }
