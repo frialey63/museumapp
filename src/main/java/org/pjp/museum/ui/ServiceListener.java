@@ -2,12 +2,10 @@ package org.pjp.museum.ui;
 
 import org.apache.logging.log4j.util.Strings;
 import org.pjp.museum.service.SessionRecordService;
-import org.pjp.museum.ui.collab.Broadcaster;
-import org.pjp.museum.ui.collab.MuseumMessage;
-import org.pjp.museum.ui.collab.MuseumMessage.MessageType;
 import org.pjp.museum.ui.util.AddressUtils;
 import org.pjp.museum.ui.util.SettingsUtil;
 import org.pjp.museum.ui.view.MainLayout;
+import org.pjp.museum.ui.view.accessdenied.AccessDeniedView;
 import org.pjp.museum.ui.view.admin.AdminView;
 import org.pjp.museum.ui.view.stats.StatsView;
 import org.slf4j.Logger;
@@ -16,6 +14,9 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import com.vaadin.flow.component.UI;
+import com.vaadin.flow.component.notification.Notification;
+import com.vaadin.flow.component.notification.Notification.Position;
+import com.vaadin.flow.component.notification.NotificationVariant;
 import com.vaadin.flow.router.RouteConfiguration;
 import com.vaadin.flow.server.ServiceInitEvent;
 import com.vaadin.flow.server.VaadinServiceInitListener;
@@ -90,7 +91,7 @@ public class ServiceListener implements VaadinServiceInitListener {
                 	if (!result) {
                         LOGGER.debug("IP address {} is not within the secure addresses {}", ipAddress, secureAddresses);
                         //l.rerouteTo(AccessDeniedView.class);
-                        Broadcaster.broadcast(new MuseumMessage(MessageType.WI_FI, 0));
+                        Notification.show(AccessDeniedView.MESSAGE, 5_000, Position.BOTTOM_START).addThemeVariants(NotificationVariant.LUMO_ERROR);
                 	}
                 });
             }

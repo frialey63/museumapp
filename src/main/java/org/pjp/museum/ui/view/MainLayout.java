@@ -5,7 +5,6 @@ import org.pjp.museum.ui.collab.Broadcaster;
 import org.pjp.museum.ui.component.appnav.AppNav;
 import org.pjp.museum.ui.component.appnav.AppNavItem;
 import org.pjp.museum.ui.view.about.AboutView;
-import org.pjp.museum.ui.view.accessdenied.AccessDeniedView;
 import org.pjp.museum.ui.view.info.GeneralInformationView;
 import org.pjp.museum.ui.view.intro.IntroductionView;
 import org.pjp.museum.ui.view.kids.KidsStuffView;
@@ -69,9 +68,6 @@ public class MainLayout extends AppLayout {
                     break;
                 case CLOSED:
                     Notification.show("The museum is closed, please make your way to the shop and exit.", 0, Position.BOTTOM_START).addThemeVariants(NotificationVariant.LUMO_ERROR);
-                    break;
-                case WI_FI:
-                    Notification.show(AccessDeniedView.MESSAGE, 5_000, Position.BOTTOM_START).addThemeVariants(NotificationVariant.LUMO_ERROR);
                     break;
                 }
             });
