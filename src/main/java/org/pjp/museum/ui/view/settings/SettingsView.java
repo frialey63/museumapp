@@ -2,18 +2,27 @@ package org.pjp.museum.ui.view.settings;
 
 import org.pjp.museum.ui.util.SettingsUtil;
 import org.pjp.museum.ui.view.MainLayout;
+import org.springframework.beans.factory.annotation.Value;
 
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.radiobutton.RadioButtonGroup;
+import com.vaadin.flow.component.textfield.TextField;
+import com.vaadin.flow.router.AfterNavigationEvent;
+import com.vaadin.flow.router.AfterNavigationObserver;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 
 @PageTitle("Settings")
 @Route(value = "settings", layout = MainLayout.class)
-public class SettingsView extends VerticalLayout {
+public class SettingsView extends VerticalLayout implements AfterNavigationObserver {
 
     private static final long serialVersionUID = 2627524281352852715L;
+
+    @Value("${chrome-flags.visible:false}")
+    private boolean chromeFlagsVisible;
+    
+    private final TextField chromeFlags = new TextField("Chrome Flags");
 
     public SettingsView() {
         super();
@@ -37,9 +46,13 @@ public class SettingsView extends VerticalLayout {
         language.setItems("English", "French", "German");
         language.setValue("English");
 
-        setHorizontalComponentAlignment(Alignment.START, idMode, deafAccess, language);
-        add(idMode, deafAccess, language);
-
+        chromeFlags.setValue("chrome://flags/#unsafely-treat-insecure-origin-as-secure");
+        chromeFlags.setReadOnly(true);
+        chromeFlags.setWidthFull();
+        
+        setHorizontalComponentAlignment(Alignment.START, idMode, deafAccess, language, chromeFlags);
+        add(idMode, deafAccess, language, chromeFlags);
+        
         idMode.addValueChangeListener(l -> {
             String mode = l.getValue();
 			SettingsUtil.setMode(UI.getCurrent().getSession(), mode);
@@ -47,5 +60,10 @@ public class SettingsView extends VerticalLayout {
 
         setSizeFull();
     }
+
+	@Override
+	public void afterNavigation(AfterNavigationEvent event) {
+		chromeFlags.setVisible(chromeFlagsVisible);
+	}
 
 }

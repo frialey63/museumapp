@@ -1,10 +1,15 @@
 package org.pjp.museum.ui.view.scan;
 
+import org.apache.logging.log4j.util.Strings;
+import org.pjp.museum.model.Exhibit;
 import org.pjp.museum.service.SessionRecordService;
+import org.pjp.museum.ui.util.AddressUtils;
 import org.pjp.museum.ui.view.MainLayout;
+import org.pjp.museum.ui.view.accessdenied.AccessDeniedView;
 import org.pjp.museum.ui.view.exhibit.ExhibitView;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.dependency.JsModule;
@@ -26,6 +31,9 @@ public class ScannerZxingView extends VerticalLayout {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ScannerZxingView.class);
 
+    @Value("${secure.addresses}")
+    private String secureAddresses;
+
     public ScannerZxingView(SessionRecordService service) {
         super();
 
@@ -36,10 +44,15 @@ public class ScannerZxingView extends VerticalLayout {
         zxingReader.addValueChangeListener(e -> {
             String tailNumber = e.getValue();
 			LOGGER.debug("tailNumber = {}", tailNumber);
-            
-            service.updateRecord(VaadinSession.getCurrent(), tailNumber, true);
+			
+            UI ui = UI.getCurrent();
 
-            UI.getCurrent().navigate(ExhibitView.class, tailNumber);
+            if (isAllowed(ui, tailNumber)) {
+                service.updateRecord(VaadinSession.getCurrent(), tailNumber, true);
+                ui.navigate(ExhibitView.class, tailNumber);
+			} else{
+				ui.navigate(AccessDeniedView.class);
+			}
         });
 
         zxingReader.setWidthFull();
@@ -50,5 +63,18 @@ public class ScannerZxingView extends VerticalLayout {
         add(zxingReader);
 
         setSizeFull();
+    }
+    
+    private boolean isAllowed(UI ui, String tailNumber) {
+    	if (Exhibit.MUSEUM.equals(tailNumber)) {
+    		return true;
+    	} else if (Strings.isNotEmpty(secureAddresses)) {
+        	String ipAddress = AddressUtils.getRealAddress(ui.getSession());
+            LOGGER.debug("IP address = {}", ipAddress);
+           
+        	return AddressUtils.checkAddressIsSecure(secureAddresses, ipAddress);
+    	}
+    	
+    	return true;
     }
 }

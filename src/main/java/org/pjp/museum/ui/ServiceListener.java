@@ -27,6 +27,8 @@ public class ServiceListener implements VaadinServiceInitListener {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(VaadinServiceInitListener.class);
     
+    private static boolean SECURE = false;
+    
     @Value("${enable.admin:false}")
     private boolean enableAdmin;
 
@@ -70,28 +72,30 @@ public class ServiceListener implements VaadinServiceInitListener {
             SessionRecordService service = StaticHelper.getBean(SessionRecordService.class);
             service.finaliseRecord(vaadinSession);
         });
+        
+        if (SECURE) {
+            LOGGER.info("secureAddresses = {}", secureAddresses);
 
-        LOGGER.info("secureAddresses = {}", secureAddresses);
+            event.getSource().addUIInitListener(uiEvent -> {
+                UI ui = uiEvent.getUI();
 
-        event.getSource().addUIInitListener(uiEvent -> {
-            UI ui = uiEvent.getUI();
+                if (Strings.isNotEmpty(secureAddresses)) {
+                    ui.addBeforeEnterListener(l -> {
+                        // check whether App is being accessed on Museum wifi network, if not redirect to the Access Denied page
 
-            if (Strings.isNotEmpty(secureAddresses)) {
-                ui.addBeforeEnterListener(l -> {
-                    // check whether App is being accessed on Museum wifi network, if not redirect to the Access Denied page
-
-                	String ipAddress = AddressUtils.getRealAddress(ui.getSession());
-                    LOGGER.debug("IP address = {}", ipAddress);
-                    
-                	boolean result = AddressUtils.checkAddressIsSecure(secureAddresses, ipAddress);
-                	
-                	if (!result) {
-                        LOGGER.debug("IP address {} is not within the secure addresses {}", ipAddress, secureAddresses);
-                        l.rerouteTo(AccessDeniedView.class);
-                	}
-                });
-            }
-        });
+                    	String ipAddress = AddressUtils.getRealAddress(ui.getSession());
+                        LOGGER.debug("IP address = {}", ipAddress);
+                        
+                    	boolean result = AddressUtils.checkAddressIsSecure(secureAddresses, ipAddress);
+                    	
+                    	if (!result) {
+                            LOGGER.debug("IP address {} is not within the secure addresses {}", ipAddress, secureAddresses);
+                            l.rerouteTo(AccessDeniedView.class);
+                    	}
+                    });
+                }
+            });
+        }
     }
 
 }

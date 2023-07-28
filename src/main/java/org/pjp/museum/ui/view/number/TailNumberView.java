@@ -1,10 +1,15 @@
 package org.pjp.museum.ui.view.number;
 
+import org.apache.logging.log4j.util.Strings;
 import org.pjp.museum.service.ExhibitService;
 import org.pjp.museum.service.SessionRecordService;
 import org.pjp.museum.service.bean.TailNumber;
+import org.pjp.museum.ui.util.AddressUtils;
 import org.pjp.museum.ui.view.MainLayout;
 import org.pjp.museum.ui.view.exhibit.ExhibitView;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 
 import com.vaadin.flow.component.AbstractField.ComponentValueChangeEvent;
 import com.vaadin.flow.component.HasValue.ValueChangeListener;
@@ -24,7 +29,12 @@ public class TailNumberView extends VerticalLayout implements AfterNavigationObs
 
     private static final long serialVersionUID = 2220031256723181930L;
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(TailNumberView.class);
+    
     private final ListBox<TailNumber> listBox = new ListBox<>();
+
+    @Value("${secure.addresses}")
+    private String secureAddresses;
 
     private final ExhibitService exhibitService;
     
@@ -51,7 +61,9 @@ public class TailNumberView extends VerticalLayout implements AfterNavigationObs
 
     @Override
     public void afterNavigation(AfterNavigationEvent event) {
-        listBox.setItems(exhibitService.getTailNumbers());
+    	if (isAllowed(UI.getCurrent())) {
+    		listBox.setItems(exhibitService.getTailNumbers());
+    	}
     }
 
     @Override
@@ -59,8 +71,18 @@ public class TailNumberView extends VerticalLayout implements AfterNavigationObs
     	String tailNumber = event.getValue().tailNumber();
     	
 		sessionRecordService.updateRecord(VaadinSession.getCurrent(), tailNumber, false);
-    	
         UI.getCurrent().navigate(ExhibitView.class, tailNumber);
+    }
+    
+    private boolean isAllowed(UI ui) {
+    	if (Strings.isNotEmpty(secureAddresses)) {
+        	String ipAddress = AddressUtils.getRealAddress(ui.getSession());
+            LOGGER.debug("IP address = {}", ipAddress);
+           
+        	return AddressUtils.checkAddressIsSecure(secureAddresses, ipAddress);
+    	}
+    	
+    	return true;
     }
 
 }
