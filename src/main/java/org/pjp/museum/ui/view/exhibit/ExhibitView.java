@@ -88,6 +88,7 @@ public class ExhibitView extends VerticalLayout implements AfterNavigationObserv
         Scroller scroller = new Scroller();
         scroller.setScrollDirection(ScrollDirection.VERTICAL);
         scroller.setContent(vl);
+        scroller.setWidthFull();
 
         add(scroller);
 

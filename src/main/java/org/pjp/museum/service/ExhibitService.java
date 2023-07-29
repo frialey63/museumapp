@@ -21,6 +21,18 @@ public class ExhibitService {
         this.repository = repository;
     }
 
+    public TailNumber getMuseum() {
+    	Optional<Exhibit> optMuseum = repository.findByTailNumber(Exhibit.MUSEUM);
+    	
+    	if (optMuseum.isPresent()) {
+    		Exhibit museum = optMuseum.get();
+    		
+    		return new TailNumber(Exhibit.MUSEUM, museum.getUuid());
+    	}
+
+    	throw new IllegalStateException("the Museum exhibit is not present in the datastore");
+    }
+
     public Optional<Exhibit> getExhibit(String tailNumber) {
         return repository.findByTailNumber(tailNumber);
     }

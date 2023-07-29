@@ -99,7 +99,7 @@ public class StatsView extends VerticalLayout implements AfterNavigationObserver
 	private void populateTailNumberStatistics(Table table, boolean scan) {
 		Map<Period, Statistic<String>> statistics = sessionRecordService.compileTailNumberStatistics(scan);
         
-		exhibitService.getTailNumbers().stream().sorted().forEach(tailNumber -> {
+		exhibitService.getTailNumbers().stream().forEach(tailNumber -> {
             TableRow detailsRow = table.addRow();
             
             detailsRow.addDataCell().setText(tailNumber.tailNumber());

@@ -1,5 +1,8 @@
 package org.pjp.museum.ui.view.number;
 
+import java.util.Collection;
+import java.util.List;
+
 import org.apache.logging.log4j.util.Strings;
 import org.pjp.museum.service.ExhibitService;
 import org.pjp.museum.service.SessionRecordService;
@@ -61,9 +64,15 @@ public class TailNumberView extends VerticalLayout implements AfterNavigationObs
 
     @Override
     public void afterNavigation(AfterNavigationEvent event) {
+    	Collection<TailNumber> items;
+    	
     	if (isAllowed(UI.getCurrent())) {
-    		listBox.setItems(exhibitService.getTailNumbers());
+    		items = exhibitService.getTailNumbers();
+    	} else {
+    		items = List.of(exhibitService.getMuseum());
     	}
+    	
+		listBox.setItems(items);
     }
 
     @Override
