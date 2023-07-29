@@ -67,6 +67,10 @@ public class SessionRecord {
 		return ipAddress;
 	}
 
+	public AddressType getAddressType(String secureAddresses) {
+		return AddressType.getAddressType(secureAddresses, ipAddress);
+	}
+
 	public String getBrowserApplication() {
 		return browserApplication;
 	}

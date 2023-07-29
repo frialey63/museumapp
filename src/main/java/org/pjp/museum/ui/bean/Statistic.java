@@ -28,14 +28,8 @@ public class Statistic<T> {
 		return count.containsKey(type) ? count.get(type) : 0;
 	}
 
-	public int getTotalCount(T excludeKey) {
-		Map<T, Integer> tempCount = new HashMap<>(count);
-		
-		if (excludeKey != null) {
-			tempCount.remove(excludeKey);
-		}
-		
-		return tempCount.values().stream().reduce(0, (a, b) -> a + b);
+	public int getTotalCount() {
+		return count.values().stream().reduce(0, (a, b) -> a + b);
 	}
 
 	public void incCount(T type) {

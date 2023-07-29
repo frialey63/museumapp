@@ -4,6 +4,7 @@ import java.time.Instant;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.pjp.museum.model.AddressType;
 import org.pjp.museum.model.MobileType;
 import org.pjp.museum.model.Period;
 import org.pjp.museum.model.SessionRecord;
@@ -81,7 +82,25 @@ public class SessionRecordService {
     	return result;
     }
 
-	public Map<Period, Statistic<String>> compileTailNumberStatistics(boolean scan) {
+    public Map<Period, Statistic<AddressType>> compileAddressStatistics(String secureAddresses) {
+    	Map<Period, Statistic<AddressType>> result = new HashMap<>();
+    	
+    	for (Period period : Period.values()) {
+    		result.put(period, new Statistic<AddressType>(period));
+		}
+
+    	repository.findAll().forEach(sessionRecord -> {
+    		LOGGER.debug(sessionRecord.toString());
+    		
+    		sessionRecord.getPeriods().forEach(period -> {
+    			result.get(period).incCount(sessionRecord.getAddressType(secureAddresses));
+    		});
+    	});
+    	
+    	return result;
+    }
+
+	public Map<Period, Statistic<String>> compileExhibitStatistics(boolean scan) {
 		Map<Period, Statistic<String>> result = new HashMap<>();
     	
     	for (Period period : Period.values()) {
