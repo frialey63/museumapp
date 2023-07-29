@@ -24,6 +24,8 @@ import com.vaadin.flow.component.accordion.Accordion;
 import com.vaadin.flow.component.accordion.AccordionPanel;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.details.DetailsVariant;
+import com.vaadin.flow.component.html.H1;
+import com.vaadin.flow.component.html.H2;
 import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.notification.NotificationVariant;
@@ -71,6 +73,9 @@ public class AdminView extends VerticalLayout implements AfterNavigationObserver
     
     private final IntegerField fontSizeField = new IntegerField();
     
+    private final H1 heading1 = new H1("Museum App");
+    private final H2 heading2 = new H2("Administration");
+    
     public AdminView(ExhibitService exhibitService) {
         super();
         this.exhibitService = exhibitService;
@@ -87,10 +92,11 @@ public class AdminView extends VerticalLayout implements AfterNavigationObserver
             fontSizeField.setValue(40);
         });
         
+        setHorizontalComponentAlignment(Alignment.START, heading1, heading2);
         setHorizontalComponentAlignment(Alignment.STRETCH, accordion);
         setWidth("98%");
         
-        add(accordion);
+        add(heading1, heading2, accordion);
     }
 
 	@Override

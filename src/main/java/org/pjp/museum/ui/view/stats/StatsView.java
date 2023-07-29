@@ -2,6 +2,7 @@ package org.pjp.museum.ui.view.stats;
 
 import java.util.Map;
 
+import org.pjp.museum.model.Exhibit;
 import org.pjp.museum.model.MobileType;
 import org.pjp.museum.model.Period;
 import org.pjp.museum.service.ExhibitService;
@@ -14,6 +15,8 @@ import org.vaadin.stefan.table.TableRow;
 import com.vaadin.flow.component.accordion.Accordion;
 import com.vaadin.flow.component.accordion.AccordionPanel;
 import com.vaadin.flow.component.details.DetailsVariant;
+import com.vaadin.flow.component.html.H1;
+import com.vaadin.flow.component.html.H2;
 import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.AfterNavigationEvent;
@@ -41,6 +44,9 @@ public class StatsView extends VerticalLayout implements AfterNavigationObserver
     
     private final Table tailNumberPicksTable = new Table();
     
+    private final H1 heading1 = new H1("Museum App");
+    private final H2 heading2 = new H2("Statistics");
+    
     public StatsView(ExhibitService exhibitService, SessionRecordService sessionRecordService) {
         super();
         this.exhibitService = exhibitService;
@@ -57,10 +63,11 @@ public class StatsView extends VerticalLayout implements AfterNavigationObserver
         AccordionPanel tailNumberPicksPanel = accordion.add("Tail Number (Picks) Statistics", getTailNumberStatisticsLayout(tailNumberPicksTable));
         tailNumberPicksPanel.addThemeVariants(DetailsVariant.FILLED);
         
+        setHorizontalComponentAlignment(Alignment.START, heading1, heading2);
         setHorizontalComponentAlignment(Alignment.STRETCH, accordion);
         setWidth("98%");
         
-        add(accordion);
+        add(heading1, heading2, accordion);
     }
 
 	@Override
@@ -92,7 +99,7 @@ public class StatsView extends VerticalLayout implements AfterNavigationObserver
         for (Period period : Period.values()) {
             Statistic<MobileType> statistic = statistics.get(period);
 			
-            addDataCell(detailsRow, Integer.toString(statistic.getTotalCount()));
+            addDataCell(detailsRow, Integer.toString(statistic.getTotalCount(null)));
         }
 	}
 
@@ -116,7 +123,7 @@ public class StatsView extends VerticalLayout implements AfterNavigationObserver
         for (Period period : Period.values()) {
             Statistic<String> statistic = statistics.get(period);
 			
-            addDataCell(detailsRow, Integer.toString(statistic.getTotalCount()));
+            addDataCell(detailsRow, Integer.toString(statistic.getTotalCount(Exhibit.MUSEUM)));
         }
 	}
 
