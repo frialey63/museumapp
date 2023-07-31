@@ -36,6 +36,9 @@ public class ServiceListener implements VaadinServiceInitListener {
     @Value("${enable.stats:true}")
     private boolean enableStats;
 
+    @Value("${wifi.warning:false}")
+    private boolean wifiWarning;
+
     @Value("${secure.addresses}")
     private String secureAddresses;
 
@@ -76,26 +79,27 @@ public class ServiceListener implements VaadinServiceInitListener {
         
         LOGGER.info("secureAddresses = {}", secureAddresses);
 
-        event.getSource().addUIInitListener(uiEvent -> {
-            UI ui = uiEvent.getUI();
+        if (wifiWarning) {
+            event.getSource().addUIInitListener(uiEvent -> {
+                UI ui = uiEvent.getUI();
 
-            if (Strings.isNotEmpty(secureAddresses)) {
-                ui.addBeforeEnterListener(l -> {
-                    // check whether App is being accessed on Museum wifi network, if not redirect to the Access Denied page
+                if (Strings.isNotEmpty(secureAddresses)) {
+                    ui.addBeforeEnterListener(l -> {
+                        // check whether App is being accessed on Museum wifi network, if not redirect to the Access Denied page
 
-                	String ipAddress = AddressUtils.getRealAddress(ui.getSession());
-                    LOGGER.debug("IP address = {}", ipAddress);
-                    
-                	boolean result = AddressUtils.checkAddressIsSecure(secureAddresses, ipAddress);
-                	
-                	if (!result) {
-                        LOGGER.debug("IP address {} is not within the secure addresses {}", ipAddress, secureAddresses);
-                        //l.rerouteTo(AccessDeniedView.class);
-                        Notification.show(AccessDeniedView.MESSAGE, 5_000, Position.BOTTOM_START).addThemeVariants(NotificationVariant.LUMO_ERROR);
-                	}
-                });
-            }
-        });
+                    	String ipAddress = AddressUtils.getRealAddress(ui.getSession());
+                        LOGGER.debug("IP address = {}", ipAddress);
+                        
+                    	boolean result = AddressUtils.checkAddressIsSecure(secureAddresses, ipAddress);
+                    	
+                    	if (!result) {
+                            LOGGER.debug("IP address {} is not within the secure addresses {}", ipAddress, secureAddresses);
+                            Notification.show(AccessDeniedView.MESSAGE, 5_000, Position.BOTTOM_START).addThemeVariants(NotificationVariant.LUMO_ERROR);
+                    	}
+                    });
+                }
+            });
+        }
     }
 
 }
