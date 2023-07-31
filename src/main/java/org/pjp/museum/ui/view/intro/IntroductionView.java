@@ -32,6 +32,8 @@ public class IntroductionView extends VerticalLayout implements AfterNavigationO
     private final String descriptionStr = """
                 Many of the exhibits in this museum have a QR Code. Scan the code using app to access an audio description. If scanner fails then an exhibit can be identified using a number via "Enter Tail Number" page on menu.
                 <br/><br/>
+                <mark>Please connect your mobile to "Manston History Public Access" wi-fi.</mark>
+                <br/><br/>
                 For the best App experience we recommend the following set-up on your mobile:
                 <ul>
                     <li>On Android, "Add App to Home screen" when prompted <em>and restart app from icon</em></li>
