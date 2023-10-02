@@ -33,7 +33,7 @@ public class IntroductionView extends VerticalLayout implements AfterNavigationO
     private static final Logger LOGGER = LoggerFactory.getLogger(IntroductionView.class);
 
     private final String descriptionStr = """
-            Many of the exhibits in this museum have a QR Code. Scan the code using app to access an audio description. If scanner fails then an exhibit can be identified using a number via "Enter Tail Number" page on menu.
+            Many of the exhibits in this museum have a QR Code. Scan the code using app to access an audio description. If scanner fails then an exhibit can be identified via "Enter Tail Number" page on menu.
             <br/><br/>
             %s
             For the best App experience we recommend the following set-up on your mobile:
