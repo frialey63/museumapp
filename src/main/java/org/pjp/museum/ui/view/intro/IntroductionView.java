@@ -42,11 +42,10 @@ public class IntroductionView extends VerticalLayout implements AfterNavigationO
                 <li>Use headphones or minimise speaker volume to avoid disturbance to other visitors</li>
                 <li>Audio is mono therefore wireless ear pieces may be shared between two people</li>
             </ul>
-            <em>Note screensaver may cause the scanner to fail, then it will be necessary to restart the app.</em>
         """;
 
     private final String connectStr = """
-            <mark>Please connect your mobile to "Manston History Public Access" wi-fi.</mark>
+            <mark>Connect to "Manston History Public Access" wi-fi</mark>
              <br/><br/>
         """;
 
@@ -61,7 +60,7 @@ public class IntroductionView extends VerticalLayout implements AfterNavigationO
         setSpacing(false);
 
         Image image = new Image("images/Museum_Logo_h150a.jpg", "logo");
-        image.setWidth("66%");
+        image.setWidth("50%");
 
         H2 title = new H2("Welcome to the Museum App");
 
