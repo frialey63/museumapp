@@ -3,12 +3,6 @@
 This project can be used as a starting point to create your own Vaadin application with Spring Boot.
 It contains all the necessary configuration and some placeholder files to get you started.
 
-## Azure
-
-    az login
-    az acr login -n rafmanstoncontainerregistry
-    mvn -Pproduction compile jib:build
-
 ## TODO
 
 Audio announcements, PA
@@ -32,6 +26,9 @@ Exhibit mechanisation / animations
 
 ## DONE
 
+Change all QR codes to use app download as the base URL
+   https://rafmanston-museumapp.azurewebsites.net/?tailNumber=WT205
+
 Links to web site for museum and cafe
 
 General Information for Visitor
@@ -53,6 +50,8 @@ Kids Stuff
 
 Notifications of museum closing (automatic)
 
+Only display yellow "connect" message if not actually connected to the museum wifi
+
 Audio Guide
 
 ## Running the application
@@ -64,7 +63,17 @@ http://localhost:8080 in your browser.
 You can also import the project to your IDE of choice as you would with any
 Maven project. Read more on [how to import Vaadin projects to different IDEs](https://vaadin.com/docs/latest/flow/guide/step-by-step/importing) (Eclipse, IntelliJ IDEA, NetBeans, and VS Code).
 
+# Access by Android in Development Mode
+
 [Accessing the Android phone's camera in development mode via HTTP](https://stackoverflow.com/questions/52759992/how-to-access-camera-and-microphone-in-chrome-without-https)
+
+> This worked for me. Although it's for Testing purpose only.
+>
+> To ignore Chrome’s secure origin policy, follow these steps. Navigate to `chrome://flags/#unsafely-treat-insecure-origin-as-secure` in Chrome.
+>
+> Find and enable the Insecure origins treated as secure section (see below). Add any addresses you want to ignore the secure origin policy for. Remember to include the port number too (if required). Save and restart Chrome.
+>
+> Remember this is for dev purposes only. The live working app will need to be hosted on https for users to be able to use their microphone or camera.
 
 ## Deploying to Production
 
@@ -75,6 +84,12 @@ ready to be deployed. The file can be found in the `target` folder after the bui
 
 Once the JAR file is built, you can run it using
 `java -jar target/museumapp-1.0-SNAPSHOT.jar`
+
+# Deploying to Azure
+
+    az login
+    az acr login -n rafmanstoncontainerregistry
+    mvn -Pproduction compile jib:build
 
 ## Project structure
 

@@ -46,7 +46,7 @@ public final class QrCodeUtils {
         MatrixToImageWriter.writeToFile(matrix, FileUtils.getExtension(path), path);
     }
 
-    private static void createLabelledQR(String data, File path, String charset, Map<EncodeHintType, ErrorCorrectionLevel> hashMap, int height, int width, int fontSize)
+    private static void createLabelledQR(String data, String title, File path, String charset, Map<EncodeHintType, ErrorCorrectionLevel> hashMap, int height, int width, int fontSize)
             throws WriterException, IOException {
     	
         BitMatrix matrix = new MultiFormatWriter().encode(new String(data.getBytes(charset), charset), BarcodeFormat.QR_CODE, width, height);
@@ -69,11 +69,11 @@ public final class QrCodeUtils {
         g2d.setFont(font);
         
         FontMetrics fontMetrics = g2d.getFontMetrics();
-        Rectangle2D stringBounds = fontMetrics.getStringBounds(data, g2d);
+        Rectangle2D stringBounds = fontMetrics.getStringBounds(title, g2d);
 
         g2d.clearRect(0, 0, width, (height + fontSize));
         g2d.drawImage(bufferedImage, 0, 0, null);        
-        g2d.drawString(data, (int) (width / 2.0 - stringBounds.getWidth() / 2.0), height);
+        g2d.drawString(title, (int) (width / 2.0 - stringBounds.getWidth() / 2.0), height);
         //g2d.drawRect(0, 0, (width - 2), (height + fontSize - 2));
 
         String format = FileUtils.getExtension(path);
@@ -103,7 +103,7 @@ public final class QrCodeUtils {
         return result;
     }
 
-    public static boolean createAndWriteQR(String data, File dir, String filename, int size, int fontSize) {
+    public static boolean createAndWriteQR(String data, String title, File dir, String filename, int size, int fontSize) {
     	File path = new File(dir, filename);
 
         Map<EncodeHintType, ErrorCorrectionLevel> hashMap = new HashMap<EncodeHintType, ErrorCorrectionLevel>();
@@ -112,7 +112,7 @@ public final class QrCodeUtils {
         boolean result = false;
 
         try {
-        	createLabelledQR(data, path, CHARSET, hashMap, size, size, fontSize);
+        	createLabelledQR(data, title, path, CHARSET, hashMap, size, size, fontSize);
             result = true;
         } catch (WriterException e) {
             LOGGER.error("failed to create QR code", e);

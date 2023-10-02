@@ -1,10 +1,13 @@
 package org.pjp.museum.ui.view.intro;
 
+import org.apache.logging.log4j.util.Strings;
 import org.pjp.museum.model.Exhibit;
+import org.pjp.museum.ui.util.AddressUtils;
 import org.pjp.museum.ui.view.MainLayout;
 import org.pjp.museum.ui.view.exhibit.ExhibitView;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
@@ -30,18 +33,25 @@ public class IntroductionView extends VerticalLayout implements AfterNavigationO
     private static final Logger LOGGER = LoggerFactory.getLogger(IntroductionView.class);
 
     private final String descriptionStr = """
-                Many of the exhibits in this museum have a QR Code. Scan the code using app to access an audio description. If scanner fails then an exhibit can be identified using a number via "Enter Tail Number" page on menu.
-                <br/><br/>
-                <mark>Please connect your mobile to "Manston History Public Access" wi-fi.</mark>
-                <br/><br/>
-                For the best App experience we recommend the following set-up on your mobile:
-                <ul>
-                    <li>On Android, "Add App to Home screen" when prompted <em>and restart app from icon</em></li>
-                    <li>Use headphones or minimise speaker volume to avoid disturbance to other visitors</li>
-                    <li>Audio is mono therefore wireless ear pieces may be shared between two people</li>
-                </ul>
-                <em>Note screensaver may cause the scanner to fail, then it will be necessary to restart the app.</em>
-            """;
+            Many of the exhibits in this museum have a QR Code. Scan the code using app to access an audio description. If scanner fails then an exhibit can be identified using a number via "Enter Tail Number" page on menu.
+            <br/><br/>
+            %s
+            For the best App experience we recommend the following set-up on your mobile:
+            <ul>
+                <li>On Android, "Add App to Home screen" when prompted <em>and restart app from icon</em></li>
+                <li>Use headphones or minimise speaker volume to avoid disturbance to other visitors</li>
+                <li>Audio is mono therefore wireless ear pieces may be shared between two people</li>
+            </ul>
+            <em>Note screensaver may cause the scanner to fail, then it will be necessary to restart the app.</em>
+        """;
+
+    private final String connectStr = """
+            <mark>Please connect your mobile to "Manston History Public Access" wi-fi.</mark>
+             <br/><br/>
+        """;
+
+    @Value("${secure.addresses}")
+    private String secureAddresses;
 
     public IntroductionView() {
         super();
@@ -54,7 +64,7 @@ public class IntroductionView extends VerticalLayout implements AfterNavigationO
         H2 title = new H2("Welcome to the Museum App");
 
         Paragraph description = new Paragraph();
-        description.getElement().setProperty("innerHTML", descriptionStr);
+        description.getElement().setProperty("innerHTML", String.format(descriptionStr, (isAllowed(UI.getCurrent()) ? "" : connectStr)));
 
 
         Button startButton = new Button("Start Tour", e -> {
@@ -73,6 +83,17 @@ public class IntroductionView extends VerticalLayout implements AfterNavigationO
     public void afterNavigation(AfterNavigationEvent event) {
         WebBrowser browser = VaadinSession.getCurrent().getBrowser();
         LOGGER.debug(browser.getBrowserApplication());
+    }
+    
+    private boolean isAllowed(UI ui) {
+    	if (Strings.isNotEmpty(secureAddresses)) {
+        	String ipAddress = AddressUtils.getRealAddress(ui.getSession());
+            LOGGER.debug("IP address = {}", ipAddress);
+           
+        	return AddressUtils.checkAddressIsSecure(secureAddresses, ipAddress);
+    	}
+    	
+    	return true;
     }
 
 }

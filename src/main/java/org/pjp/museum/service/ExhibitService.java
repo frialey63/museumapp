@@ -1,5 +1,8 @@
 package org.pjp.museum.service;
 
+import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URL;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -9,10 +12,19 @@ import org.pjp.museum.repository.ExhibitRepository;
 import org.pjp.museum.service.bean.TailNumber;
 import org.pjp.museum.ui.util.QrCodeUtils;
 import org.pjp.museum.util.UuidStr;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.web.util.UriComponentsBuilder;
 
 @Service
 public class ExhibitService {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(ExhibitService.class);
+
+    @Value("${app.download.url}")
+    private String appDownloadUrl;
 
     private final ExhibitRepository repository;
 
@@ -47,13 +59,24 @@ public class ExhibitService {
 
     public String saveExhibit(String qrCode, Exhibit exhibit) {
         String uuid = UuidStr.random();
+        
+		URI uri = UriComponentsBuilder.fromUriString(appDownloadUrl)
+			      .queryParam(org.pjp.museum.util.Constants.TAIL_NUMBER, exhibit.getTailNumber())
+			      .build()
+			      .toUri();
+        try {
+    		URL url = uri.toURL();
+    		LOGGER.debug("url = {}", url.toString());
 
-        if (QrCodeUtils.createAndWriteQR(exhibit.getTailNumber(), qrCode)) {
-            exhibit.setUuid(uuid);
-            repository.save(exhibit);
-        } else {
-            uuid = null;
-        }
+			if (QrCodeUtils.createAndWriteQR(url.toString(), qrCode)) {
+			    exhibit.setUuid(uuid);
+			    repository.save(exhibit);
+			} else {
+			    uuid = null;
+			}
+		} catch (MalformedURLException e) {
+			LOGGER.error("failed to create the URL for saving the exhibit QR code", e);
+		}
 
         return uuid;
     }

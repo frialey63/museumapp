@@ -1,5 +1,10 @@
 package org.pjp.museum.ui.view.scan;
 
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.HashMap;
+import java.util.Map;
+
 import org.apache.logging.log4j.util.Strings;
 import org.pjp.museum.model.Exhibit;
 import org.pjp.museum.service.SessionRecordService;
@@ -27,12 +32,28 @@ import com.wontlost.zxing.ZXingVaadinReader;
 @Route(value = "scanner", layout = MainLayout.class)
 public class ScannerZxingView extends VerticalLayout {
 
-    private static final long serialVersionUID = 5665801440827713574L;
+	private static final long serialVersionUID = 5665801440827713574L;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ScannerZxingView.class);
 
+    private static Map<String, String> getQueryMap(String query) {
+		String[] params = query.split("&");
+		Map<String, String> map = new HashMap<>();
+		
+		for (String param : params) {
+			String name = param.split("=")[0];
+			String value = param.split("=")[1];
+			map.put(name, value);
+		}
+		
+		return map;
+	}
+
     @Value("${secure.addresses}")
     private String secureAddresses;
+
+    @Value("${app.download.url}")
+    private String appDownloadUrl;
 
     public ScannerZxingView(SessionRecordService service) {
         super();
@@ -41,17 +62,24 @@ public class ScannerZxingView extends VerticalLayout {
         zxingReader.setFrom(Constants.From.camera);
         zxingReader.setId("video"); //id needs to be 'video' if From.camera.
 
-        zxingReader.addValueChangeListener(e -> {
-            String tailNumber = e.getValue();
-			LOGGER.debug("tailNumber = {}", tailNumber);
-			
-            UI ui = UI.getCurrent();
+        zxingReader.addValueChangeListener(l -> {
+        	try {
+				URL url = new URL(l.getValue());
+				Map<String, String> map = getQueryMap(url.getQuery());
+				
+	            String tailNumber = map.get(org.pjp.museum.util.Constants.TAIL_NUMBER);
+				LOGGER.debug("tailNumber = {}", tailNumber);
+				
+	            UI ui = UI.getCurrent();
 
-            if (isAllowed(ui, tailNumber)) {
-                service.updateRecord(VaadinSession.getCurrent(), tailNumber, true);
-                ui.navigate(ExhibitView.class, tailNumber);
-			} else{
-				ui.navigate(AccessDeniedView.class);
+	            if (isAllowed(ui, tailNumber)) {
+	                service.updateRecord(VaadinSession.getCurrent(), tailNumber, true);
+	                ui.navigate(ExhibitView.class, tailNumber);
+				} else{
+					ui.navigate(AccessDeniedView.class);
+				}
+			} catch (MalformedURLException e) {
+				LOGGER.error("failed to create the URL from the scanned value", e);
 			}
         });
 

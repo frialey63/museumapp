@@ -6,6 +6,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
+import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URL;
 
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVRecord;
@@ -18,6 +21,8 @@ import org.pjp.museum.ui.util.QrCodeUtils;
 import org.pjp.museum.ui.util.TextUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.web.util.UriComponentsBuilder;
 import org.vaadin.olli.FileDownloadWrapper;
 
 import com.vaadin.flow.component.accordion.Accordion;
@@ -43,7 +48,7 @@ import com.vaadin.flow.server.StreamResource;
 @PageTitle("Admin")
 public class AdminView extends VerticalLayout implements AfterNavigationObserver {
 
-    private static final long serialVersionUID = 3386437553156944523L;
+	private static final long serialVersionUID = 3386437553156944523L;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(AdminView.class);
 
@@ -57,10 +62,20 @@ public class AdminView extends VerticalLayout implements AfterNavigationObserver
 
     private static final String QR_EXTN = "-qrcode.png";
 
+    private static final int FONT_SIZE = 40;
+
+    /*
+     * https://tritonstore.com.au/qr-code-size/
+     */
+	private static final int SIZE = 400;
+
     static {
 		LOGGER.info("tmpdir = {}", TMPDIR);
     }
     
+    @Value("${app.download.url}")
+    private String appDownloadUrl;
+
     private final ExhibitService exhibitService;
     
     private AccordionPanel csvImportPanel;
@@ -88,8 +103,8 @@ public class AdminView extends VerticalLayout implements AfterNavigationObserver
         AccordionPanel qrCodeGenerationPanel = accordion.add("QR Code Generation", getQrCodeGenerationLayout());
         qrCodeGenerationPanel.addThemeVariants(DetailsVariant.FILLED);
         qrCodeGenerationPanel.addOpenedChangeListener(l -> {
-            sizeField.setValue(400);
-            fontSizeField.setValue(40);
+            sizeField.setValue(SIZE);
+            fontSizeField.setValue(FONT_SIZE);
         });
         
         setHorizontalComponentAlignment(Alignment.START, heading1, heading2);
@@ -176,14 +191,14 @@ public class AdminView extends VerticalLayout implements AfterNavigationObserver
         });
         
         sizeField.setLabel("Size (px)");
-        sizeField.setValue(400);
+        sizeField.setValue(SIZE);
         sizeField.setHasControls(true);
         sizeField.setMin(0);
         sizeField.setMax(1000);
         sizeField.setStep(50);
 
         fontSizeField.setLabel("Font Size (px)");
-        fontSizeField.setValue(40);
+        fontSizeField.setValue(FONT_SIZE);
         fontSizeField.setHasControls(true);
         fontSizeField.setMin(0);
         fontSizeField.setMax(100);
@@ -208,8 +223,20 @@ public class AdminView extends VerticalLayout implements AfterNavigationObserver
 			workDir.mkdir();
 			
 		    exhibitService.findAllExhibits().forEach(exhibit -> {
-				String filename = String.format("%s-qrcode.png", FileUtils.getBase(exhibit.getImageFile()));
-				QrCodeUtils.createAndWriteQR(exhibit.getTailNumber(), workDir, filename, sizeField.getValue(), fontSizeField.getValue());
+				URI uri = UriComponentsBuilder.fromUriString(appDownloadUrl)
+					      .queryParam(org.pjp.museum.util.Constants.TAIL_NUMBER, exhibit.getTailNumber())
+					      .build()
+					      .toUri();
+
+	    		try {
+					URL url = uri.toURL();
+					LOGGER.debug("url = {}", url.toString());
+
+					String filename = String.format("%s-qrcode.png", FileUtils.getBase(exhibit.getImageFile()));
+					QrCodeUtils.createAndWriteQR(url.toString(), exhibit.getTailNumber(), workDir, filename, sizeField.getValue(), fontSizeField.getValue());
+				} catch (MalformedURLException e) {
+					LOGGER.error("failed to create the URL for saving the exhibit QR code", e);
+				}
 			});
 			
 		    try {
