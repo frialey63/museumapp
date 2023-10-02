@@ -53,6 +53,8 @@ public class IntroductionView extends VerticalLayout implements AfterNavigationO
     @Value("${secure.addresses}")
     private String secureAddresses;
 
+    private final Paragraph description = new Paragraph();
+    
     public IntroductionView() {
         super();
 
@@ -62,10 +64,6 @@ public class IntroductionView extends VerticalLayout implements AfterNavigationO
         image.setWidth("66%");
 
         H2 title = new H2("Welcome to the Museum App");
-
-        Paragraph description = new Paragraph();
-        description.getElement().setProperty("innerHTML", String.format(descriptionStr, (isAllowed(UI.getCurrent()) ? "" : connectStr)));
-
 
         Button startButton = new Button("Start Tour", e -> {
             UI.getCurrent().navigate(ExhibitView.class, Exhibit.MUSEUM);
@@ -81,6 +79,8 @@ public class IntroductionView extends VerticalLayout implements AfterNavigationO
 
     @Override
     public void afterNavigation(AfterNavigationEvent event) {
+        description.getElement().setProperty("innerHTML", String.format(descriptionStr, (isAllowed(UI.getCurrent()) ? "" : connectStr)));
+        
         WebBrowser browser = VaadinSession.getCurrent().getBrowser();
         LOGGER.debug(browser.getBrowserApplication());
     }
