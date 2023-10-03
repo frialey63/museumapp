@@ -31,7 +31,7 @@ import com.vaadin.flow.theme.Theme;
  */
 @Push
 @Theme(value = "museumapp")
-@PWA(name = "Museum (Audio Guide) App", shortName = "Museum App", backgroundColor="#adcce9", description="An app which provides a QR code driven audio guide for the RAF Manston History Museum.", offlineResources = {})
+@PWA(name = "Museum (Audio Guide) App", shortName = "Museum App", description="An app which provides a QR code driven audio guide for the RAF Manston History Museum.", offlineResources = {})
 @NpmPackage(value = "line-awesome", version = "1.3.0")
 @NpmPackage(value = "@vaadin-component-factory/vcf-nav", version = "1.0.6")
 @EnableScheduling
