@@ -23,7 +23,7 @@ public class AccessDeniedView extends VerticalLayout implements HasUrlParameter<
 
     private final Paragraph paragraph = new Paragraph(MESSAGE);
 
-    private boolean hideMessage;
+    private Boolean hideMessage;
     
     public AccessDeniedView() {
         super();
@@ -46,7 +46,7 @@ public class AccessDeniedView extends VerticalLayout implements HasUrlParameter<
 
 	@Override
 	public void afterNavigation(AfterNavigationEvent event) {
-		if (hideMessage) {
+		if (Boolean.TRUE.equals(hideMessage)) {
 			paragraph.setText(null);
 		}
 	}
