@@ -76,4 +76,9 @@ class AddressUtilsTest {
 		assertFalse(AddressUtils.checkAddressIsSecure(" 172.172.172.1 - 172.172.172.199, 154.51.188.163", "172.172.172.200"));
 	}
 
+	@Test
+	void testCheckAddressIsSecureActual() {
+		assertTrue(AddressUtils.checkAddressIsSecure("154.51.188.163,172.172.172.1-172.172.172.199", "154.51.188.163:64039"));
+	}
+
 }

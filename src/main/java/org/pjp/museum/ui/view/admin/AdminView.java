@@ -2,6 +2,7 @@ package org.pjp.museum.ui.view.admin;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -11,9 +12,12 @@ import java.net.URI;
 import java.net.URL;
 
 import org.apache.commons.csv.CSVFormat;
+import org.apache.commons.csv.CSVPrinter;
 import org.apache.commons.csv.CSVRecord;
+import org.apache.commons.csv.QuoteMode;
 import org.pjp.museum.model.Exhibit;
 import org.pjp.museum.service.ExhibitService;
+import org.pjp.museum.service.SessionRecordService;
 import org.pjp.museum.ui.util.AudioUtils;
 import org.pjp.museum.ui.util.FileUtils;
 import org.pjp.museum.ui.util.ImageUtils;
@@ -78,11 +82,11 @@ public class AdminView extends VerticalLayout implements AfterNavigationObserver
 
     private final ExhibitService exhibitService;
     
+    private final SessionRecordService sessionRecordService;
+    
     private AccordionPanel csvImportPanel;
 
     private final MultiFileMemoryBuffer buffer = new MultiFileMemoryBuffer();
-
-    private final FileDownloadWrapper buttonWrapper = new FileDownloadWrapper(null);
 
     private final IntegerField sizeField = new IntegerField();
     
@@ -91,9 +95,10 @@ public class AdminView extends VerticalLayout implements AfterNavigationObserver
     private final H1 heading1 = new H1("Museum App");
     private final H2 heading2 = new H2("Administration");
     
-    public AdminView(ExhibitService exhibitService) {
+    public AdminView(ExhibitService exhibitService, SessionRecordService sessionRecordService) {
         super();
         this.exhibitService = exhibitService;
+        this.sessionRecordService = sessionRecordService;
         
         Accordion accordion = new Accordion();
         
@@ -106,6 +111,9 @@ public class AdminView extends VerticalLayout implements AfterNavigationObserver
             sizeField.setValue(SIZE);
             fontSizeField.setValue(FONT_SIZE);
         });
+        
+        AccordionPanel sessionRecordPanel = accordion.add("Session Records", getSessionRecordLayout());
+        sessionRecordPanel.addThemeVariants(DetailsVariant.FILLED);
         
         setHorizontalComponentAlignment(Alignment.START, heading1, heading2);
         setHorizontalComponentAlignment(Alignment.STRETCH, accordion);
@@ -180,14 +188,16 @@ public class AdminView extends VerticalLayout implements AfterNavigationObserver
     private VerticalLayout getQrCodeGenerationLayout() {
         Label label = new Label("Download the Zip file containing QR codes of all exhibits for printing.");
         
+        FileDownloadWrapper buttonWrapper = new FileDownloadWrapper(null);
+
         sizeField.addValueChangeListener(l -> {
             String name = String.format("qrcodes-%s-%s.zip", sizeField.getValue(), fontSizeField.getValue());
-			buttonWrapper.setResource(new StreamResource(name, getInputStreamFactory()));
+			buttonWrapper.setResource(new StreamResource(name, getQrInputStreamFactory()));
         });
         
         fontSizeField.addValueChangeListener(l -> {
             String name = String.format("qrcodes-%s-%s.zip", sizeField.getValue(), fontSizeField.getValue());
-			buttonWrapper.setResource(new StreamResource(name, getInputStreamFactory()));
+			buttonWrapper.setResource(new StreamResource(name, getQrInputStreamFactory()));
         });
         
         sizeField.setLabel("Size (px)");
@@ -215,7 +225,21 @@ public class AdminView extends VerticalLayout implements AfterNavigationObserver
         return vl;
     }
 
-	private InputStreamFactory getInputStreamFactory() {
+    private VerticalLayout getSessionRecordLayout() {
+        Label label = new Label("Download the CSV file containing the session records.");
+        
+        FileDownloadWrapper buttonWrapper = new FileDownloadWrapper(null);
+        buttonWrapper.setResource(new StreamResource("session-records.csv", getSessionRecordInputStreamFactory()));
+		buttonWrapper.wrapComponent(new Button("Download CSV"));
+
+        VerticalLayout vl = new VerticalLayout(label, buttonWrapper);
+        vl.setHorizontalComponentAlignment(Alignment.START, label, buttonWrapper);
+        vl.setMargin(true);
+        
+        return vl;
+    }
+
+	private InputStreamFactory getQrInputStreamFactory() {
 		return () -> {
 		    InputStream result = null;
 
@@ -249,6 +273,36 @@ public class AdminView extends VerticalLayout implements AfterNavigationObserver
 				result = new FileInputStream(zipFile);
 			} catch (IOException e) {
 				LOGGER.error("error attempting to zip the QR codes", e);
+			}
+
+		    return result;
+		};
+	}
+
+	private InputStreamFactory getSessionRecordInputStreamFactory() {
+		return () -> {
+		    InputStream result = null;
+
+			try {
+				File tmpFile = File.createTempFile("tmp-", ".tmp", TMPDIR);
+				tmpFile.deleteOnExit();
+				
+				CSVFormat csvFormat = CSVFormat.DEFAULT.builder().setDelimiter(',').setQuote('"').setQuoteMode(QuoteMode.ALL).setRecordSeparator('\n').build();
+				
+				try (CSVPrinter csvPrinter = new CSVPrinter(new FileWriter(tmpFile), csvFormat)) {
+					sessionRecordService.findAllSessionRecords().forEach(sessionRecord -> {
+						try {
+							csvPrinter.printRecord(sessionRecord.toRecord());
+						} catch (IOException e) {
+							LOGGER.error("error printing CSV record", e);
+						}
+					});
+				}
+				
+				result = new FileInputStream(tmpFile);
+				
+			} catch (IOException e) {
+				LOGGER.error("error attempting to write the session records", e);
 			}
 
 		    return result;

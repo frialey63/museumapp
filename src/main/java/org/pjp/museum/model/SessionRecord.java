@@ -4,6 +4,7 @@ import java.time.DayOfWeek;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.ZoneOffset;
+import java.time.format.DateTimeFormatter;
 import java.time.temporal.TemporalAdjusters;
 import java.util.HashSet;
 import java.util.Objects;
@@ -20,6 +21,16 @@ import org.springframework.data.mongodb.core.mapping.Document;
 public class SessionRecord {
 
     private static final ZoneOffset UTC = ZoneOffset.UTC;
+
+    private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ISO_ZONED_DATE_TIME.withZone(UTC);
+	
+	private static String formatSafely(Instant time) {
+		if (time != null) {
+			return FORMATTER.format(time);
+		}
+
+		return "null";
+	}
 
 	@Id
     private String uuid;
@@ -95,7 +106,7 @@ public class SessionRecord {
 		this.tailScans = tailScans;
 	}
 
-	public void addTailScan(String tailNumber) {
+	private void addTailScan(String tailNumber) {
 		String entry = String.format("%d:%s", Instant.now().toEpochMilli(), tailNumber);
 		tailScans.add(entry);
 	}
@@ -112,9 +123,17 @@ public class SessionRecord {
 		this.tailPicks = tailPicks;
 	}
 
-	public void addTailPick(String tailNumber) {
+	private void addTailPick(String tailNumber) {
 		String entry = String.format("%d:%s", Instant.now().toEpochMilli(), tailNumber);
 		tailPicks.add(entry);
+	}
+
+	public void addTail(String tailNumber, boolean scan) {
+    	if (scan) {
+    		addTailScan(tailNumber);
+    	} else {
+    		addTailPick(tailNumber);
+    	}
 	}
 
 	@Override
@@ -149,6 +168,10 @@ public class SessionRecord {
 		builder.append(finishTime);
 		builder.append("]");
 		return builder.toString();
+	}
+
+	public Object[] toRecord() {
+		return new Object[] { uuid, ipAddress, mobileType, formatSafely(startTime), formatSafely(finishTime), String.join(",", tailPicks), String.join(",", tailScans) };
 	}
 
 	public Set<Period> getPeriods() {

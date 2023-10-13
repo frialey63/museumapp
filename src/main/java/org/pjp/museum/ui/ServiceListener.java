@@ -1,5 +1,7 @@
 package org.pjp.museum.ui;
 
+import javax.servlet.ServletContext;
+
 import org.apache.logging.log4j.util.Strings;
 import org.pjp.museum.service.SessionRecordService;
 import org.pjp.museum.ui.util.AddressUtils;
@@ -17,9 +19,12 @@ import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.notification.Notification.Position;
 import com.vaadin.flow.component.notification.NotificationVariant;
+import com.vaadin.flow.function.DeploymentConfiguration;
 import com.vaadin.flow.router.RouteConfiguration;
 import com.vaadin.flow.server.ServiceInitEvent;
+import com.vaadin.flow.server.VaadinService;
 import com.vaadin.flow.server.VaadinServiceInitListener;
+import com.vaadin.flow.server.VaadinServlet;
 import com.vaadin.flow.server.VaadinSession;
 import com.vaadin.flow.server.WrappedSession;
 
@@ -45,8 +50,19 @@ public class ServiceListener implements VaadinServiceInitListener {
 	@SuppressWarnings("unchecked")
     @Override
     public void serviceInit(ServiceInitEvent event) {
-        LOGGER.info("enableAdmin = {}" + enableAdmin);
+		if (LOGGER.isInfoEnabled()) {
+			DeploymentConfiguration deploymentConfiguration = VaadinService.getCurrent().getDeploymentConfiguration();
 
+			LOGGER.info("heartbeatInterval = {}", deploymentConfiguration.getHeartbeatInterval());
+			LOGGER.info("closeIdleSessions = {}", deploymentConfiguration.isCloseIdleSessions());
+			
+			ServletContext servletContext = VaadinServlet.getCurrent().getServletContext();
+			
+			LOGGER.info("sessionTimeout = {}", servletContext.getSessionTimeout());
+	        
+	        LOGGER.info("secureAddresses = {}", secureAddresses);
+		}
+		
         RouteConfiguration configuration = RouteConfiguration.forApplicationScope();
 
         if (enableAdmin) {
@@ -76,8 +92,6 @@ public class ServiceListener implements VaadinServiceInitListener {
             SessionRecordService service = StaticHelper.getBean(SessionRecordService.class);
             service.finaliseRecord(vaadinSession);
         });
-        
-        LOGGER.info("secureAddresses = {}", secureAddresses);
 
         if (wifiWarning) {
             event.getSource().addUIInitListener(uiEvent -> {

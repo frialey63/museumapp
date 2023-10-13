@@ -2,6 +2,7 @@ package org.pjp.museum.service;
 
 import java.time.Instant;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.pjp.museum.model.AddressType;
@@ -31,14 +32,14 @@ public class SessionRecordService {
         this.repository = repository;
     }
 
-    public void createRecord(VaadinSession vaadinSession) {
+    public SessionRecord createRecord(VaadinSession vaadinSession) {
         WrappedSession wrappedSession = vaadinSession.getSession();
 
         String ipAddress = AddressUtils.getRealAddress(vaadinSession);
 
         WebBrowser browser = vaadinSession.getBrowser();
 		SessionRecord sessionRecord = new SessionRecord(wrappedSession.getId(), ipAddress, browser.getBrowserApplication(), MobileType.get(browser), Instant.now());
-		repository.save(sessionRecord);
+		return repository.save(sessionRecord);
     }
 
     public void finaliseRecord(VaadinSession vaadinSession) {
@@ -53,15 +54,20 @@ public class SessionRecordService {
     public void updateRecord(VaadinSession vaadinSession, String tailNumber, boolean scan) {
         WrappedSession wrappedSession = vaadinSession.getSession();
 
-        repository.findById(wrappedSession.getId()).ifPresent(sessionRecord -> {
-        	if (scan) {
-        		sessionRecord.addTailScan(tailNumber);
-        	} else {
-        		sessionRecord.addTailPick(tailNumber);
-        	}
+        repository.findById(wrappedSession.getId()).ifPresentOrElse(sessionRecord -> {
+        	sessionRecord.addTail(tailNumber, scan);
+        	
+        	repository.save(sessionRecord);
+        }, () -> {
+        	LOGGER.warn("failed to lookup session record {} for update of tailNumber {} with scan {} so lazily create now", wrappedSession.getId(), tailNumber, scan);
+        	
+        	SessionRecord sessionRecord = createRecord(vaadinSession);
+
+        	sessionRecord.addTail(tailNumber, scan);
         	
         	repository.save(sessionRecord);
         });
+        
     }
      
     public Map<Period, Statistic<MobileType>> compileUsageStatistics() {
@@ -120,4 +126,8 @@ public class SessionRecordService {
 		return result;
 	}
     
+    public List<SessionRecord> findAllSessionRecords() {
+    	return repository.findByOrderByStartTime();
+    }
+
 }
