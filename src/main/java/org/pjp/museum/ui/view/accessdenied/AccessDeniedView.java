@@ -3,12 +3,17 @@ package org.pjp.museum.ui.view.accessdenied;
 import com.vaadin.flow.component.html.Image;
 import com.vaadin.flow.component.html.Paragraph;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.router.AfterNavigationEvent;
+import com.vaadin.flow.router.AfterNavigationObserver;
+import com.vaadin.flow.router.BeforeEvent;
+import com.vaadin.flow.router.HasUrlParameter;
+import com.vaadin.flow.router.OptionalParameter;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 
 @PageTitle("Access Denied")
 @Route(value = "accessdenied")
-public class AccessDeniedView extends VerticalLayout {
+public class AccessDeniedView extends VerticalLayout implements HasUrlParameter<Boolean>, AfterNavigationObserver {
 
 	public static final String MESSAGE = "Please connect to the museum wi-fi network for access to the Museum App.";
 
@@ -18,6 +23,8 @@ public class AccessDeniedView extends VerticalLayout {
 
     private final Paragraph paragraph = new Paragraph(MESSAGE);
 
+    private boolean hideMessage;
+    
     public AccessDeniedView() {
         super();
 
@@ -31,5 +38,17 @@ public class AccessDeniedView extends VerticalLayout {
 
         getStyle().set("text-align", "center");
     }
+
+	@Override
+	public void setParameter(BeforeEvent event, @OptionalParameter Boolean parameter) {
+		this.hideMessage = parameter;
+	}
+
+	@Override
+	public void afterNavigation(AfterNavigationEvent event) {
+		if (hideMessage) {
+			paragraph.setText(null);
+		}
+	}
 
 }

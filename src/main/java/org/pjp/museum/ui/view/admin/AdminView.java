@@ -139,7 +139,7 @@ public class AdminView extends VerticalLayout implements BeforeEnterObserver, Af
         	return;
         }
         
-		ui.navigate(AccessDeniedView.class);
+		ui.navigate(AccessDeniedView.class, true);
 	}
 
 	@Override
