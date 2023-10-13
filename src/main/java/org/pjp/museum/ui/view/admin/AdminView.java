@@ -15,20 +15,24 @@ import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVPrinter;
 import org.apache.commons.csv.CSVRecord;
 import org.apache.commons.csv.QuoteMode;
+import org.apache.logging.log4j.util.Strings;
 import org.pjp.museum.model.Exhibit;
 import org.pjp.museum.service.ExhibitService;
 import org.pjp.museum.service.SessionRecordService;
+import org.pjp.museum.ui.util.AddressUtils;
 import org.pjp.museum.ui.util.AudioUtils;
 import org.pjp.museum.ui.util.FileUtils;
 import org.pjp.museum.ui.util.ImageUtils;
 import org.pjp.museum.ui.util.QrCodeUtils;
 import org.pjp.museum.ui.util.TextUtils;
+import org.pjp.museum.ui.view.accessdenied.AccessDeniedView;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.util.UriComponentsBuilder;
 import org.vaadin.olli.FileDownloadWrapper;
 
+import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.accordion.Accordion;
 import com.vaadin.flow.component.accordion.AccordionPanel;
 import com.vaadin.flow.component.button.Button;
@@ -45,12 +49,14 @@ import com.vaadin.flow.component.upload.Upload;
 import com.vaadin.flow.component.upload.receivers.MultiFileMemoryBuffer;
 import com.vaadin.flow.router.AfterNavigationEvent;
 import com.vaadin.flow.router.AfterNavigationObserver;
+import com.vaadin.flow.router.BeforeEnterEvent;
+import com.vaadin.flow.router.BeforeEnterObserver;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.server.InputStreamFactory;
 import com.vaadin.flow.server.StreamResource;
 
 @PageTitle("Admin")
-public class AdminView extends VerticalLayout implements AfterNavigationObserver {
+public class AdminView extends VerticalLayout implements BeforeEnterObserver, AfterNavigationObserver {
 
 	private static final long serialVersionUID = 3386437553156944523L;
 
@@ -79,6 +85,9 @@ public class AdminView extends VerticalLayout implements AfterNavigationObserver
     
     @Value("${app.download.url}")
     private String appDownloadUrl;
+
+    @Value("${admin.address}")
+    private String adminAddress;
 
     private final ExhibitService exhibitService;
     
@@ -121,6 +130,17 @@ public class AdminView extends VerticalLayout implements AfterNavigationObserver
         
         add(heading1, heading2, accordion);
     }
+
+	@Override
+	public void beforeEnter(BeforeEnterEvent event) {
+        UI ui = UI.getCurrent();
+
+        if (isAllowed(ui)) {
+        	return;
+        }
+        
+		ui.navigate(AccessDeniedView.class);
+	}
 
 	@Override
 	public void afterNavigation(AfterNavigationEvent event) {
@@ -308,5 +328,16 @@ public class AdminView extends VerticalLayout implements AfterNavigationObserver
 		    return result;
 		};
 	}
+    
+    private boolean isAllowed(UI ui) {
+    	if (Strings.isNotEmpty(adminAddress)) {
+        	String ipAddress = AddressUtils.getRealAddress(ui.getSession());
+            LOGGER.debug("IP address = {}", ipAddress);
+           
+        	return AddressUtils.checkAddressIsSecure(adminAddress, ipAddress);
+    	}
+    	
+    	return true;
+    }
 	    
 }
