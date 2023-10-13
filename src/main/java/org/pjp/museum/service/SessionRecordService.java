@@ -127,7 +127,7 @@ public class SessionRecordService {
 	}
     
     public List<SessionRecord> findAllSessionRecords() {
-    	return repository.findByOrderByStartTime();
+    	return repository.findAll();
     }
 
 }
