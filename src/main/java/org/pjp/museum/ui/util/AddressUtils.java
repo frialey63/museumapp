@@ -9,6 +9,7 @@ import org.pjp.museum.util.IPWithGivenRangeCheck;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.vaadin.flow.server.VaadinRequest;
 import com.vaadin.flow.server.VaadinService;
 import com.vaadin.flow.server.VaadinSession;
 
@@ -22,12 +23,18 @@ public final class AddressUtils {
 	 * @return
 	 */
 	public static String getRealAddress(VaadinSession session) {
-        String header = VaadinService.getCurrentRequest().getHeader("X-Forwarded-For");
-        
+        VaadinRequest currentRequest = VaadinService.getCurrentRequest();
+
+        String header = currentRequest.getHeader("X-Forwarded-For");
         if (Strings.isNotBlank(header)) {
         	return header.split(",")[0].trim();
         }
         
+		String remoteAddr = currentRequest.getRemoteAddr();
+		if (Strings.isNotBlank(remoteAddr)) {
+			return remoteAddr;
+		}
+		
 		return session.getBrowser().getAddress();
 	}
 
