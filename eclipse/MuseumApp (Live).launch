@@ -7,6 +7,11 @@
     <listAttribute key="org.eclipse.debug.core.MAPPED_RESOURCE_TYPES">
         <listEntry value="1"/>
     </listAttribute>
+    <mapAttribute key="org.eclipse.debug.core.environmentVariables">
+        <mapEntry key="MUSEUM_ADMIN_ADDRESSES" value=""/>
+        <mapEntry key="MUSEUM_DATA" value=""/>
+        <mapEntry key="MUSEUM_SECURE_ADDRESSES" value=""/>
+    </mapAttribute>
     <listAttribute key="org.eclipse.debug.ui.favoriteGroups">
         <listEntry value="org.eclipse.debug.ui.launchGroup.run"/>
     </listAttribute>

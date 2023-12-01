@@ -23,6 +23,9 @@
           <pattern>%d{dd-MM-yyyy HH:mm:ss} %-5level %logger{35} - %msg%n</pattern>
        </encoder>
     </appender>
+    
+    <logger name="WaveEncoder" level="WARN"/>
+    <logger name="AudioPlayer" level="WARN"/>
 
     <root level="INFO">
        <appender-ref ref="STDOUT" />
