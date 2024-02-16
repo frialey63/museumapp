@@ -15,16 +15,16 @@ import com.vaadin.flow.router.Route;
 @Route(value = "accessdenied")
 public class AccessDeniedView extends VerticalLayout implements HasUrlParameter<Boolean>, AfterNavigationObserver {
 
-	public static final String MESSAGE = "Please connect to the museum wi-fi network for access to the Museum App.";
+    public static final String MESSAGE = "Please connect to the museum wi-fi network for access to the Museum App.";
 
-	private static final long serialVersionUID = 9102902278596466238L;
+    private static final long serialVersionUID = 9102902278596466238L;
 
     private final Image image = new Image("images/access_denied.jpg", "access_denied");
 
     private final Paragraph paragraph = new Paragraph(MESSAGE);
 
     private Boolean hideMessage;
-    
+
     public AccessDeniedView() {
         super();
 
@@ -39,16 +39,16 @@ public class AccessDeniedView extends VerticalLayout implements HasUrlParameter<
         getStyle().set("text-align", "center");
     }
 
-	@Override
-	public void setParameter(BeforeEvent event, @OptionalParameter Boolean parameter) {
-		this.hideMessage = parameter;
-	}
+    @Override
+    public void setParameter(BeforeEvent event, @OptionalParameter Boolean parameter) {
+        this.hideMessage = parameter;
+    }
 
-	@Override
-	public void afterNavigation(AfterNavigationEvent event) {
-		if (Boolean.TRUE.equals(hideMessage)) {
-			paragraph.setText(null);
-		}
-	}
+    @Override
+    public void afterNavigation(AfterNavigationEvent event) {
+        if (Boolean.TRUE.equals(hideMessage)) {
+            paragraph.setText(null);
+        }
+    }
 
 }

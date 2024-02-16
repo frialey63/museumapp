@@ -33,7 +33,7 @@ public class TailNumberView extends VerticalLayout implements AfterNavigationObs
     private static final long serialVersionUID = 2220031256723181930L;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(TailNumberView.class);
-    
+
     private static final String HELP_STR = """
             In case the QR Code scanner is not working, it is possible to load the exhibit information by selecting the relevant aircraft tail number from the list below. (Use the Settings page to set this mode as default.)
             %s
@@ -52,7 +52,7 @@ public class TailNumberView extends VerticalLayout implements AfterNavigationObs
     private String secureAddresses;
 
     private final ExhibitService exhibitService;
-    
+
     private final SessionRecordService sessionRecordService;
 
     public TailNumberView(ExhibitService exhibitService, SessionRecordService sessionRecordService) {
@@ -74,36 +74,36 @@ public class TailNumberView extends VerticalLayout implements AfterNavigationObs
 
     @Override
     public void afterNavigation(AfterNavigationEvent event) {
-    	help.getElement().setProperty("innerHTML", String.format(HELP_STR, (isAllowed(UI.getCurrent()) ? "" : CONNECT_STR)));
-        
-    	Collection<TailNumber> items;
-    	
-    	if (isAllowed(UI.getCurrent())) {
-    		items = exhibitService.getTailNumbers();
-    	} else {
-    		items = List.of(exhibitService.getMuseum());
-    	}
-    	
-		listBox.setItems(items);
+        help.getElement().setProperty("innerHTML", String.format(HELP_STR, (isAllowed(UI.getCurrent()) ? "" : CONNECT_STR)));
+
+        Collection<TailNumber> items;
+
+        if (isAllowed(UI.getCurrent())) {
+            items = exhibitService.getTailNumbers();
+        } else {
+            items = List.of(exhibitService.getMuseum());
+        }
+
+        listBox.setItems(items);
     }
 
     @Override
     public void valueChanged(ComponentValueChangeEvent<ListBox<TailNumber>, TailNumber> event) {
-    	String tailNumber = event.getValue().tailNumber();
-    	
-		sessionRecordService.updateRecord(VaadinSession.getCurrent(), tailNumber, false);
+        String tailNumber = event.getValue().tailNumber();
+
+        sessionRecordService.updateRecord(VaadinSession.getCurrent(), tailNumber, false);
         UI.getCurrent().navigate(ExhibitView.class, tailNumber);
     }
-    
+
     private boolean isAllowed(UI ui) {
-    	if (Strings.isNotEmpty(secureAddresses)) {
-        	String ipAddress = AddressUtils.getRealAddress(ui.getSession());
+        if (Strings.isNotEmpty(secureAddresses)) {
+            String ipAddress = AddressUtils.getRealAddress(ui.getSession());
             LOGGER.debug("IP address = {}", ipAddress);
-           
-        	return AddressUtils.checkAddressIsSecure(secureAddresses, ipAddress);
-    	}
-    	
-    	return true;
+
+            return AddressUtils.checkAddressIsSecure(secureAddresses, ipAddress);
+        }
+
+        return true;
     }
 
 }

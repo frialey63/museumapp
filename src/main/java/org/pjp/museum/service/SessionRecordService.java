@@ -38,96 +38,96 @@ public class SessionRecordService {
         String ipAddress = AddressUtils.getRealAddress(vaadinSession);
 
         WebBrowser browser = vaadinSession.getBrowser();
-		SessionRecord sessionRecord = new SessionRecord(wrappedSession.getId(), ipAddress, browser.getBrowserApplication(), MobileType.get(browser), Instant.now());
-		return repository.save(sessionRecord);
+        SessionRecord sessionRecord = new SessionRecord(wrappedSession.getId(), ipAddress, browser.getBrowserApplication(), MobileType.get(browser), Instant.now());
+        return repository.save(sessionRecord);
     }
 
     public void finaliseRecord(VaadinSession vaadinSession) {
         WrappedSession wrappedSession = vaadinSession.getSession();
 
         repository.findById(wrappedSession.getId()).ifPresent(sessionRecord -> {
-        	sessionRecord.setFinishTime(Instant.now());
-        	repository.save(sessionRecord);
+            sessionRecord.setFinishTime(Instant.now());
+            repository.save(sessionRecord);
         });
     }
-    
+
     public void updateRecord(VaadinSession vaadinSession, String tailNumber, boolean scan) {
         WrappedSession wrappedSession = vaadinSession.getSession();
 
         repository.findById(wrappedSession.getId()).ifPresentOrElse(sessionRecord -> {
-        	sessionRecord.addTail(tailNumber, scan);
-        	
-        	repository.save(sessionRecord);
+            sessionRecord.addTail(tailNumber, scan);
+
+            repository.save(sessionRecord);
         }, () -> {
-        	LOGGER.warn("failed to lookup session record {} for update of tailNumber {} with scan {} so lazily create now", wrappedSession.getId(), tailNumber, scan);
-        	
-        	SessionRecord sessionRecord = createRecord(vaadinSession);
+            LOGGER.warn("failed to lookup session record {} for update of tailNumber {} with scan {} so lazily create now", wrappedSession.getId(), tailNumber, scan);
 
-        	sessionRecord.addTail(tailNumber, scan);
-        	
-        	repository.save(sessionRecord);
+            SessionRecord sessionRecord = createRecord(vaadinSession);
+
+            sessionRecord.addTail(tailNumber, scan);
+
+            repository.save(sessionRecord);
         });
-        
-    }
-     
-    public Map<Period, Statistic<MobileType>> compileUsageStatistics() {
-    	Map<Period, Statistic<MobileType>> result = new HashMap<>();
-    	
-    	for (Period period : Period.values()) {
-    		result.put(period, new Statistic<MobileType>(period));
-		}
 
-    	repository.findAll().forEach(sessionRecord -> {
-    		LOGGER.debug(sessionRecord.toString());
-    		
-    		sessionRecord.getPeriods().forEach(period -> {
-    			result.get(period).incCount(sessionRecord.getMobileType());
-    		});
-    	});
-    	
-    	return result;
+    }
+
+    public Map<Period, Statistic<MobileType>> compileUsageStatistics() {
+        Map<Period, Statistic<MobileType>> result = new HashMap<>();
+
+        for (Period period : Period.values()) {
+            result.put(period, new Statistic<MobileType>(period));
+        }
+
+        repository.findAll().forEach(sessionRecord -> {
+            LOGGER.debug(sessionRecord.toString());
+
+            sessionRecord.getPeriods().forEach(period -> {
+                result.get(period).incCount(sessionRecord.getMobileType());
+            });
+        });
+
+        return result;
     }
 
     public Map<Period, Statistic<AddressType>> compileAddressStatistics(String secureAddresses) {
-    	Map<Period, Statistic<AddressType>> result = new HashMap<>();
-    	
-    	for (Period period : Period.values()) {
-    		result.put(period, new Statistic<AddressType>(period));
-		}
+        Map<Period, Statistic<AddressType>> result = new HashMap<>();
 
-    	repository.findAll().forEach(sessionRecord -> {
-    		LOGGER.debug(sessionRecord.toString());
-    		
-    		sessionRecord.getPeriods().forEach(period -> {
-    			result.get(period).incCount(sessionRecord.getAddressType(secureAddresses));
-    		});
-    	});
-    	
-    	return result;
+        for (Period period : Period.values()) {
+            result.put(period, new Statistic<AddressType>(period));
+        }
+
+        repository.findAll().forEach(sessionRecord -> {
+            LOGGER.debug(sessionRecord.toString());
+
+            sessionRecord.getPeriods().forEach(period -> {
+                result.get(period).incCount(sessionRecord.getAddressType(secureAddresses));
+            });
+        });
+
+        return result;
     }
 
-	public Map<Period, Statistic<String>> compileExhibitStatistics(boolean scan) {
-		Map<Period, Statistic<String>> result = new HashMap<>();
-    	
-    	for (Period period : Period.values()) {
-    		result.put(period, new Statistic<String>(period));
-		}
+    public Map<Period, Statistic<String>> compileExhibitStatistics(boolean scan) {
+        Map<Period, Statistic<String>> result = new HashMap<>();
 
-    	repository.findAll().forEach(sessionRecord -> {
-    		LOGGER.debug(sessionRecord.toString());
+        for (Period period : Period.values()) {
+            result.put(period, new Statistic<String>(period));
+        }
 
-    		sessionRecord.getPeriods().forEach(period -> {
-    			sessionRecord.getTailNumbers(scan).forEach(tailNumber -> {
-    				result.get(period).incCount(tailNumber);
-    			});
-    		});
-    	});
+        repository.findAll().forEach(sessionRecord -> {
+            LOGGER.debug(sessionRecord.toString());
 
-		return result;
-	}
-    
+            sessionRecord.getPeriods().forEach(period -> {
+                sessionRecord.getTailNumbers(scan).forEach(tailNumber -> {
+                    result.get(period).incCount(tailNumber);
+                });
+            });
+        });
+
+        return result;
+    }
+
     public List<SessionRecord> findAllSessionRecords() {
-    	return repository.findAll();
+        return repository.findAll();
     }
 
 }

@@ -28,22 +28,22 @@ import com.wontlost.zxing.ZXingVaadinReader;
 @Route(value = "scanner", layout = MainLayout.class)
 public class ScannerZxingView extends VerticalLayout {
 
-	private static final long serialVersionUID = 5665801440827713574L;
+    private static final long serialVersionUID = 5665801440827713574L;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ScannerZxingView.class);
 
     private static Map<String, String> getQueryMap(String query) {
-		String[] params = query.split("&");
-		Map<String, String> map = new HashMap<>();
-		
-		for (String param : params) {
-			String name = param.split("=")[0];
-			String value = param.split("=")[1];
-			map.put(name, value);
-		}
-		
-		return map;
-	}
+        String[] params = query.split("&");
+        Map<String, String> map = new HashMap<>();
+
+        for (String param : params) {
+            String name = param.split("=")[0];
+            String value = param.split("=")[1];
+            map.put(name, value);
+        }
+
+        return map;
+    }
 
     @Value("${app.download.url}")
     private String appDownloadUrl;
@@ -56,21 +56,21 @@ public class ScannerZxingView extends VerticalLayout {
         zxingReader.setId("video"); //id needs to be 'video' if From.camera.
 
         zxingReader.addValueChangeListener(l -> {
-        	try {
-				URL url = new URL(l.getValue());
-				Map<String, String> map = getQueryMap(url.getQuery());
-				
-	            String tailNumber = map.get(org.pjp.museum.util.Constants.TAIL_NUMBER);
-				LOGGER.debug("tailNumber = {}", tailNumber);
-				
-	            UI ui = UI.getCurrent();
+            try {
+                URL url = new URL(l.getValue());
+                Map<String, String> map = getQueryMap(url.getQuery());
+
+                String tailNumber = map.get(org.pjp.museum.util.Constants.TAIL_NUMBER);
+                LOGGER.debug("tailNumber = {}", tailNumber);
+
+                UI ui = UI.getCurrent();
 
                 service.updateRecord(VaadinSession.getCurrent(), tailNumber, true);
                 ui.navigate(ExhibitView.class, tailNumber);
 
-        	} catch (MalformedURLException e) {
-				LOGGER.error("failed to create the URL from the scanned value", e);
-			}
+            } catch (MalformedURLException e) {
+                LOGGER.error("failed to create the URL from the scanned value", e);
+            }
         });
 
         zxingReader.setWidthFull();

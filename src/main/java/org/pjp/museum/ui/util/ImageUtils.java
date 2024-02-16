@@ -13,15 +13,15 @@ public final class ImageUtils {
 
     public static InputStream getInputStreamFromFile(String filename) throws RuntimeException {
         try {
-        	return new FileInputStream(IMAGE_DIR + File.separator + filename);
+            return new FileInputStream(IMAGE_DIR + File.separator + filename);
         } catch (FileNotFoundException e) {
             throw new RuntimeException(e);
         }
     }
-    
+
     public static boolean existsAndReadable(String filename) {
-    	File file = new File(IMAGE_DIR, filename);
-		return file.exists() && file.canRead();
+        File file = new File(IMAGE_DIR, filename);
+        return file.exists() && file.canRead();
     }
 
     private ImageUtils() {

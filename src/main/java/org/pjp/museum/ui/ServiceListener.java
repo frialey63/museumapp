@@ -34,7 +34,7 @@ public class ServiceListener implements VaadinServiceInitListener {
     private static final long serialVersionUID = -3678291874101081863L;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(VaadinServiceInitListener.class);
-    
+
     @Value("${enable.admin:false}")
     private boolean enableAdmin;
 
@@ -47,22 +47,22 @@ public class ServiceListener implements VaadinServiceInitListener {
     @Value("${secure.addresses}")
     private String secureAddresses;
 
-	@SuppressWarnings("unchecked")
+    @SuppressWarnings("unchecked")
     @Override
     public void serviceInit(ServiceInitEvent event) {
-		if (LOGGER.isInfoEnabled()) {
-			DeploymentConfiguration deploymentConfiguration = VaadinService.getCurrent().getDeploymentConfiguration();
+        if (LOGGER.isInfoEnabled()) {
+            DeploymentConfiguration deploymentConfiguration = VaadinService.getCurrent().getDeploymentConfiguration();
 
-			LOGGER.info("heartbeatInterval = {}", deploymentConfiguration.getHeartbeatInterval());
-			LOGGER.info("closeIdleSessions = {}", deploymentConfiguration.isCloseIdleSessions());
-			
-			ServletContext servletContext = VaadinServlet.getCurrent().getServletContext();
-			
-			LOGGER.info("sessionTimeout = {}", servletContext.getSessionTimeout());
-	        
-	        LOGGER.info("secureAddresses = {}", secureAddresses);
-		}
-		
+            LOGGER.info("heartbeatInterval = {}", deploymentConfiguration.getHeartbeatInterval());
+            LOGGER.info("closeIdleSessions = {}", deploymentConfiguration.isCloseIdleSessions());
+
+            ServletContext servletContext = VaadinServlet.getCurrent().getServletContext();
+
+            LOGGER.info("sessionTimeout = {}", servletContext.getSessionTimeout());
+
+            LOGGER.info("secureAddresses = {}", secureAddresses);
+        }
+
         RouteConfiguration configuration = RouteConfiguration.forApplicationScope();
 
         if (enableAdmin) {
@@ -75,20 +75,20 @@ public class ServiceListener implements VaadinServiceInitListener {
 
         event.getSource().addSessionInitListener(initEvent -> {
             VaadinSession vaadinSession = initEvent.getSession();
-            
+
             LOGGER.debug("A new Session {} has been initialised", vaadinSession.getSession().getId());
             SettingsUtil.setMode(vaadinSession, SettingsUtil.QR_CODE);
-            
+
             SessionRecordService service = StaticHelper.getBean(SessionRecordService.class);
             service.createRecord(vaadinSession);
         });
-        
+
         event.getSource().addSessionDestroyListener(destroyEvent -> {
             VaadinSession vaadinSession = destroyEvent.getSession();
             WrappedSession wrappedSession = vaadinSession.getSession();
-            
-			LOGGER.debug("Session {} has been destroyed, saving a SessionRecord", wrappedSession.getId());
-			
+
+            LOGGER.debug("Session {} has been destroyed, saving a SessionRecord", wrappedSession.getId());
+
             SessionRecordService service = StaticHelper.getBean(SessionRecordService.class);
             service.finaliseRecord(vaadinSession);
         });
@@ -101,15 +101,15 @@ public class ServiceListener implements VaadinServiceInitListener {
                     ui.addBeforeEnterListener(l -> {
                         // check whether App is being accessed on Museum wifi network, if not redirect to the Access Denied page
 
-                    	String ipAddress = AddressUtils.getRealAddress(ui.getSession());
+                        String ipAddress = AddressUtils.getRealAddress(ui.getSession());
                         LOGGER.debug("IP address = {}", ipAddress);
-                        
-                    	boolean result = AddressUtils.checkAddressIsSecure(secureAddresses, ipAddress);
-                    	
-                    	if (!result) {
+
+                        boolean result = AddressUtils.checkAddressIsSecure(secureAddresses, ipAddress);
+
+                        if (!result) {
                             LOGGER.debug("IP address {} is not within the secure addresses {}", ipAddress, secureAddresses);
                             Notification.show(AccessDeniedView.MESSAGE, 5_000, Position.BOTTOM_START).addThemeVariants(NotificationVariant.LUMO_ERROR);
-                    	}
+                        }
                     });
                 }
             });

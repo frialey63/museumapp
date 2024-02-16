@@ -23,24 +23,24 @@ public class SessionRecord {
     private static final ZoneOffset UTC = ZoneOffset.UTC;
 
     private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ISO_ZONED_DATE_TIME.withZone(UTC);
-	
-	private static String formatSafely(Instant time) {
-		if (time != null) {
-			return FORMATTER.format(time);
-		}
 
-		return "null";
-	}
+    private static String formatSafely(Instant time) {
+        if (time != null) {
+            return FORMATTER.format(time);
+        }
 
-	@Id
+        return "null";
+    }
+
+    @Id
     private String uuid;
 
     @NotBlank
     private String ipAddress;
-    
+
     @NotBlank
     private String browserApplication;
-    
+
     @NotNull
     private MobileType mobileType;
 
@@ -48,165 +48,165 @@ public class SessionRecord {
     private Instant startTime;
 
     private Instant finishTime;
-    
+
     private Set<String> tailScans = new HashSet<>();
 
     private Set<String> tailPicks = new HashSet<>();
 
-	public SessionRecord(String uuid, @NotBlank String ipAddress, @NotBlank String browserApplication, @NotNull MobileType mobileType, @NotNull Instant startTime) {
-		super();
-		this.uuid = uuid;
-		this.ipAddress = ipAddress;
-		this.browserApplication = browserApplication;
-		this.mobileType = mobileType;
-		this.startTime = startTime;
-	}
-
-	public Instant getFinishTime() {
-		return finishTime;
-	}
-
-	public void setFinishTime(Instant finishTime) {
-		this.finishTime = finishTime;
-	}
-
-	public String getUuid() {
-		return uuid;
-	}
-
-	public String getIpAddress() {
-		return ipAddress;
-	}
-
-	public AddressType getAddressType(String secureAddresses) {
-		return AddressType.getAddressType(secureAddresses, ipAddress);
-	}
-
-	public String getBrowserApplication() {
-		return browserApplication;
-	}
-
-	public MobileType getMobileType() {
-		return mobileType;
-	}
-
-	public Instant getStartTime() {
-		return startTime;
-	}
-	
-	public Set<String> getTailScans() {
-		return tailScans;
-	}
- 
-	public Set<String> getTailScansByTailNumber() {
-		return tailScans.stream().map(str -> str.split("\\:")[1]).collect(Collectors.toSet());
-	}
- 
-	public void setTailScans(Set<String> tailScans) {
-		this.tailScans = tailScans;
-	}
-
-	private void addTailScan(String tailNumber) {
-		String entry = String.format("%d:%s", Instant.now().toEpochMilli(), tailNumber);
-		tailScans.add(entry);
-	}
-
-	public Set<String> getTailPicks() {
-		return tailPicks;
-	}
-
-	public Set<String> getTailPicksByTailNumber() {
-		return tailPicks.stream().map(str -> str.split("\\:")[1]).collect(Collectors.toSet());
-	}
-
-	public void setTailPicks(Set<String> tailPicks) {
-		this.tailPicks = tailPicks;
-	}
-
-	private void addTailPick(String tailNumber) {
-		String entry = String.format("%d:%s", Instant.now().toEpochMilli(), tailNumber);
-		tailPicks.add(entry);
-	}
-
-	public void addTail(String tailNumber, boolean scan) {
-    	if (scan) {
-    		addTailScan(tailNumber);
-    	} else {
-    		addTailPick(tailNumber);
-    	}
-	}
-
-	@Override
-	public int hashCode() {
-		return Objects.hash(uuid);
-	}
-
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		SessionRecord other = (SessionRecord) obj;
-		return Objects.equals(uuid, other.uuid);
-	}
-    
-    @Override
-	public String toString() {
-		StringBuilder builder = new StringBuilder();
-		builder.append("SessionRecord [uuid=");
-		builder.append(uuid);
-		builder.append(", ipAddress=");
-		builder.append(ipAddress);
-		builder.append(", mobileType=");
-		builder.append(mobileType);
-		builder.append(", startTime=");
-		builder.append(startTime);
-		builder.append(", finishTime=");
-		builder.append(finishTime);
-		builder.append("]");
-		return builder.toString();
-	}
-
-	public Object[] toRecord() {
-		return new Object[] { uuid, ipAddress, mobileType, formatSafely(startTime), formatSafely(finishTime), String.join(",", tailPicks), String.join(",", tailScans) };
-	}
-
-	public Set<Period> getPeriods() {
-    	Set<Period> result = new HashSet<>();
-    	
-    	LocalDate now = LocalDate.now();
-    	
-		Instant startOfDay = now.atStartOfDay().toInstant(UTC);    	
-		Instant startOfWeek = now.with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY)).atStartOfDay().toInstant(UTC);
-		Instant startOfMonth = now.with(TemporalAdjusters.firstDayOfMonth()).atStartOfDay().toInstant(UTC);
-		Instant startOfYear = now.with(TemporalAdjusters.firstDayOfYear()).atStartOfDay().toInstant(UTC);
-		
-    	if (startTime.isAfter(startOfDay)) {
-    		result.add(Period.TODAY);
-    	}
-    	
-    	if (startTime.isAfter(startOfWeek)) {
-    		result.add(Period.WEEK);
-    	}
-    	
-    	if (startTime.isAfter(startOfMonth)) {
-    		result.add(Period.MONTH);
-    	}
-    	
-    	if (startTime.isAfter(startOfYear)) {
-    		result.add(Period.YEAR);
-    	}
-    	
-    	result.add(Period.ALL);
-    	
-    	return result;
+    public SessionRecord(String uuid, @NotBlank String ipAddress, @NotBlank String browserApplication, @NotNull MobileType mobileType, @NotNull Instant startTime) {
+        super();
+        this.uuid = uuid;
+        this.ipAddress = ipAddress;
+        this.browserApplication = browserApplication;
+        this.mobileType = mobileType;
+        this.startTime = startTime;
     }
-    
-	public Set<String> getTailNumbers(boolean scan) {
-		return scan ? getTailScansByTailNumber() : getTailPicksByTailNumber();
-	}
- 
+
+    public Instant getFinishTime() {
+        return finishTime;
+    }
+
+    public void setFinishTime(Instant finishTime) {
+        this.finishTime = finishTime;
+    }
+
+    public String getUuid() {
+        return uuid;
+    }
+
+    public String getIpAddress() {
+        return ipAddress;
+    }
+
+    public AddressType getAddressType(String secureAddresses) {
+        return AddressType.getAddressType(secureAddresses, ipAddress);
+    }
+
+    public String getBrowserApplication() {
+        return browserApplication;
+    }
+
+    public MobileType getMobileType() {
+        return mobileType;
+    }
+
+    public Instant getStartTime() {
+        return startTime;
+    }
+
+    public Set<String> getTailScans() {
+        return tailScans;
+    }
+
+    public Set<String> getTailScansByTailNumber() {
+        return tailScans.stream().map(str -> str.split("\\:")[1]).collect(Collectors.toSet());
+    }
+
+    public void setTailScans(Set<String> tailScans) {
+        this.tailScans = tailScans;
+    }
+
+    private void addTailScan(String tailNumber) {
+        String entry = String.format("%d:%s", Instant.now().toEpochMilli(), tailNumber);
+        tailScans.add(entry);
+    }
+
+    public Set<String> getTailPicks() {
+        return tailPicks;
+    }
+
+    public Set<String> getTailPicksByTailNumber() {
+        return tailPicks.stream().map(str -> str.split("\\:")[1]).collect(Collectors.toSet());
+    }
+
+    public void setTailPicks(Set<String> tailPicks) {
+        this.tailPicks = tailPicks;
+    }
+
+    private void addTailPick(String tailNumber) {
+        String entry = String.format("%d:%s", Instant.now().toEpochMilli(), tailNumber);
+        tailPicks.add(entry);
+    }
+
+    public void addTail(String tailNumber, boolean scan) {
+        if (scan) {
+            addTailScan(tailNumber);
+        } else {
+            addTailPick(tailNumber);
+        }
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(uuid);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        SessionRecord other = (SessionRecord) obj;
+        return Objects.equals(uuid, other.uuid);
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder builder = new StringBuilder();
+        builder.append("SessionRecord [uuid=");
+        builder.append(uuid);
+        builder.append(", ipAddress=");
+        builder.append(ipAddress);
+        builder.append(", mobileType=");
+        builder.append(mobileType);
+        builder.append(", startTime=");
+        builder.append(startTime);
+        builder.append(", finishTime=");
+        builder.append(finishTime);
+        builder.append("]");
+        return builder.toString();
+    }
+
+    public Object[] toRecord() {
+        return new Object[] { uuid, ipAddress, mobileType, formatSafely(startTime), formatSafely(finishTime), String.join(",", tailPicks), String.join(",", tailScans) };
+    }
+
+    public Set<Period> getPeriods() {
+        Set<Period> result = new HashSet<>();
+
+        LocalDate now = LocalDate.now();
+
+        Instant startOfDay = now.atStartOfDay().toInstant(UTC);
+        Instant startOfWeek = now.with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY)).atStartOfDay().toInstant(UTC);
+        Instant startOfMonth = now.with(TemporalAdjusters.firstDayOfMonth()).atStartOfDay().toInstant(UTC);
+        Instant startOfYear = now.with(TemporalAdjusters.firstDayOfYear()).atStartOfDay().toInstant(UTC);
+
+        if (startTime.isAfter(startOfDay)) {
+            result.add(Period.TODAY);
+        }
+
+        if (startTime.isAfter(startOfWeek)) {
+            result.add(Period.WEEK);
+        }
+
+        if (startTime.isAfter(startOfMonth)) {
+            result.add(Period.MONTH);
+        }
+
+        if (startTime.isAfter(startOfYear)) {
+            result.add(Period.YEAR);
+        }
+
+        result.add(Period.ALL);
+
+        return result;
+    }
+
+    public Set<String> getTailNumbers(boolean scan) {
+        return scan ? getTailScansByTailNumber() : getTailPicksByTailNumber();
+    }
+
 }

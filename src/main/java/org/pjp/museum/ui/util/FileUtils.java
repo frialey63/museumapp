@@ -11,51 +11,51 @@ import java.util.zip.ZipOutputStream;
 
 public final class FileUtils {
 
-	public static String getExtension(File path) {
-		return getExtension(path.getName());
-	}
+    public static String getExtension(File path) {
+        return getExtension(path.getName());
+    }
 
-	public static String getExtension(String path) {
-		return path.substring(path.lastIndexOf('.') + 1);
-	}
+    public static String getExtension(String path) {
+        return path.substring(path.lastIndexOf('.') + 1);
+    }
 
-	public static String getBase(String path) {
-		return path.substring(0, path.lastIndexOf('.'));
-	}
+    public static String getBase(String path) {
+        return path.substring(0, path.lastIndexOf('.'));
+    }
 
-	/*
-	 * https://stackoverflow.com/questions/15968883/how-to-zip-a-folder-itself-using-java
-	 */
-	public static void pack(String sourceDirPath, File zipFile) throws IOException {
-	    Path p = zipFile.toPath();
-	    try (ZipOutputStream zs = new ZipOutputStream(Files.newOutputStream(p))) {
-	        Path pp = Paths.get(sourceDirPath);
-	        Files.walk(pp)
-	          .filter(path -> !Files.isDirectory(path))
-	          .forEach(path -> {
-	              ZipEntry zipEntry = new ZipEntry(pp.relativize(path).toString());
-	              try {
-	                  zs.putNextEntry(zipEntry);
-	                  Files.copy(path, zs);
-	                  zs.closeEntry();
-	            } catch (IOException e) {
-	                System.err.println(e);
-	            }
-	        });
-	    }
-	}
-	
-	/*
-	 * https://www.baeldung.com/java-delete-directory
-	 */
-	public static void deleteDirectory(File dir) throws IOException {
-		Files.walk(dir.toPath())
-	      .sorted(Comparator.reverseOrder())
-	      .map(Path::toFile)
-	      .forEach(File::delete);
-	}
-	
-	private FileUtils() {
-		// prevent instantiation
-	}
+    /*
+     * https://stackoverflow.com/questions/15968883/how-to-zip-a-folder-itself-using-java
+     */
+    public static void pack(String sourceDirPath, File zipFile) throws IOException {
+        Path p = zipFile.toPath();
+        try (ZipOutputStream zs = new ZipOutputStream(Files.newOutputStream(p))) {
+            Path pp = Paths.get(sourceDirPath);
+            Files.walk(pp)
+              .filter(path -> !Files.isDirectory(path))
+              .forEach(path -> {
+                  ZipEntry zipEntry = new ZipEntry(pp.relativize(path).toString());
+                  try {
+                      zs.putNextEntry(zipEntry);
+                      Files.copy(path, zs);
+                      zs.closeEntry();
+                } catch (IOException e) {
+                    System.err.println(e);
+                }
+            });
+        }
+    }
+
+    /*
+     * https://www.baeldung.com/java-delete-directory
+     */
+    public static void deleteDirectory(File dir) throws IOException {
+        Files.walk(dir.toPath())
+          .sorted(Comparator.reverseOrder())
+          .map(Path::toFile)
+          .forEach(File::delete);
+    }
+
+    private FileUtils() {
+        // prevent instantiation
+    }
 }

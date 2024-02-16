@@ -21,7 +21,7 @@ public class SettingsView extends VerticalLayout implements AfterNavigationObser
 
     @Value("${chrome-flags.visible:false}")
     private boolean chromeFlagsVisible;
-    
+
     private final TextField chromeFlags = new TextField("Chrome Flags");
 
     public SettingsView() {
@@ -49,21 +49,21 @@ public class SettingsView extends VerticalLayout implements AfterNavigationObser
         chromeFlags.setValue("chrome://flags/#unsafely-treat-insecure-origin-as-secure");
         chromeFlags.setReadOnly(true);
         chromeFlags.setWidthFull();
-        
+
         setHorizontalComponentAlignment(Alignment.START, idMode, deafAccess, language, chromeFlags);
         add(idMode, deafAccess, language, chromeFlags);
-        
+
         idMode.addValueChangeListener(l -> {
             String mode = l.getValue();
-			SettingsUtil.setMode(UI.getCurrent().getSession(), mode);
+            SettingsUtil.setMode(UI.getCurrent().getSession(), mode);
         });
 
         setSizeFull();
     }
 
-	@Override
-	public void afterNavigation(AfterNavigationEvent event) {
-		chromeFlags.setVisible(chromeFlagsVisible);
-	}
+    @Override
+    public void afterNavigation(AfterNavigationEvent event) {
+        chromeFlags.setVisible(chromeFlagsVisible);
+    }
 
 }

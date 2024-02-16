@@ -7,36 +7,36 @@ import org.pjp.museum.model.Period;
 
 public class Statistic<T> {
 
-	private final Period period;
-	
-	private final Map<T, Integer> count = new HashMap<>();
+    private final Period period;
 
-	public Statistic(Period period) {
-		super();
-		this.period = period;
-	}
-	
-	public Period getPeriod() {
-		return period;
-	}
+    private final Map<T, Integer> count = new HashMap<>();
 
-	public Map<T, Integer> getCount() {
-		return count;
-	}
+    public Statistic(Period period) {
+        super();
+        this.period = period;
+    }
 
-	public int getCount(T type) {
-		return count.containsKey(type) ? count.get(type) : 0;
-	}
+    public Period getPeriod() {
+        return period;
+    }
 
-	public int getTotalCount() {
-		return count.values().stream().reduce(0, (a, b) -> a + b);
-	}
+    public Map<T, Integer> getCount() {
+        return count;
+    }
 
-	public void incCount(T type) {
-		if (count.containsKey(type)) {
-			count.put(type, count.get(type) + 1);
-		} else {
-			count.put(type, 1);
-		}
-	}
+    public int getCount(T type) {
+        return count.containsKey(type) ? count.get(type) : 0;
+    }
+
+    public int getTotalCount() {
+        return count.values().stream().reduce(0, (a, b) -> a + b);
+    }
+
+    public void incCount(T type) {
+        if (count.containsKey(type)) {
+            count.put(type, count.get(type) + 1);
+        } else {
+            count.put(type, 1);
+        }
+    }
 }
