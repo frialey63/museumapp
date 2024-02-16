@@ -93,8 +93,8 @@ class ExhibitServiceTest {
 
     @Test
     void testSaveExhibit() {
-    	ReflectionTestUtils.setField(service, "appDownloadUrl", "https://rafmanston-museumapp.azurewebsites.net");
-    	
+        ReflectionTestUtils.setField(service, "appDownloadUrl", "https://rafmanston-museumapp.azurewebsites.net");
+
         // GIVEN
 
         File qrCodeFile = new File(QrCodeUtils.QRCODE_DIR, "exhibit.jpg");
