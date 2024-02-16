@@ -15,6 +15,9 @@ import org.springframework.stereotype.Service;
 @Service
 public class MuseumService {
 
+	public static final String FOUR_PM = "16:00";
+	public static final String THREE_PM = "15:00";
+
     private static final Logger LOGGER = LoggerFactory.getLogger(MuseumService.class);
 
     private static final int TEN_MINUTES = 10;
@@ -34,6 +37,21 @@ public class MuseumService {
         repository.findByName(Setting.CLOSING_TIME).ifPresent(setting -> result.append(setting.getValue()));
 
         return result.toString();
+    }
+    
+    public void updateClosingTime(String closingTime) {
+        repository.findByName(Setting.CLOSING_TIME).ifPresent(setting -> { 
+        	if (FOUR_PM.equals(closingTime)) {
+        		setting.setValue(FOUR_PM);
+        	} else if (THREE_PM.equals(closingTime)) {
+        		setting.setValue(THREE_PM);
+        	} else {
+        		throw new IllegalArgumentException("illegal closing time: " + closingTime);
+        	}
+        	
+        	LOGGER.info("updating museum closing time to " + closingTime);
+        	repository.save(setting);
+        });
     }
 
     public void checkForAndNotifyClosingTime() {
@@ -64,7 +82,7 @@ public class MuseumService {
         if (repository.count() == 0) {
         	LOGGER.info("initialising the museum repository with Setting");
         	
-            Setting setting = new Setting(UuidStr.random(), Setting.CLOSING_TIME, "16:00");
+            Setting setting = new Setting(UuidStr.random(), Setting.CLOSING_TIME, FOUR_PM);
             repository.save(setting);
         }
     }

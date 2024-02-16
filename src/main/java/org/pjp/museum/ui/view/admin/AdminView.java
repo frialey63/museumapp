@@ -18,6 +18,7 @@ import org.apache.commons.csv.QuoteMode;
 import org.apache.logging.log4j.util.Strings;
 import org.pjp.museum.model.Exhibit;
 import org.pjp.museum.service.ExhibitService;
+import org.pjp.museum.service.MuseumService;
 import org.pjp.museum.service.SessionRecordService;
 import org.pjp.museum.ui.util.AddressUtils;
 import org.pjp.museum.ui.util.AudioUtils;
@@ -44,6 +45,7 @@ import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.notification.NotificationVariant;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.component.radiobutton.RadioButtonGroup;
 import com.vaadin.flow.component.textfield.IntegerField;
 import com.vaadin.flow.component.upload.Upload;
 import com.vaadin.flow.component.upload.receivers.MultiFileMemoryBuffer;
@@ -65,11 +67,8 @@ public class AdminView extends VerticalLayout implements BeforeEnterObserver, Af
 	private static final File TMPDIR = new File(System.getProperty("java.io.tmpdir"));
 	
     private static final String TEXT_EXTN = ".txt";
-
     private static final String IMAGE_EXTN = ".jpg";
-
     private static final String AUDIO_EXTN = ".wav";
-
     private static final String QR_EXTN = "-qrcode.png";
 
     private static final int FONT_SIZE = 40;
@@ -89,6 +88,8 @@ public class AdminView extends VerticalLayout implements BeforeEnterObserver, Af
     @Value("${admin.address}")
     private String adminAddress;
 
+    private final MuseumService museumService;
+    
     private final ExhibitService exhibitService;
     
     private final SessionRecordService sessionRecordService;
@@ -101,13 +102,23 @@ public class AdminView extends VerticalLayout implements BeforeEnterObserver, Af
     
     private final IntegerField fontSizeField = new IntegerField();
     
-    private final H1 heading1 = new H1("Museum App");
-    private final H2 heading2 = new H2("Administration");
+    private final H1 heading = new H1("Museum App");
+    private final H2 museumHeading = new H2("Museum");
+    private final H2 adminHeading = new H2("Administration");
     
-    public AdminView(ExhibitService exhibitService, SessionRecordService sessionRecordService) {
+    private final RadioButtonGroup<String> closingTime = new RadioButtonGroup<>();
+
+    public AdminView(MuseumService museumService, ExhibitService exhibitService, SessionRecordService sessionRecordService) {
         super();
+        this.museumService = museumService;
         this.exhibitService = exhibitService;
         this.sessionRecordService = sessionRecordService;
+        
+        closingTime.setLabel("Closing Time");
+        closingTime.setItems(MuseumService.THREE_PM, MuseumService.FOUR_PM);
+        closingTime.addValueChangeListener(l -> {
+        	museumService.updateClosingTime(l.getValue());
+        });
         
         Accordion accordion = new Accordion();
         
@@ -124,11 +135,11 @@ public class AdminView extends VerticalLayout implements BeforeEnterObserver, Af
         AccordionPanel sessionRecordPanel = accordion.add("Session Records", getSessionRecordLayout());
         sessionRecordPanel.addThemeVariants(DetailsVariant.FILLED);
         
-        setHorizontalComponentAlignment(Alignment.START, heading1, heading2);
+        setHorizontalComponentAlignment(Alignment.START, heading, museumHeading, adminHeading);
         setHorizontalComponentAlignment(Alignment.STRETCH, accordion);
         setWidth("98%");
         
-        add(heading1, heading2, accordion);
+        add(heading, museumHeading, closingTime, adminHeading, accordion);
     }
 
 	@Override
@@ -144,7 +155,7 @@ public class AdminView extends VerticalLayout implements BeforeEnterObserver, Af
 
 	@Override
 	public void afterNavigation(AfterNavigationEvent event) {
-		// nothing to do
+		closingTime.setValue(museumService.getClosingTime());
 	}
 
     private VerticalLayout getCsvImportLayout() {
