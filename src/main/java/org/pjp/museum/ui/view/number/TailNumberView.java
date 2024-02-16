@@ -34,6 +34,18 @@ public class TailNumberView extends VerticalLayout implements AfterNavigationObs
 
     private static final Logger LOGGER = LoggerFactory.getLogger(TailNumberView.class);
     
+    private static final String HELP_STR = """
+            In case the QR Code scanner is not working, it is possible to load the exhibit information by selecting the relevant aircraft tail number from the list below. (Use the Settings page to set this mode as default.)
+            %s
+        """;
+
+    private static final String CONNECT_STR = """
+             <br/><br/>
+            <mark>Connect to "Manston History Public Access" wi-fi</mark>
+        """;
+
+    private static final Paragraph help = new Paragraph();
+
     private final ListBox<TailNumber> listBox = new ListBox<>();
 
     @Value("${secure.addresses}")
@@ -48,10 +60,8 @@ public class TailNumberView extends VerticalLayout implements AfterNavigationObs
         this.exhibitService = exhibitService;
         this.sessionRecordService = sessionRecordService;
 
-        Paragraph helpText = new Paragraph("In case the QR Code scanner is not working, it is possible to load the exhibit information by selecting the relevant aircraft tail number from the list below. (Use the Settings page to set this mode as default.)");
-
-        setHorizontalComponentAlignment(Alignment.START, helpText);
-        add(helpText);
+        setHorizontalComponentAlignment(Alignment.START, help);
+        add(help);
 
         listBox.addValueChangeListener(this);
         listBox.setHeightFull();
@@ -64,6 +74,8 @@ public class TailNumberView extends VerticalLayout implements AfterNavigationObs
 
     @Override
     public void afterNavigation(AfterNavigationEvent event) {
+    	help.getElement().setProperty("innerHTML", String.format(HELP_STR, (isAllowed(UI.getCurrent()) ? "" : CONNECT_STR)));
+        
     	Collection<TailNumber> items;
     	
     	if (isAllowed(UI.getCurrent())) {

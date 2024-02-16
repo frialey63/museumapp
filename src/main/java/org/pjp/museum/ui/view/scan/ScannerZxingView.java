@@ -5,12 +5,8 @@ import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.logging.log4j.util.Strings;
-import org.pjp.museum.model.Exhibit;
 import org.pjp.museum.service.SessionRecordService;
-import org.pjp.museum.ui.util.AddressUtils;
 import org.pjp.museum.ui.view.MainLayout;
-import org.pjp.museum.ui.view.accessdenied.AccessDeniedView;
 import org.pjp.museum.ui.view.exhibit.ExhibitView;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -49,9 +45,6 @@ public class ScannerZxingView extends VerticalLayout {
 		return map;
 	}
 
-    @Value("${secure.addresses}")
-    private String secureAddresses;
-
     @Value("${app.download.url}")
     private String appDownloadUrl;
 
@@ -72,13 +65,10 @@ public class ScannerZxingView extends VerticalLayout {
 				
 	            UI ui = UI.getCurrent();
 
-	            if (isAllowed(ui, tailNumber)) {
-	                service.updateRecord(VaadinSession.getCurrent(), tailNumber, true);
-	                ui.navigate(ExhibitView.class, tailNumber);
-				} else{
-					ui.navigate(AccessDeniedView.class);
-				}
-			} catch (MalformedURLException e) {
+                service.updateRecord(VaadinSession.getCurrent(), tailNumber, true);
+                ui.navigate(ExhibitView.class, tailNumber);
+
+        	} catch (MalformedURLException e) {
 				LOGGER.error("failed to create the URL from the scanned value", e);
 			}
         });
@@ -91,18 +81,5 @@ public class ScannerZxingView extends VerticalLayout {
         add(zxingReader);
 
         setSizeFull();
-    }
-    
-    private boolean isAllowed(UI ui, String tailNumber) {
-    	if (Exhibit.MUSEUM.equals(tailNumber)) {
-    		return true;
-    	} else if (Strings.isNotEmpty(secureAddresses)) {
-        	String ipAddress = AddressUtils.getRealAddress(ui.getSession());
-            LOGGER.debug("IP address = {}", ipAddress);
-           
-        	return AddressUtils.checkAddressIsSecure(secureAddresses, ipAddress);
-    	}
-    	
-    	return true;
     }
 }
